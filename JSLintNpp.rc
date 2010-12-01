@@ -1,0 +1,233 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(1250)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_OUTPUT DIALOGEX 0, 0, 316, 182
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "JSLint"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_OUTPUT,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,8,302,167
+END
+
+IDD_OPTIONS DIALOGEX 0, 0, 398, 262
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "JSLint Options"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Stop on first error",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,7,73,10
+    CONTROL         "Strict white space",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,21,73,10
+    CONTROL         "Assume a browser",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,35,75,10
+    CONTROL         "Assume console, alert, ...",IDC_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,99,10
+    CONTROL         "Assume a Yahoo Widget",IDC_CHECK5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,63,93,10
+    CONTROL         "Assume Windows",IDC_CHECK6,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,77,71,10
+    CONTROL         "Assume Rhino",IDC_CHECK7,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,91,61,10
+    CONTROL         "Safe Subset",IDC_CHECK8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,105,55,10
+    CONTROL         "ADsafe",IDC_CHECK9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,39,10
+    CONTROL         "Tolerate debugger statements",IDC_CHECK10,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,7,113,10
+    CONTROL         "Tolerate eval",IDC_CHECK11,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,21,58,10
+    CONTROL         "Tolerate sloppy line breaking",IDC_CHECK12,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,35,107,10
+    CONTROL         "Tolerate unfiltered for in",IDC_CHECK13,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,49,94,10
+    CONTROL         "Tolerate inefficient subscripting",IDC_CHECK14,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,63,116,10
+    CONTROL         "Tolerate CSS workarounds",IDC_CHECK15,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,77,101,10
+    CONTROL         "Tolerate HTML case",IDC_CHECK16,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,91,79,10
+    CONTROL         "Tolerate HTML event handlers",IDC_CHECK17,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,105,112,10
+    CONTROL         "Tolerate HTML fragments",IDC_CHECK18,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,119,97,10
+    CONTROL         "Tolerate ES5 syntax",IDC_CHECK19,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,110,133,81,10
+    CONTROL         "Allow one var statement per function",IDC_CHECK20,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,230,7,135,10
+    CONTROL         "Disallow undefined variables",IDC_CHECK21,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,230,21,106,10
+    CONTROL         "Disallow dangling _ in identifiers",IDC_CHECK22,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,230,36,117,10
+    CONTROL         "Disallow == and !=",IDC_CHECK23,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,230,49,78,10
+    CONTROL         "Disallow ++ and --",IDC_CHECK24,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,230,63,75,10
+    CONTROL         "Disallow bitwise operators",IDC_CHECK25,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,230,77,99,10
+    CONTROL         "Disallow insecure . and [^...] in /RegExp/",IDC_CHECK26,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,230,91,149,10
+    CONTROL         "Require Initial Caps for constructors",IDC_CHECK27,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,230,105,131,10
+    CONTROL         "Require parens around immediate invocations",IDC_CHECK28,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,230,119,161,10
+    CONTROL         "Require ""use strict"";",IDC_CHECK29,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,230,133,80,10
+    LTEXT           "Strict &white space indentation:",IDC_STATIC,7,152,98,8
+    EDITTEXT        IDC_IDENT,110,149,40,14,ES_AUTOHSCROLL
+    LTEXT           "(default: 4)",IDC_STATIC,154,152,38,8
+    LTEXT           "Maximum line &length:",IDC_STATIC,7,170,68,8
+    EDITTEXT        IDC_MAXLEN,110,167,40,14,ES_AUTOHSCROLL
+    LTEXT           "(default: no limit)",IDC_STATIC,154,170,56,8
+    LTEXT           "Maximum number of &errors:",IDC_STATIC,7,188,89,8
+    EDITTEXT        IDC_MAXERR,110,185,40,14,ES_AUTOHSCROLL
+    LTEXT           "(default: 50)",IDC_STATIC,154,188,42,8
+    PUSHBUTTON      "The &Good Parts",IDC_GOOD_PARTS,230,149,68,14
+    PUSHBUTTON      "&Clear All Options",IDC_CLEAR_ALL,230,167,68,14
+    EDITTEXT        IDC_PREVIEW,7,205,384,30,ES_MULTILINE | ES_READONLY | WS_VSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,287,241,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,341,241,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_OUTPUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 8
+        BOTTOMMARGIN, 175
+    END
+
+    IDD_OPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 391
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 255
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 0,1,0,1
+ PRODUCTVERSION 0,1,0,1
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041a04b0"
+        BEGIN
+            VALUE "FileDescription", "JSLint Plugin for Notepad++"
+            VALUE "FileVersion", "0, 1, 0, 1"
+            VALUE "InternalName", "JSLintNpp"
+            VALUE "LegalCopyright", "Copyright (C) 2010 Martin Vladic"
+            VALUE "OriginalFilename", "JSLintNpp.dll"
+            VALUE "ProductName", "JSLint Plugin for Notepad++"
+            VALUE "ProductVersion", "0, 1, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x41a, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// JS
+//
+
+IDR_JSLINT              JS                      "res\\jslint.js"
+IDR_JSLINT_OUTPUT       JS                      "res\\jslint_output.js"
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Croatian resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_HRV)
+#ifdef _WIN32
+LANGUAGE LANG_CROATIAN, SUBLANG_DEFAULT
+#pragma code_page(1250)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP                  "C:\\Users\\martin\\Documents\\My Dropbox\\Code\\Playground\\JslintNPP\\Plugins\\NppExec\\NppExec\\src\\ConsoleIcon.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_JSLINT_TAB          ICON                    "res\\JSLintTab.ico"
+#endif    // Croatian resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
