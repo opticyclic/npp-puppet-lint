@@ -1,4 +1,5 @@
-//Copyright (C) 2010 Martin Vlaidc ( martin.vladic@gmail.com )
+//This file is part of JSLint Plugin for Notepad++
+//Copyright (C) 2010 Martin Vladic <martin.vladic@gmail.com>
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License

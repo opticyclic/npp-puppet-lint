@@ -1,5 +1,5 @@
-//this file is part of notepad++
-//Copyright (C)2003 Don HO <donho@altern.org>
+//This file is part of JSLint Plugin for Notepad++
+//Copyright (C) 2010 Martin Vladic <martin.vladic@gmail.com>
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -14,6 +14,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 
 #ifndef PLUGINDEFINITION_H
 #define PLUGINDEFINITION_H
