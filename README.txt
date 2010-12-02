@@ -5,6 +5,11 @@ JavaScript files (more about JSLint at http://www.jslint.com/lint.html).
 
 Copyright 2010 Martin Vladic
 
+= Release Notes =
+
+This is first version. Consider it beta. Tested and works with Notepad++
+version 5.7+; it also may work with older versions.
+
 = Installation =
 
 Copy JSLintNpp.dll (or JSLintNppA.dll if you are using ANSI version) into your
