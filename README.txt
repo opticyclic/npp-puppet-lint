@@ -1,9 +1,13 @@
 = About =
 
 JSLint Plugin for Notepad++ allows you to run JSLint against your open 
-JavaScript files (more about JSLint at http://www.jslint.com/lint.html).
+JavaScript files.
 
-Copyright 2010 Martin Vladic
+Website: http://jslintnpp.sourceforge.net
+JSLint Plugin for Notepad++ Copyright 2010 Martin Vladic.
+
+Based on JSLint by Douglas Crockford (http://www.jslint.com/).
+JSLint Copyright 2002 Douglas Crockford.
 
 = Release Notes =
 
