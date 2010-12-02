@@ -7,6 +7,7 @@
 #define IDI_JSLINT_TAB                  103
 #define IDD_OUTPUT                      104
 #define IDD_OPTIONS                     105
+#define IDD_ABOUT                       109
 #define IDC_CHECK1                      1001
 #define IDC_CHECK2                      1002
 #define IDC_CHECK3                      1003
@@ -43,14 +44,17 @@
 #define IDC_MAXERR                      1034
 #define IDC_OUTPUT                      1035
 #define IDC_PREVIEW                     1036
+#define IDC_VERSION_STATIC              1037
+#define IDC_SYSLINK1                    1038
+#define IDC_SYSLINK2                    1039
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        109
+#define _APS_NEXT_RESOURCE_VALUE        110
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1037
+#define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

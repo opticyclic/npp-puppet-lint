@@ -16,6 +16,7 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "StdHeaders.h"
+#include "AboutDlg.h"
 #include "JSLint.h"
 #include "menuCmdID.h"
 #include "OptionsDlg.h"
@@ -43,6 +44,7 @@ void gotoNextLint();
 void gotoPrevLint();
 void showLints();
 void options();
+void about();
 
 //
 // Private helper functions forward declarations
@@ -103,11 +105,11 @@ void commandMenuInit()
 	shKey->_key = 0x42;
 	setCommand(4, TEXT("Go To Previous Lint"), gotoPrevLint, shKey, false);
 	
-	setCommand(5, TEXT("---"), NULL, NULL, false);
-	setCommand(6, TEXT("Show Lints"), showLints, NULL, false);
+	setCommand(5, TEXT("Show Lints"), showLints, NULL, false);
 
-	setCommand(7, TEXT("---"), NULL, NULL, false);
-	setCommand(8, TEXT("Options"), options, NULL, false);
+	setCommand(6, TEXT("---"), NULL, NULL, false);
+	setCommand(7, TEXT("Options"), options, NULL, false);
+	setCommand(8, TEXT("About"), about, NULL, false);
 }
 
 void commandMenuCleanUp()
@@ -218,6 +220,11 @@ void options()
 	pluginDialogBox(IDD_OPTIONS, OptionsDlgProc);
 }
 
+void about()
+{
+	pluginDialogBox(IDD_ABOUT, AboutDlgProc);
+}
+
 //
 // Helper functions
 //
@@ -298,7 +305,7 @@ void doJSLint()
 	// get code page of the text
 	int nSciCodePage = (int) ::SendMessage(hWndScintilla, SCI_GETCODEPAGE, 0, 0);
 	if (nSciCodePage != SC_CP_UTF8) {
-		strScript = TextConversion::S_To_UTF8(strScript); // convert to UTF-8
+		strScript = TextConversion::A_To_UTF8(strScript); // convert to UTF-8
 	}
 
 	try {
@@ -310,6 +317,8 @@ void doJSLint()
 		jsLint.CheckScript(strOptions, strScript, lints);
 
 		g_outputDlg.AddLints(filePath, lints);
+
+		DoEvents();
 	} catch (exception&) {
 		// TODO better exception handling and much more descriptive error message
 		::MessageBox(

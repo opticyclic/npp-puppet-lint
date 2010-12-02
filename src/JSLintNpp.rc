@@ -89,6 +89,25 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,341,241,50,14
 END
 
+IDD_ABOUT DIALOGEX 0, 0, 201, 148
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CTEXT           "JSLint Plugin for Notepad++",IDC_STATIC,7,7,187,8
+    CTEXT           "Version: %s %s",IDC_VERSION_STATIC,7,17,187,8
+    CTEXT           "Copyright 2010 Martin Vladic",IDC_STATIC,7,27,187,8
+    CONTROL         "<a href=""http://jslintnpp.sourceforge.net"">http://jslintnpp.sourceforge.net</a>",IDC_SYSLINK1,
+                    "SysLink",WS_TABSTOP,49,37,104,14
+    CTEXT           "JSLint",IDC_STATIC,7,57,187,8
+    CTEXT           "Copyright 2002 Douglas Crockford",IDC_STATIC,7,67,187,8
+    CONTROL         "<a href=""http://www.jslint.com"">http://www.jslint.com</a>",IDC_SYSLINK2,
+                    "SysLink",WS_TABSTOP,65,76,71,14
+    CTEXT           "Special thanks to:",IDC_STATIC,7,97,187,8
+    CTEXT           "Douglas Crockford for JSLint",IDC_STATIC,7,107,187,8
+    DEFPUSHBUTTON   "OK",IDOK,76,127,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -112,6 +131,14 @@ BEGIN
         RIGHTMARGIN, 391
         TOPMARGIN, 7
         BOTTOMMARGIN, 255
+    END
+
+    IDD_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 194
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 141
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -200,13 +227,6 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDB_BITMAP1             BITMAP                  "C:\\Users\\martin\\Documents\\My Dropbox\\Code\\Playground\\JslintNPP\\Plugins\\NppExec\\NppExec\\src\\ConsoleIcon.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //

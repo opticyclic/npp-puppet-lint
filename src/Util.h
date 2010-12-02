@@ -20,8 +20,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 tstring TrimSpaces(const tstring& str);
-
 BOOL CenterWindow(HWND hWnd, HWND hParentWnd, BOOL bRepaint = FALSE);
+void DoEvents();
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -121,7 +121,7 @@ private:
 class TextConversion
 {
 public:
-	static string UTF8_To_S(const string& str) {
+	static string UTF8_To_A(const string& str) {
 		int wsize = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
 		wchar_t* wbuffer = new wchar_t[wsize];
 		MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, wbuffer, wsize);
@@ -142,11 +142,11 @@ public:
 	#if defined(UNICODE) || defined(_UNICODE)
 		return UTF8_To_W(str);
 	#else
-		return UTF8_To_S(str);
+		return UTF8_To_A(str);
 	#endif
 	}
 
-	static string S_To_UTF8(const string& str) {
+	static string A_To_UTF8(const string& str) {
 		int wsize = MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);
 		wchar_t* wbuffer = new wchar_t[wsize];
 		MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, wbuffer, wsize);
@@ -168,7 +168,7 @@ public:
 	#if defined(UNICODE) || defined(_UNICODE)
 		return W_To_UTF8(tstr);
 	#else
-		return S_To_UTF8(tstr);
+		return A_To_UTF8(tstr);
 	#endif
 	}
 };

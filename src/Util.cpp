@@ -49,6 +49,19 @@ tstring TrimSpaces(const tstring& str)
 	return str.substr(first, last - first + 1 );
 }
 
+void DoEvents()
+{
+    MSG msg;
+    while (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
+        if (::GetMessage(&msg, NULL, 0, 0)) {
+            ::TranslateMessage(&msg);
+            :: DispatchMessage(&msg);
+		} else {
+            break;
+		}
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 tstring Path::GetDirectoryName(const tstring& strPath)
