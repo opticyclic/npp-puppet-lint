@@ -49,7 +49,8 @@ private:
 class JSLint
 {
 public:
-	void CheckScript(const string& strOptions, const string& strScript, list<JSLintReportItem>& items);
+	void CheckScript(const string& strOptions, const string& strScript, 
+		int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items);
 
 private:
 	TempFile m_jsLintScriptFileName;
@@ -59,10 +60,12 @@ private:
 	void LoadCustomDataResource(HMODULE hModule, 
 		LPCTSTR lpName, LPCTSTR lpType, LPVOID* ppData, LPDWORD pdwSize);
 	
-	static void WriteString(HANDLE hFile, const string& strScript);
+	static void WriteString(HANDLE hFile, const string& str);
 	
-	void ParseOutput(HANDLE hProcess, HANDLE hPipe, 
-		list<JSLintReportItem>& items);
+	void ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
+		int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items);
+
+	int GetNumTabs(const string& strScript, int line, int character, int tabWidth);
 	
 	void ReadError(HANDLE hProcess, HANDLE hPipe, string& strError);
 	

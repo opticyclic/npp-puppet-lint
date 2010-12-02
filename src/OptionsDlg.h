@@ -28,6 +28,7 @@ public:
 	void SaveOptions();
 
 	tstring GetOptionsString() const;
+	tstring GetOptionsJSONString() const;
 
 	tstring GetOptionName(UINT id) const;
 	UINT GetOptionID(const tstring& name) const;
@@ -44,6 +45,8 @@ public:
 	void SetGoodParts();
 
 	void UpdateDialog(HWND hDlg);
+
+	int GetTabWidth();
 
 private:
 	enum OptionType {

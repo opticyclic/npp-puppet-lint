@@ -144,12 +144,12 @@ void OutputDlg::AddLints(const tstring& strFilePath, const list<JSLintReportItem
 		ListView_SetItemText(m_hWndListView, lvI.iItem, COL_FILE, (LPTSTR)strFile.c_str());
 
 		stream.str(TEXT(""));
-		stream << lint.GetLine();
+		stream << lint.GetLine() + 1;
 		tstring strLine = stream.str();
 		ListView_SetItemText(m_hWndListView, lvI.iItem, COL_LINE, (LPTSTR)strLine.c_str());
 		
 		stream.str(TEXT(""));
-		stream << lint.GetCharacter();
+		stream << lint.GetCharacter() + 1;
 		tstring strColumn = stream.str();
 		ListView_SetItemText(m_hWndListView, lvI.iItem, COL_COLUMN, (LPTSTR)strColumn.c_str());
 
@@ -197,8 +197,8 @@ void OutputDlg::ShowLint(int i)
 {
 	const FileLint& fileLint = m_fileLints[i];
 	
-	int line = fileLint.lint.GetLine() - 1;
-	int column = fileLint.lint.GetCharacter() - 1;
+	int line = fileLint.lint.GetLine();
+	int column = fileLint.lint.GetCharacter();
 	
 	if (!fileLint.strFilePath.empty() && line >= 0 && column >= 0) {
 		LRESULT lRes = ::SendMessage(g_nppData._nppHandle, NPPM_SWITCHTOFILE, 0, (LPARAM)fileLint.strFilePath.c_str());
@@ -206,9 +206,31 @@ void OutputDlg::ShowLint(int i)
 			HWND hWndScintilla = getCurrentScintillaWindow();
 			if (hWndScintilla != NULL) {
 				::SendMessage(hWndScintilla, SCI_GOTOLINE, line, 0);
-				int pos = (int) ::SendMessage(hWndScintilla, SCI_GETCURRENTPOS, 0, 0);
-				for (int i = 0; i < column; i++)
+				// since there is no SCI_GOTOCOLUMN, we move to the right until ...
+				while (true) {
 					::SendMessage(hWndScintilla, SCI_CHARRIGHT, 0, 0);
+
+					int curPos = (int) ::SendMessage(hWndScintilla, SCI_GETCURRENTPOS, 0, 0);
+
+					int curLine = (int) ::SendMessage(hWndScintilla, SCI_LINEFROMPOSITION, curPos, 0);
+					if (curLine > line) {
+						// ... current line is greater than desired line or ...
+						::SendMessage(hWndScintilla, SCI_CHARLEFT, 0, 0);
+						break;
+					}
+
+					int curCol = (int) ::SendMessage(hWndScintilla, SCI_GETCOLUMN, curPos, 0);
+					if (curCol > column) {
+						// ... current column is greater than desired column or ...
+						::SendMessage(hWndScintilla, SCI_CHARLEFT, 0, 0);
+						break;
+					}
+
+					if (curCol == column) {
+						// ... we reached desired column.
+						break;
+					}
+				}
 			}
 		}
 	}

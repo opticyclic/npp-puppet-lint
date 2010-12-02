@@ -40,14 +40,14 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 			}
 		}
 
-		// ident
+		// indent
 		if (jsLintOptions.IsOptionChecked(TEXT("white"))) {
 			TCHAR szIdent[32];
 			GetWindowText(GetDlgItem(hDlg, IDC_IDENT), szIdent, _countof(szIdent));
 			tstring strIdent = TrimSpaces(szIdent);
 			if (!strIdent.empty()) {
-				int ident;
-				if(_stscanf(strIdent.c_str(), TEXT("%d"), &ident) == EOF || ident < 1) {
+				int indent;
+				if(_stscanf(strIdent.c_str(), TEXT("%d"), &indent) == EOF || indent < 1) {
 					if (bShowErrorMessage) {
 						MessageBox(hDlg, TEXT("Identation must be an integer greater than zero"), _T("JSLint"), MB_OK | MB_ICONERROR);
 						SetFocus(GetDlgItem(hDlg, IDC_IDENT));
@@ -209,7 +209,7 @@ JSLintOptions::JSLintOptions()
 	m_options[IDC_CHECK28] = Option(TEXT("immed"));
 	m_options[IDC_CHECK29] = Option(TEXT("strict"));
 
-	m_options[IDC_IDENT] = Option(TEXT("ident"), TEXT("4"));
+	m_options[IDC_IDENT] = Option(TEXT("indent"), TEXT("4"));
 	m_options[IDC_MAXLEN] = Option(TEXT("maxlen"), TEXT(""));
 	m_options[IDC_MAXERR] = Option(TEXT("maxerr"), TEXT("50"));
 
@@ -279,6 +279,22 @@ tstring JSLintOptions::GetOptionsString() const
 	return TEXT("/*jslint ") + strOptions + TEXT(" */");
 }
 
+tstring JSLintOptions::GetOptionsJSONString() const
+{
+	tstring strOptions;
+
+	std::map<UINT, Option>::const_iterator it;
+	for (it = m_options.begin(); it != m_options.end(); ++it) {
+		if (it->second.value != it->second.defaultValue) {
+			if (!strOptions.empty())
+				strOptions += TEXT(", ");
+			strOptions += it->second.name + TEXT(": ") + it->second.value;
+		}
+	}
+
+	return TEXT("{ ") + strOptions + TEXT(" }");
+}
+
 void JSLintOptions::CheckOption(UINT id)
 {
 	m_options[id].value = TEXT("true");
@@ -337,6 +353,14 @@ void JSLintOptions::UpdateDialog(HWND hDlg)
 			SetWindowText(GetDlgItem(hDlg, it->first), it->second.value.c_str());
 		}
 	}
+}
+
+int JSLintOptions::GetTabWidth()
+{
+	int indent;
+	if(_stscanf(m_options[IDC_IDENT].value.c_str(), TEXT("%d"), &indent) == EOF || indent < 1)
+		return 4;
+	return indent;
 }
 
 tstring JSLintOptions::GetConfigFileName()

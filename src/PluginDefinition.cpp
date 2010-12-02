@@ -311,10 +311,14 @@ void doJSLint()
 	try {
 		JSLint jsLint;
 
-		string strOptions = TextConversion::T_To_UTF8(g_jsLintOptions.GetOptionsString());
+		string strOptions = TextConversion::T_To_UTF8(
+			g_jsLintOptions.GetOptionsJSONString());
 		list<JSLintReportItem> lints;
 
-		jsLint.CheckScript(strOptions, strScript, lints);
+		int nppTabWidth = (int) ::SendMessage(hWndScintilla, SCI_GETTABWIDTH, 0, 0);
+		int jsLintTabWidth = g_jsLintOptions.GetTabWidth();
+
+		jsLint.CheckScript(strOptions, strScript, nppTabWidth, jsLintTabWidth, lints);
 
 		g_outputDlg.AddLints(filePath, lints);
 

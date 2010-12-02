@@ -150,8 +150,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,1,0,1
- PRODUCTVERSION 0,1,0,1
+ FILEVERSION 0,1,1,101
+ PRODUCTVERSION 0,1,1,101
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -167,12 +167,12 @@ BEGIN
         BLOCK "041a04b0"
         BEGIN
             VALUE "FileDescription", "JSLint Plugin for Notepad++"
-            VALUE "FileVersion", "0, 1, 0, 1"
+            VALUE "FileVersion", "0, 1, 1, 101"
             VALUE "InternalName", "JSLintNpp"
             VALUE "LegalCopyright", "Copyright (C) 2010 Martin Vladic"
             VALUE "OriginalFilename", "JSLintNpp.dll"
             VALUE "ProductName", "JSLint Plugin for Notepad++"
-            VALUE "ProductVersion", "0, 1, 0, 1"
+            VALUE "ProductVersion", "0, 1, 1, 101"
         END
     END
     BLOCK "VarFileInfo"

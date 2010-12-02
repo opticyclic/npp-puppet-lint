@@ -37,14 +37,16 @@ menu option "Plugins - JSLint - Options".
 
 README.txt     - This file
 JSLintNpp.dll  - Unicode version of plugin
-JsLintNppA.dll - ANSI version of plugin
+JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
-0.1.0.100    Initial release
+0.1.1    Bug fixes
+
+0.1.0    Initial release
 
 = Todo =
 
-- Display list of Global variables (and other useful informations that JSLint
+- Display list of global variables (and other useful informations that JSLint
   produces) used in your JS script
   

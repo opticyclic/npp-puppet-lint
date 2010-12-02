@@ -28,7 +28,7 @@ extern HANDLE g_hDllModule;
 // Input script is sent to the JSLint by using standard input.
 // Result from JSLint is read from the standard output.
 void JSLint::CheckScript(const string& strOptions, const string& strScript, 
-	list<JSLintReportItem>& items)
+	int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items)
 {
 	if (!m_jsLintScriptFileName)
 		CreateJSLintFile();
@@ -95,7 +95,8 @@ void JSLint::CheckScript(const string& strOptions, const string& strScript,
 	hChildStdInputWrite = NULL; // close std input pipe, so that JSLint can start
 
 	// read result from the standard output
-	ParseOutput(hProcess, hChildStdOutputRead, items);
+	ParseOutput(hProcess, hChildStdOutputRead, strScript, 
+		nppTabWidth, jsLintTabWidth, items);
 
 	// read data from the standard error stream
 	string strError;
@@ -163,18 +164,18 @@ void JSLint::CreateJSLintFile()
 	}
 }
 
-void JSLint::WriteString(HANDLE hFile, const string& strScript)
+void JSLint::WriteString(HANDLE hFile, const string& str)
 {
-	string str = base64_encode((unsigned char const*)strScript.c_str(), strScript.length());
-	DWORD dwSize = (DWORD)strlen(str.c_str()) * sizeof(char);
+	string strEncoded = base64_encode((unsigned char const*)str.c_str(), str.length());
+	DWORD dwSize = (DWORD)strlen(strEncoded.c_str()) * sizeof(char);
 	DWORD dwWritten;
-	if (WriteFile(hFile, (LPVOID)str.c_str(), dwSize, &dwWritten, NULL) == FALSE || dwWritten != dwSize) {
+	if (WriteFile(hFile, (LPVOID)strEncoded.c_str(), dwSize, &dwWritten, NULL) == FALSE || dwWritten != dwSize) {
 		throw IOException();
 	}
 }
 
-void JSLint::ParseOutput(HANDLE hProcess, HANDLE hPipe,
-	list<JSLintReportItem>& items)
+void JSLint::ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
+	int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items)
 {
 	// read JSLint output
 	string strOutput;
@@ -200,12 +201,18 @@ void JSLint::ParseOutput(HANDLE hProcess, HANDLE hPipe,
 			// read line
 			i = strLint.find("\r\n");
 			int line = atoi(base64_decode(strLint.substr(0, i)).c_str());
-			--line; // adjust because of options string inserted at script beggining
 			strLint = strLint.substr(i+2);
 
 			// read character
 			i = strLint.find("\r\n");
 			int character = atoi(base64_decode(strLint.substr(0, i)).c_str());
+			
+			// adjust character position if there is a difference 
+			// in tab width between Notepad++ and JSLint
+			if (nppTabWidth != jsLintTabWidth) {
+				character += GetNumTabs(strScript, line, character, jsLintTabWidth) * (nppTabWidth - jsLintTabWidth);
+			}
+			
 			strLint = strLint.substr(i+2);
 
 			// read reason
@@ -219,6 +226,29 @@ void JSLint::ParseOutput(HANDLE hProcess, HANDLE hPipe,
 			items.push_back(JSLintReportItem(line, character, strReason, strEvidence));
 		}
 	}
+}
+
+int JSLint::GetNumTabs(const string& strScript, int line, int character, int tabWidth)
+{
+	int numTabs = 0;
+
+	int i = 0;
+
+	while (line-- > 0) {
+		i = strScript.find('\n', i) + 1;
+	}
+
+	while (character > 0) {
+		if (strScript[i++] == '\t') {
+			++numTabs;
+			character -= tabWidth;
+		} else {
+			character--;
+		}
+
+	}
+
+	return numTabs;
 }
 
 void JSLint::ReadError(HANDLE hProcess, HANDLE hPipe, string& strError)

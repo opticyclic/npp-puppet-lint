@@ -159,15 +159,18 @@ var Base64 = {
 };
 
 (function() {
-    var script = Base64.decode(WScript.StdIn.ReadAll());
-    var options = { passfail: false };
+    var i, input, options, script, e;
+
+    input = Base64.decode(WScript.StdIn.ReadAll());
+    i = input.indexOf('\n');
+    eval("options = " + input.substr(0, i) + ";"); // eval is evil ;-)
+    script = input.substr(i + 1);
     if (!JSLINT(script, options)) {
-        var e;
-        for (var i = 0; i < JSLINT.errors.length; ++i) {
+        for (i = 0; i < JSLINT.errors.length; ++i) {
             e = JSLINT.errors[i];
             if (e) {
-                WScript.StdOut.WriteLine(Base64.encode(e.line + 1 + ''));
-                WScript.StdOut.WriteLine(Base64.encode(e.character + 1 + ''));
+                WScript.StdOut.WriteLine(Base64.encode(e.line + ''));
+                WScript.StdOut.WriteLine(Base64.encode(e.character + ''));
                 WScript.StdOut.WriteLine(Base64.encode(e.reason || '-'));
                 WScript.StdOut.WriteLine(Base64.encode((e.evidence || '-').replace(/^\s*(\S*(\s+\S+)*)\s*$/, "$1")));
                 WScript.StdOut.WriteLine();
