@@ -128,14 +128,19 @@ public:
 		int size = WideCharToMultiByte(CP_ACP, 0, wbuffer, wsize, NULL, 0, NULL, NULL);
 		char* buffer = new char[size];
 		WideCharToMultiByte(CP_ACP, 0, wbuffer, wsize, buffer, size, NULL, NULL);
-		return buffer;
+		delete [] wbuffer;
+		string result(buffer);
+		delete [] buffer;
+		return result;
 	}
 
 	static wstring UTF8_To_W(const string& str) {
 		int wsize = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
 		wchar_t* wbuffer = new wchar_t[wsize];
 		MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, wbuffer, wsize);
-		return wbuffer;
+		wstring result(wbuffer);
+		delete [] wbuffer;
+		return result;
 	}
 
 	static tstring UTF8_To_T(const string& str) {
@@ -150,18 +155,22 @@ public:
 		int wsize = MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);
 		wchar_t* wbuffer = new wchar_t[wsize];
 		MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, wbuffer, wsize);
-
 		int size = WideCharToMultiByte(CP_UTF8, 0, wbuffer, wsize, NULL, 0, NULL, NULL);
 		char* buffer = new char[size];
 		WideCharToMultiByte(CP_UTF8, 0, wbuffer, wsize, buffer, size, NULL, NULL);
-		return buffer;
+		delete [] wbuffer;
+		string result(buffer);
+		delete [] buffer;
+		return result;
 	}
 
 	static string W_To_UTF8(const wstring& wstr) {
 		int size = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
 		char* buffer = new char[size];
 		WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), -1, buffer, size, NULL, NULL);
-		return buffer;
+		string result(buffer);
+		delete [] buffer;
+		return result;
 	}
 
 	static string T_To_UTF8(const tstring& tstr) {

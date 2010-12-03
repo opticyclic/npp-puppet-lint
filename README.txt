@@ -41,9 +41,17 @@ JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
-0.1.1    Bug fixes
+0.2.0    
+	Memory leaks fixed
+	Toolbar added to JSLint dockable window
+	Visibility state of JSLint dockable window is now preserved after restart
+	Shortcuts changed (to avoid clashes with existing shortcuts of Notepad++)
 
-0.1.0    Initial release
+0.1.1
+	Bug fixes
+
+0.1.0
+	Initial release
 
 = Todo =
 

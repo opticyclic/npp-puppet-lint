@@ -24,27 +24,17 @@
 #include "PluginDefinition.h"
 
 //
-// The plugin data that Notepad++ needs
-//
-FuncItem funcItem[nbFunc];
-
-//
 // The data of Notepad++ that you can use in your plugin commands
 //
 NppData g_nppData;
 HANDLE g_hDllModule;
-OutputDlg g_outputDlg;
 
 //
-// Plugin command functions forward declarations
+// The plugin data that Notepad++ needs
 //
-void jsLintCurrentFile();
-void jsLintAllFiles();
-void gotoNextLint();
-void gotoPrevLint();
-void showLints();
-void options();
-void about();
+FuncItem g_funcItem[NB_FUNC];
+
+OutputDlg g_outputDlg;
 
 //
 // Private helper functions forward declarations
@@ -75,49 +65,52 @@ void commandMenuInit()
 {
 	ShortcutKey *shKey;
 	
-	shKey = new ShortcutKey; // Ctrl+Shift+L
+	shKey = new ShortcutKey; // Ctrl+Shift+F5
 	shKey->_isAlt = false;
 	shKey->_isCtrl = true;
 	shKey->_isShift = true;
-	shKey->_key = 0x4c;
-	setCommand(0, TEXT("JSLint Current File"), jsLintCurrentFile, shKey, false);
+	shKey->_key = VK_F5;
+	setCommand(FUNC_INDEX_JSLINT_CURRENT_FILE, TEXT("JSLint Current File"),
+		jsLintCurrentFile, shKey, false);
 
-	shKey = new ShortcutKey; // Ctrl+L
+	shKey = new ShortcutKey; // Ctrl+Shift+F6
 	shKey->_isAlt = false;
 	shKey->_isCtrl = true;
-	shKey->_isShift = false;
-	shKey->_key = 0x4c;
-	setCommand(1, TEXT("JSLint All Files"), jsLintAllFiles, shKey, false);
+	shKey->_isShift = true;
+	shKey->_key = VK_F6;
+	setCommand(FUNC_INDEX_JSLINT_ALL_FILES, TEXT("JSLint All Files"),
+		jsLintAllFiles, shKey, false);
 
 	setCommand(2, TEXT("---"), NULL, NULL, false);
 	
-	shKey = new ShortcutKey; // Ctrl+Shift+N
+	shKey = new ShortcutKey; // Ctrl+Shift+F7
 	shKey->_isAlt = false;
 	shKey->_isCtrl = true;
 	shKey->_isShift = true;
-	shKey->_key = 0x4e;
-	setCommand(3, TEXT("Go To Next Lint"), gotoNextLint, shKey, false);
+	shKey->_key = VK_F7;
+	setCommand(FUNC_INDEX_GOTO_PREV_LINT, TEXT("Go To Previous Lint"),
+		gotoPrevLint, shKey, false);
 	
-	shKey = new ShortcutKey; // Ctrl+Shift+B
+	shKey = new ShortcutKey; // Ctrl+Shift+F8
 	shKey->_isAlt = false;
 	shKey->_isCtrl = true;
 	shKey->_isShift = true;
-	shKey->_key = 0x42;
-	setCommand(4, TEXT("Go To Previous Lint"), gotoPrevLint, shKey, false);
+	shKey->_key = VK_F8;
+	setCommand(FUNC_INDEX_GOTO_NEXT_LINT, TEXT("Go To Next Lint"),
+		gotoNextLint, shKey, false);
 	
-	setCommand(5, TEXT("Show Lints"), showLints, NULL, false);
+	setCommand(FUNC_INDEX_SHOW_LINTS, TEXT("Show Lints"), showLints, NULL, false);
 
 	setCommand(6, TEXT("---"), NULL, NULL, false);
-	setCommand(7, TEXT("Options"), options, NULL, false);
-	setCommand(8, TEXT("About"), about, NULL, false);
+	setCommand(FUNC_INDEX_OPTIONS, TEXT("Options"), options, NULL, false);
+	setCommand(FUNC_INDEX_ABOUT, TEXT("About"), about, NULL, false);
 }
 
 void commandMenuCleanUp()
 {
-	delete funcItem[0]._pShKey;
-	delete funcItem[1]._pShKey;
-	delete funcItem[3]._pShKey;
-	delete funcItem[4]._pShKey;
+	for (int i = 0; i < NB_FUNC; ++i) {
+		delete g_funcItem[i]._pShKey;
+	}
 }
 
 //
@@ -127,6 +120,8 @@ void commandMenuCleanUp()
 void jsLintCurrentFile()
 {
 	createOutputWindow();
+
+	DoEvents();
 
 	int type;
 	::SendMessage(g_nppData._nppHandle, NPPM_GETCURRENTLANGTYPE, 0, (LPARAM)&type);
@@ -166,6 +161,9 @@ void jsLintAllFiles()
 	int numOpenFiles = ::SendMessage(g_nppData._nppHandle, NPPM_GETNBOPENFILES, 0, PRIMARY_VIEW);
 	if (numOpenFiles > 0) {
 		createOutputWindow();
+
+		DoEvents();
+
 		g_outputDlg.ClearAllLints();
 
 		for (int i = 0; i < numOpenFiles; ++i) {
@@ -231,21 +229,21 @@ void about()
 
 bool setCommand(size_t index, TCHAR *cmdName, PFUNCPLUGINCMD pFunc, ShortcutKey *sk, bool check0nInit) 
 {
-    if (index >= nbFunc)
+    if (index >= NB_FUNC)
         return false;
 
     if (!pFunc)
         return false;
 
-    lstrcpy(funcItem[index]._itemName, cmdName);
-    funcItem[index]._pFunc = pFunc;
-    funcItem[index]._init2Check = check0nInit;
-    funcItem[index]._pShKey = sk;
+    lstrcpy(g_funcItem[index]._itemName, cmdName);
+    g_funcItem[index]._pFunc = pFunc;
+    g_funcItem[index]._init2Check = check0nInit;
+    g_funcItem[index]._pShKey = sk;
 
     return true;
 }
 
-HWND getCurrentScintillaWindow()
+HWND GetCurrentScintillaWindow()
 {
     int which = -1;
     ::SendMessage(g_nppData._nppHandle, NPPM_GETCURRENTSCINTILLA, 0, (LPARAM)&which);
@@ -255,6 +253,13 @@ HWND getCurrentScintillaWindow()
 		return g_nppData._scintillaMainHandle;
 	else
 		return g_nppData._scintillaSecondHandle;
+}
+
+tstring GetConfigFileName()
+{
+	return Path::GetFullPath(TEXT("Config\\JSLint.ini"),
+		Path::GetDirectoryName(
+			Path::GetModuleFileName((HMODULE)g_hDllModule)));
 }
 
 void createOutputWindow()
@@ -271,7 +276,7 @@ void createOutputWindow()
 		data.uMask = DWS_DF_CONT_BOTTOM | DWS_ICONTAB;
 		data.pszModuleName = g_outputDlg.getPluginFileName();
 		data.hIconTab = g_outputDlg.GetTabIcon();
-		data.dlgID = -1; /* N_EMPTY; */
+		data.dlgID = FUNC_INDEX_SHOW_LINTS;
 		::SendMessage(g_nppData._nppHandle, NPPM_DMMREGASDCKDLG, 0, (LPARAM)&data);
 	}
 }
@@ -283,7 +288,7 @@ void doJSLint()
 	::SendMessage(g_nppData._nppHandle, NPPM_GETFULLCURRENTPATH, 0, (LPARAM)filePath);
 
     // get the current scintilla window
-    HWND hWndScintilla = getCurrentScintillaWindow();
+    HWND hWndScintilla = GetCurrentScintillaWindow();
 	if (hWndScintilla == NULL) {
 		return;
 	}

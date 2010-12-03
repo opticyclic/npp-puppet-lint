@@ -19,6 +19,17 @@
 #include "OutputDlg.h"
 #include "PluginDefinition.h"
 
+////////////////////////////////////////////////////////////////////////////////
+
+#define	IDM_TOOLBAR 2000
+
+#define	IDM_TB_JSLINT_CURRENT_FILE (IDM_TOOLBAR + 1)
+#define	IDM_TB_JSLINT_ALL_FILES    (IDM_TOOLBAR + 2)
+#define	IDM_TB_PREV_LINT           (IDM_TOOLBAR + 3)
+#define	IDM_TB_NEXT_LINT           (IDM_TOOLBAR + 4)
+
+////////////////////////////////////////////////////////////////////////////////
+
 OutputDlg::OutputDlg()
 	: DockingDlgInterface(IDD_OUTPUT)
 	, m_hWndListView(NULL)
@@ -35,26 +46,111 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message) 
 	{
 		case WM_INITDIALOG:
+			InitializeToolbar();
 			InitializeListViewCtrl();
 			break;
 
-		case WM_NOTIFY: {
-				LPNMHDR pNMHDR = (LPNMHDR) lParam;
-				if (pNMHDR->code == NM_DBLCLK && pNMHDR->idFrom == IDC_OUTPUT) {
-					LPNMITEMACTIVATE lpnmitem = (LPNMITEMACTIVATE) lParam;
-					if (lpnmitem->iItem != -1) {
-						ShowLint(lpnmitem->iItem);
-					}
+		case WM_COMMAND: {
+				if ((HWND)lParam == m_toolbar.getHSelf())
+				{
+					OnToolbarCmd(LOWORD(wParam));
+					return TRUE;
 				}
 			}
 			break;
 
-		case WM_SIZE: 
-			::MoveWindow(m_hWndListView, 1, 1, LOWORD(lParam) - 2, HIWORD(lParam) - 2, TRUE);
+		case WM_NOTIFY: {
+				LPNMHDR pNMHDR = (LPNMHDR) lParam;
+				if (pNMHDR->idFrom == IDC_OUTPUT && pNMHDR->code == NM_DBLCLK) {
+					LPNMITEMACTIVATE lpnmitem = (LPNMITEMACTIVATE) lParam;
+					if (lpnmitem->iItem != -1) {
+						ShowLint(lpnmitem->iItem);
+					}
+				} else if (pNMHDR->hwndFrom == m_toolbar.getHSelf() && pNMHDR->code == TBN_DROPDOWN) {
+					OnToolbarDropDown((LPNMTOOLBAR) lParam);
+					return TBDDRET_NODEFAULT;
+				} else if (pNMHDR->hwndFrom == m_rebar.getHSelf() && pNMHDR->code == RBN_CHEVRONPUSHED) {
+					NMREBARCHEVRON* lpnm = (NMREBARCHEVRON*) pNMHDR;
+					if (lpnm->wID == REBAR_BAR_TOOLBAR) {
+						POINT pt;
+						pt.x = lpnm->rc.left;
+						pt.y = lpnm->rc.bottom;
+						ClientToScreen(pNMHDR->hwndFrom, &pt);
+						OnToolbarCmd(m_toolbar.doPopop(pt));
+						return TRUE;
+					}
+				} else if (pNMHDR->code == TTN_GETDISPINFO) {
+					LPTOOLTIPTEXT lpttt; 
+
+					lpttt = (LPTOOLTIPTEXT)pNMHDR; 
+					lpttt->hinst = _hInst; 
+
+					// Specify the resource identifier of the descriptive 
+					// text for the given button.
+					int resId = int(lpttt->hdr.idFrom);
+
+					TCHAR	tip[MAX_PATH];
+					GetNameStrFromCmd(resId, tip, sizeof(tip));
+					lpttt->lpszText = tip;
+					return TRUE;
+				}
+				DockingDlgInterface::run_dlgProc(message, wParam, lParam);
+				return FALSE;
+			}
 			break;
+
+		case WM_SIZE:
+		case WM_MOVE:
+			Resize();
+			break;
+
+		case WM_PAINT:
+			::RedrawWindow(m_toolbar.getHSelf(), NULL, NULL, TRUE);
+			break;
+
+		default:
+			return DockingDlgInterface::run_dlgProc(message, wParam, lParam);
 	}
 
-	return DockingDlgInterface::run_dlgProc(message, wParam, lParam);
+	return FALSE;
+}
+
+void OutputDlg::OnToolbarCmd(UINT message)
+{
+	switch (message) {
+		case IDM_TB_JSLINT_CURRENT_FILE:
+			jsLintCurrentFile();
+			break;
+		case IDM_TB_JSLINT_ALL_FILES:
+			jsLintAllFiles();
+			break;
+		case IDM_TB_NEXT_LINT:
+			gotoNextLint();
+			break;
+		case IDM_TB_PREV_LINT:
+			gotoPrevLint();
+			break;
+	}
+}
+
+void OutputDlg::OnToolbarDropDown(LPNMTOOLBAR lpnmtb)
+{
+}
+
+void OutputDlg::InitializeToolbar()
+{
+	static ToolBarButtonUnit toolBarIcons[] = {
+		{IDM_TB_JSLINT_CURRENT_FILE, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDB_TB_JSLINT_CURRENT_FILE, 0},
+		{IDM_TB_JSLINT_ALL_FILES,    IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDB_TB_JSLINT_ALL_FILES, 0},	 
+		{0,                          IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, 0},
+		{IDM_TB_PREV_LINT,           IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDB_TB_PREV_LINT, 0},
+		{IDM_TB_NEXT_LINT,           IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDB_TB_NEXT_LINT, 0},
+	};
+
+	m_toolbar.init(_hInst, _hSelf, TB_STANDARD, toolBarIcons, sizeof(toolBarIcons) / sizeof(ToolBarButtonUnit));
+	m_rebar.init(_hInst, _hSelf);
+	m_toolbar.addToRebar(&m_rebar);
+	m_rebar.setIDVisible(REBAR_BAR_TOOLBAR, true);
 }
 
 void OutputDlg::InitializeListViewCtrl()
@@ -98,6 +194,20 @@ void OutputDlg::InitializeListViewCtrl()
 	ListView_InsertColumn(m_hWndListView, COL_COLUMN, &lvc);
 }
 
+void OutputDlg::Resize()
+{
+	RECT rc;
+	getClientRect(rc);
+
+	m_toolbar.reSizeTo(rc);
+	m_rebar.reSizeTo(rc);
+
+	getClientRect(rc);
+	rc.top += 25;
+	InflateRect(&rc, -1, -1);
+	::MoveWindow(m_hWndListView, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
+}
+
 HICON OutputDlg::GetTabIcon()
 {
 	if (m_hTabIcon == NULL) {
@@ -106,6 +216,19 @@ HICON OutputDlg::GetTabIcon()
 			LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT );
 	}
 	return m_hTabIcon;
+}
+
+void OutputDlg::GetNameStrFromCmd(UINT resID, LPTSTR tip, UINT count)
+{
+	// NOTE: On change, keep sure to change order of IDM_EX_... in toolBarIcons also
+	static LPTSTR szToolTip[] = {
+		_T("JSLint Current File"),
+		_T("JSLint All Files"),
+		_T("Go To Previous Lint"),
+		_T("Go To Next Lint")
+	};
+
+	_tcscpy(tip, szToolTip[resID - IDM_TB_JSLINT_CURRENT_FILE]);
 }
 
 void OutputDlg::ClearAllLints()
@@ -203,7 +326,7 @@ void OutputDlg::ShowLint(int i)
 	if (!fileLint.strFilePath.empty() && line >= 0 && column >= 0) {
 		LRESULT lRes = ::SendMessage(g_nppData._nppHandle, NPPM_SWITCHTOFILE, 0, (LPARAM)fileLint.strFilePath.c_str());
 		if (lRes) {
-			HWND hWndScintilla = getCurrentScintillaWindow();
+			HWND hWndScintilla = GetCurrentScintillaWindow();
 			if (hWndScintilla != NULL) {
 				::SendMessage(hWndScintilla, SCI_GOTOLINE, line, 0);
 				// since there is no SCI_GOTOCOLUMN, we move to the right until ...

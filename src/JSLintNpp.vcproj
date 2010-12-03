@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="shlwapi.lib"
+				AdditionalDependencies="shlwapi.lib comctl32.lib "
 				OutputFile="$(OutDir)/$(ProjectName)_DebugA.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
@@ -140,7 +140,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="shlwapi.lib"
+				AdditionalDependencies="shlwapi.lib comctl32.lib "
 				OutputFile="$(OutDir)/$(ProjectName)A.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
@@ -218,7 +218,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="shlwapi.lib"
+				AdditionalDependencies="shlwapi.lib comctl32.lib "
 				OutputFile="$(OutDir)/$(ProjectName).dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
@@ -298,7 +298,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="shlwapi.lib"
+				AdditionalDependencies="shlwapi.lib comctl32.lib "
 				OutputFile="$(OutDir)/$(ProjectName)_Debug.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
@@ -487,19 +487,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\DockingFeature\StaticDialog.cpp"
-				>
-				<FileConfiguration
-					Name="Unicode Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-						PrecompiledHeaderThrough="StdHeaders.h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\StdHeaders.cpp"
 				>
 				<FileConfiguration
@@ -562,14 +549,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\menuCmdID.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Notepad_plus_msgs.h"
-				>
-			</File>
-			<File
 				RelativePath=".\OptionsDlg.h"
 				>
 			</File>
@@ -582,23 +561,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PluginInterface.h"
-				>
-			</File>
-			<File
 				RelativePath=".\resource.h"
 				>
 			</File>
 			<File
-				RelativePath="DockingFeature\resource.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Scintilla.h"
-				>
-			</File>
-			<File
 				RelativePath=".\StdHeaders.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TargetVer.h"
 				>
 			</File>
 			<File
@@ -629,6 +600,230 @@
 			</File>
 			<File
 				RelativePath=".\res\JSLintTab.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\res\TB_JSLintAllFiles.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\TB_JSLintCurrentFile.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\TB_NextLint.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\TB_PrevLint.bmp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Notepad++"
+			>
+			<File
+				RelativePath=".\DockingFeature\Docking.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DockingFeature\DockingDlgInterface.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DockingFeature\dockingResource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DockingFeature\ImageListSet.cpp"
+				>
+				<FileConfiguration
+					Name="ANSI Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ANSI Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\DockingFeature\ImageListSet.h"
+				>
+			</File>
+			<File
+				RelativePath=".\menuCmdID.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Notepad_plus_msgs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PluginInterface.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Scintilla.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DockingFeature\StaticDialog.cpp"
+				>
+				<FileConfiguration
+					Name="ANSI Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ANSI Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\DockingFeature\SysMsg.cpp"
+				>
+				<FileConfiguration
+					Name="ANSI Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+						DisableSpecificWarnings="4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ANSI Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+						DisableSpecificWarnings="4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+						DisableSpecificWarnings="4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+						DisableSpecificWarnings="4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\DockingFeature\SysMsg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DockingFeature\ToolBar.cpp"
+				>
+				<FileConfiguration
+					Name="ANSI Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ANSI Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+						PrecompiledHeaderThrough="StdHeaders.h"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\DockingFeature\ToolBar.h"
 				>
 			</File>
 		</Filter>

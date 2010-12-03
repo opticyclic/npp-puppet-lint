@@ -27,7 +27,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 IDD_OUTPUT DIALOGEX 0, 0, 316, 182
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "JSLint"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -150,8 +150,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,1,1,101
- PRODUCTVERSION 0,1,1,101
+ FILEVERSION 0,2,0,102
+ PRODUCTVERSION 0,2,0,102
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -167,12 +167,12 @@ BEGIN
         BLOCK "041a04b0"
         BEGIN
             VALUE "FileDescription", "JSLint Plugin for Notepad++"
-            VALUE "FileVersion", "0, 1, 1, 101"
+            VALUE "FileVersion", "0, 2, 0, 102"
             VALUE "InternalName", "JSLintNpp"
-            VALUE "LegalCopyright", "Copyright (C) 2010 Martin Vladic"
+            VALUE "LegalCopyright", "Copyright (C) 2010 Martin Vladic, JSLint Copyright (C) 2002 Douglas Crockford"
             VALUE "OriginalFilename", "JSLintNpp.dll"
             VALUE "ProductName", "JSLint Plugin for Notepad++"
-            VALUE "ProductVersion", "0, 1, 1, 101"
+            VALUE "ProductVersion", "0, 2, 0, 102"
         END
     END
     BLOCK "VarFileInfo"
@@ -189,6 +189,16 @@ END
 
 IDR_JSLINT              JS                      "res\\jslint.js"
 IDR_JSLINT_OUTPUT       JS                      "res\\jslint_output.js"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_TB_JSLINT_CURRENT_FILE BITMAP                  "res\\TB_JSLintCurrentFile.bmp"
+IDB_TB_JSLINT_ALL_FILES BITMAP                  "res\\TB_JSLintAllFiles.bmp"
+IDB_TB_NEXT_LINT        BITMAP                  "res\\TB_NextLint.bmp"
+IDB_TB_PREV_LINT        BITMAP                  "res\\TB_PrevLint.bmp"
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 

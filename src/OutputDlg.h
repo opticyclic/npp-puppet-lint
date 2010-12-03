@@ -19,6 +19,7 @@
 #define OUTPUT_DLG_H
 
 #include "DockingFeature/DockingDlgInterface.h"
+#include "DockingFeature/Toolbar.h"
 #include "resource.h"
 #include "JSLint.h"
 
@@ -34,6 +35,10 @@ public :
             ::SetFocus(::GetDlgItem(_hSelf, IDC_OUTPUT));
     };
 
+	virtual void redraw(void) {
+		::RedrawWindow(m_toolbar.getHSelf(), NULL, NULL, TRUE);
+	};
+
 	void setParent(HWND parent2set){
 		_hParent = parent2set;
 	};
@@ -48,7 +53,13 @@ public :
 protected :
 	virtual BOOL CALLBACK run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam);
 
+	void OnToolbarCmd(UINT message);
+	void OnToolbarDropDown(LPNMTOOLBAR lpnmtb);
+
 private:
+	ReBar m_rebar;
+	ToolBar m_toolbar;
+
 	HWND m_hWndListView;
 	HICON m_hTabIcon;
 
@@ -69,7 +80,13 @@ private:
 		COL_COLUMN = 4
 	};
 
+	void InitializeToolbar();
 	void InitializeListViewCtrl();
+
+	void Resize();
+
+	void GetNameStrFromCmd(UINT resID, LPTSTR tip, UINT count);
+
 	void ShowLint(int i);
 };
 

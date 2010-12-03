@@ -77,8 +77,6 @@ private:
 	};
 
 	std::map<UINT, Option> m_options;
-
-	static tstring GetConfigFileName();
 };
 
 extern JSLintOptions g_jsLintOptions;

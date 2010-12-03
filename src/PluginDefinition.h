@@ -21,14 +21,23 @@
 
 #include "PluginInterface.h"
 
-extern NppData g_nppData;
-extern HANDLE g_hDllModule;
-
 //
 // All definitions of plugin interface
 //
 const TCHAR NPP_PLUGIN_NAME[] = TEXT("JSLint");
-const int nbFunc = 9;
+const int NB_FUNC = 9;
+
+extern NppData g_nppData;
+extern HANDLE g_hDllModule;
+extern FuncItem g_funcItem[NB_FUNC];
+
+#define FUNC_INDEX_JSLINT_CURRENT_FILE 0
+#define FUNC_INDEX_JSLINT_ALL_FILES    1
+#define FUNC_INDEX_GOTO_PREV_LINT      3
+#define FUNC_INDEX_GOTO_NEXT_LINT      4
+#define FUNC_INDEX_SHOW_LINTS          5
+#define FUNC_INDEX_OPTIONS             7
+#define FUNC_INDEX_ABOUT               8
 
 //
 // Initialization of your plugin data
@@ -55,6 +64,18 @@ void commandMenuCleanUp();
 //
 // Helper functions
 //
-HWND getCurrentScintillaWindow();
+HWND GetCurrentScintillaWindow();
+tstring GetConfigFileName();
+
+//
+// Plugin command functions
+//
+void jsLintCurrentFile();
+void jsLintAllFiles();
+void gotoNextLint();
+void gotoPrevLint();
+void showLints();
+void options();
+void about();
 
 #endif //PLUGINDEFINITION_H

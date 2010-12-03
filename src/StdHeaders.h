@@ -15,19 +15,28 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+#define WIN32_LEAN_AND_MEAN
+
+#include "TargetVer.h"
+
 #include <Windows.h>
 #include <Windowsx.h>
 #include <Commctrl.h>
+#include <Shellapi.h>
 #include <Shlwapi.h>
+#include <zmouse.h>
 
 #pragma warning(disable:4996)
 
 #include <string>
 #include <tchar.h>
+#include <time.h>
 #include <list>
 #include <map>
 #include <sstream>
 #include <vector>
+#include <memory>
+#include <algorithm>
 
 using namespace std;
 

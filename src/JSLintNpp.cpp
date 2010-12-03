@@ -18,10 +18,6 @@
 #include "StdHeaders.h"
 #include "PluginDefinition.h"
 
-extern FuncItem funcItem[nbFunc];
-extern NppData g_nppData;
-
-
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  reasonForCall, 
                        LPVOID lpReserved )
@@ -61,8 +57,8 @@ extern "C" __declspec(dllexport) const TCHAR * getName()
 
 extern "C" __declspec(dllexport) FuncItem * getFuncsArray(int *nbF)
 {
-	*nbF = nbFunc;
-	return funcItem;
+	*nbF = NB_FUNC;
+	return g_funcItem;
 }
 
 

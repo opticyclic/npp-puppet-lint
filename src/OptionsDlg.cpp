@@ -223,7 +223,7 @@ void JSLintOptions::ReadOptions()
 		std::map<UINT, Option>::iterator it;
 		for (it = m_options.begin(); it != m_options.end(); ++it) {
 			TCHAR szValue[256];
-			GetPrivateProfileString(_T("JSLint Options"), it->second.name.c_str(), NULL, szValue, _countof(szValue), strConfigFileName.c_str());
+			GetPrivateProfileString(TEXT("JSLint Options"), it->second.name.c_str(), NULL, szValue, _countof(szValue), strConfigFileName.c_str());
 			if (_tcscmp(szValue, TEXT("")) != 0) {
 				tstring strValue = TrimSpaces(szValue);
 				if (it->second.type == OPTION_TYPE_BOOL) {
@@ -247,7 +247,7 @@ void JSLintOptions::SaveOptions()
 	if (Path::IsFileExists(Path::GetDirectoryName(strConfigFileName))) {
 		std::map<UINT, Option>::iterator it;
 		for (it = m_options.begin(); it != m_options.end(); ++it) {
-			WritePrivateProfileString(_T("JSLint Options"), it->second.name.c_str(), it->second.value.c_str(), strConfigFileName.c_str());
+			WritePrivateProfileString(TEXT("JSLint Options"), it->second.name.c_str(), it->second.value.c_str(), strConfigFileName.c_str());
 		}
 	}
 }
@@ -361,11 +361,4 @@ int JSLintOptions::GetTabWidth()
 	if(_stscanf(m_options[IDC_IDENT].value.c_str(), TEXT("%d"), &indent) == EOF || indent < 1)
 		return 4;
 	return indent;
-}
-
-tstring JSLintOptions::GetConfigFileName()
-{
-	return Path::GetFullPath(TEXT("Config\\JSLint.ini"),
-		Path::GetDirectoryName(
-			Path::GetModuleFileName((HMODULE)g_hDllModule)));
 }
