@@ -164,8 +164,8 @@ void OutputDlg::InitializeListViewCtrl()
 	lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 
 	lvc.iSubItem = COL_NUM;
-	lvc.pszText = TEXT("No.");
-	lvc.cx = 40;
+	lvc.pszText = TEXT("");
+	lvc.cx = 28;
 	lvc.fmt = LVCFMT_RIGHT;
 	ListView_InsertColumn(m_hWndListView, COL_NUM, &lvc);
 

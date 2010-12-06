@@ -1,7 +1,7 @@
 = About =
 
-JSLint Plugin for Notepad++ allows you to run JSLint against your open 
-JavaScript files.
+JSLint Plugin for Notepad++ allows you to run JSLint (The JavaScript Code 
+Quality Tool) against your open JavaScript files.
 
 Website: http://jslintnpp.sourceforge.net
 JSLint Plugin for Notepad++ Copyright 2010 Martin Vladic.
@@ -11,8 +11,8 @@ JSLint Copyright 2002 Douglas Crockford.
 
 = Release Notes =
 
-This is first version. Consider it beta. Tested and works with Notepad++
-version 5.7+; it also may work with older versions.
+This is beta version. Tested and works with Notepad++ version 5.7+; it also 
+may work with older versions.
 
 = Installation =
 
@@ -23,7 +23,7 @@ Notepad++ Plugins folder. You will need to re-start Notepad++ afterward.
 
 1. Open your JavaScript file in Notepad++
 2. To JSLint your file select menu option 
-   "Plugins - JSLint - JSLint Current File" or press shortcut key Ctrl+Shift+L.
+   "Plugins - JSLint - JSLint Current File" or press shortcut key Ctrl+Shift+F5.
 3. All errors (if such exists) that are found in your file will be displayed in
    list in dockable window at the bottom of Notepad++ main window; document is
    automatically scrolled at the position of the first found error.
@@ -41,7 +41,11 @@ JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
-0.2.0    
+0.2.1
+	Configuration is now saved in AppData directory (or in whatever directory
+	is returned by NPPM_GETPLUGINSCONFIGDIR message)
+
+0.2.0
 	Memory leaks fixed
 	Toolbar added to the JSLint dockable window
 	Visibility state of the JSLint dockable window is now preserved after restart

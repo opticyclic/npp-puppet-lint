@@ -48,6 +48,7 @@ extern "C" __declspec(dllexport) void setInfo(NppData notpadPlusData)
 {
 	g_nppData = notpadPlusData;
 	commandMenuInit();
+	loadConfig();
 }
 
 extern "C" __declspec(dllexport) const TCHAR * getName()

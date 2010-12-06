@@ -46,6 +46,11 @@ extern FuncItem g_funcItem[NB_FUNC];
 void pluginInit(HANDLE hModule);
 
 //
+// Load plugin configuration 
+//
+void loadConfig();
+
+//
 // Cleaning of your plugin
 // It will be called while plugin unloading
 //

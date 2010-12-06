@@ -53,6 +53,10 @@ void pluginInit(HANDLE hModule)
 	// It will be called while plugin loading   
 	g_hDllModule = hModule;
 	g_outputDlg.init((HINSTANCE)g_hDllModule, NULL);
+}
+
+void loadConfig()
+{
 	g_jsLintOptions.ReadOptions();
 }
 
@@ -257,9 +261,17 @@ HWND GetCurrentScintillaWindow()
 
 tstring GetConfigFileName()
 {
-	return Path::GetFullPath(TEXT("Config\\JSLint.ini"),
-		Path::GetDirectoryName(
-			Path::GetModuleFileName((HMODULE)g_hDllModule)));
+	static tstring strConfigFileName;
+
+	if (strConfigFileName.empty()) {
+		TCHAR szConfigDir[MAX_PATH];
+		szConfigDir[0] = 0;
+		::SendMessage(g_nppData._nppHandle, NPPM_GETPLUGINSCONFIGDIR, 
+			MAX_PATH, (LPARAM)szConfigDir);
+		strConfigFileName = Path::GetFullPath(TEXT("JSLint.ini"), szConfigDir);
+	}
+
+	return strConfigFileName;
 }
 
 void createOutputWindow()
