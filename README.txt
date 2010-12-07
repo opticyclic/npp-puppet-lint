@@ -42,20 +42,20 @@ JSLintNppA.dll - ANSI version of plugin
 = History =
 
 0.2.1
-	Configuration is now saved in AppData directory (or in whatever directory
-	is returned by NPPM_GETPLUGINSCONFIGDIR message)
+	- Configuration is now saved in AppData directory (or in whatever directory
+	  is returned by NPPM_GETPLUGINSCONFIGDIR message)
 
 0.2.0
-	Memory leaks fixed
-	Toolbar added to the JSLint dockable window
-	Visibility state of the JSLint dockable window is now preserved after restart
-	Shortcuts changed (to avoid clashes with existing shortcuts of Notepad++)
+	- Memory leaks fixed
+	- Toolbar added to the JSLint dockable window
+	- Visibility state of the JSLint dockable window is now preserved after restart
+	- Shortcuts changed (to avoid clashes with existing shortcuts of Notepad++)
 
 0.1.1
-	Bug fixes
+	- Bug fixes
 
 0.1.0
-	Initial release
+	- Initial release
 
 = Todo =
 
