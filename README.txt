@@ -28,7 +28,7 @@ Notepad++ Plugins folder. You will need to re-start Notepad++ afterward.
    list in dockable window at the bottom of Notepad++ main window; document is
    automatically scrolled at the position of the first found error.
 4. Double-click on errors in the list to view them inside document; or you can
-   press Ctrl+Shift+N repeatedly to view errors.
+   press Ctrl+Shift+F8 repeatedly to view errors.
 
 You can play with different JSLint options by choosing 
 menu option "Plugins - JSLint - Options".
