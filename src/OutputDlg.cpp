@@ -27,6 +27,7 @@
 #define	IDM_TB_JSLINT_ALL_FILES    (IDM_TOOLBAR + 2)
 #define	IDM_TB_PREV_LINT           (IDM_TOOLBAR + 3)
 #define	IDM_TB_NEXT_LINT           (IDM_TOOLBAR + 4)
+#define	IDM_TB_LINT_OPTIONS        (IDM_TOOLBAR + 5)
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -130,6 +131,9 @@ void OutputDlg::OnToolbarCmd(UINT message)
 		case IDM_TB_PREV_LINT:
 			gotoPrevLint();
 			break;
+		case IDM_TB_LINT_OPTIONS:
+			options();
+			break;
 	}
 }
 
@@ -145,6 +149,8 @@ void OutputDlg::InitializeToolbar()
 		{0,                          IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, 0},
 		{IDM_TB_PREV_LINT,           IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDB_TB_PREV_LINT, 0},
 		{IDM_TB_NEXT_LINT,           IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDB_TB_NEXT_LINT, 0},
+		{0,                          IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, 0},
+		{IDM_TB_LINT_OPTIONS,        IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDB_TB_LINT_OPTIONS, 0},
 	};
 
 	m_toolbar.init(_hInst, _hSelf, TB_STANDARD, toolBarIcons, sizeof(toolBarIcons) / sizeof(ToolBarButtonUnit));
@@ -225,7 +231,8 @@ void OutputDlg::GetNameStrFromCmd(UINT resID, LPTSTR tip, UINT count)
 		_T("JSLint Current File"),
 		_T("JSLint All Files"),
 		_T("Go To Previous Lint"),
-		_T("Go To Next Lint")
+		_T("Go To Next Lint"),
+		_T("JSLint Options"),
 	};
 
 	_tcscpy(tip, szToolTip[resID - IDM_TB_JSLINT_CURRENT_FILE]);

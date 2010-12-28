@@ -611,6 +611,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\TB_LintOptions.bmp"
+				>
+			</File>
+			<File
 				RelativePath=".\res\TB_NextLint.bmp"
 				>
 			</File>

@@ -223,7 +223,7 @@ void JSLint::ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
 			// read evidence
 			string strEvidence = base64_decode(strLint);
 
-			items.push_back(JSLintReportItem(line, character, strReason, strEvidence));
+			items.push_back(JSLintReportItem(line - 1, character - 1, strReason, strEvidence));
 		}
 	}
 }

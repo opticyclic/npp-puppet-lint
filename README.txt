@@ -41,6 +41,12 @@ JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
+0.3.0   - New option "Predefined (, separated)" added in Options dialog; 
+          this option should be used to specify the names of predefined 
+          global variables
+        - Added toolbar button that opens Options dialog
+        - JSLint script updated to version from 2010-12-23
+
 0.2.1
 	- Configuration is now saved in AppData directory (or in whatever directory
 	  is returned by NPPM_GETPLUGINSCONFIGDIR message)

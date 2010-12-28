@@ -35,7 +35,7 @@ BEGIN
     CONTROL         "",IDC_OUTPUT,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,8,302,167
 END
 
-IDD_OPTIONS DIALOGEX 0, 0, 398, 262
+IDD_OPTIONS DIALOGEX 0, 0, 398, 283
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "JSLint Options"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -73,20 +73,22 @@ BEGIN
     CONTROL         "Require parens around immediate invocations",IDC_CHECK28,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,230,119,161,10
     CONTROL         "Require ""use strict"";",IDC_CHECK29,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,230,133,80,10
-    LTEXT           "Strict &white space indentation:",IDC_STATIC,7,152,98,8
-    EDITTEXT        IDC_IDENT,110,149,40,14,ES_AUTOHSCROLL
-    LTEXT           "(default: 4)",IDC_STATIC,154,152,38,8
-    LTEXT           "Maximum line &length:",IDC_STATIC,7,170,68,8
-    EDITTEXT        IDC_MAXLEN,110,167,40,14,ES_AUTOHSCROLL
-    LTEXT           "(default: no limit)",IDC_STATIC,154,170,56,8
-    LTEXT           "Maximum number of &errors:",IDC_STATIC,7,188,89,8
-    EDITTEXT        IDC_MAXERR,110,185,40,14,ES_AUTOHSCROLL
-    LTEXT           "(default: 50)",IDC_STATIC,154,188,42,8
-    PUSHBUTTON      "The &Good Parts",IDC_GOOD_PARTS,230,149,68,14
-    PUSHBUTTON      "&Clear All Options",IDC_CLEAR_ALL,230,167,68,14
-    EDITTEXT        IDC_PREVIEW,7,205,384,30,ES_MULTILINE | ES_READONLY | WS_VSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,287,241,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,341,241,50,14
+    LTEXT           "Predefined (, separated):",IDC_STATIC,7,152,83,8
+    EDITTEXT        IDC_PREDEFINED,110,149,281,14,ES_AUTOHSCROLL
+    LTEXT           "Strict &white space indentation:",IDC_STATIC,7,170,98,8
+    EDITTEXT        IDC_IDENT,110,167,40,14,ES_AUTOHSCROLL
+    LTEXT           "(default: 4)",IDC_STATIC,154,170,38,8
+    LTEXT           "Maximum line &length:",IDC_STATIC,7,188,68,8
+    EDITTEXT        IDC_MAXLEN,110,185,40,14,ES_AUTOHSCROLL
+    LTEXT           "(default: no limit)",IDC_STATIC,154,188,56,8
+    LTEXT           "Maximum number of &errors:",IDC_STATIC,7,206,89,8
+    EDITTEXT        IDC_MAXERR,110,203,40,14,ES_AUTOHSCROLL
+    LTEXT           "(default: 50)",IDC_STATIC,154,206,42,8
+    PUSHBUTTON      "The &Good Parts",IDC_GOOD_PARTS,230,185,68,14
+    PUSHBUTTON      "&Clear All Options",IDC_CLEAR_ALL,230,203,68,14
+    EDITTEXT        IDC_PREVIEW,7,225,384,30,ES_MULTILINE | ES_READONLY | WS_VSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,287,262,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,341,262,50,14
 END
 
 IDD_ABOUT DIALOGEX 0, 0, 201, 148
@@ -130,7 +132,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 391
         TOPMARGIN, 7
-        BOTTOMMARGIN, 255
+        BOTTOMMARGIN, 276
     END
 
     IDD_ABOUT, DIALOG
@@ -150,8 +152,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,2,1,103
- PRODUCTVERSION 0,2,1,103
+ FILEVERSION 0,3,0,104
+ PRODUCTVERSION 0,3,0,104
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -167,12 +169,12 @@ BEGIN
         BLOCK "041a04b0"
         BEGIN
             VALUE "FileDescription", "JSLint Plugin for Notepad++"
-            VALUE "FileVersion", "0, 2, 1, 103"
+            VALUE "FileVersion", "0, 3, 0, 104"
             VALUE "InternalName", "JSLintNpp"
             VALUE "LegalCopyright", "Copyright (C) 2010 Martin Vladic, JSLint Copyright (C) 2002 Douglas Crockford"
             VALUE "OriginalFilename", "JSLintNpp.dll"
             VALUE "ProductName", "JSLint Plugin for Notepad++"
-            VALUE "ProductVersion", "0, 2, 1, 103"
+            VALUE "ProductVersion", "0, 3, 0, 104"
         END
     END
     BLOCK "VarFileInfo"
@@ -199,6 +201,7 @@ IDB_TB_JSLINT_CURRENT_FILE BITMAP                  "res\\TB_JSLintCurrentFile.bm
 IDB_TB_JSLINT_ALL_FILES BITMAP                  "res\\TB_JSLintAllFiles.bmp"
 IDB_TB_NEXT_LINT        BITMAP                  "res\\TB_NextLint.bmp"
 IDB_TB_PREV_LINT        BITMAP                  "res\\TB_PrevLint.bmp"
+IDB_TB_LINT_OPTIONS     BITMAP                  "res\\TB_LintOptions.bmp"
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 

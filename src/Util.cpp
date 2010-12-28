@@ -20,6 +20,39 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
+tstring TrimSpaces(const tstring& str)
+{
+    size_t first = str.find_first_not_of(TEXT(" \t"));
+    size_t last = str.find_last_not_of(TEXT(" \t"));
+ 
+    if (first == string::npos || last == string::npos)
+		return tstring();
+
+	return str.substr(first, last - first + 1 );
+}
+
+void StringSplit(tstring str, tstring delim, vector<tstring>& results)
+{
+	int cutAt;
+	while ((cutAt = str.find_first_of(delim)) != str.npos) {
+		if (cutAt > 0)
+			results.push_back(str.substr(0,cutAt));
+		str = str.substr(cutAt+1);
+	}
+	if (str.length() > 0)
+		results.push_back(str);
+}
+
+void FindReplace(tstring& str, const tstring& strOld, const tstring& strNew)
+{
+  size_t pos = 0;
+  while ((pos = str.find(strOld, pos)) != tstring::npos)
+  {
+     str.replace(pos, strOld.length(), strNew);
+     pos += strNew.length();
+  }
+}
+
 BOOL CenterWindow(HWND hWnd, HWND hParentWnd, BOOL bRepaint)
 {
   RECT rectParent;
@@ -36,17 +69,6 @@ BOOL CenterWindow(HWND hWnd, HWND hParentWnd, BOOL bRepaint)
   y = ((rectParent.bottom - rectParent.top) - height) / 2;
   y += rectParent.top;
   return ::MoveWindow(hWnd, x, y, width, height, bRepaint);
-}
-
-tstring TrimSpaces(const tstring& str)
-{
-    size_t first = str.find_first_not_of(TEXT(" \t"));
-    size_t last = str.find_last_not_of(TEXT(" \t"));
- 
-    if (first == string::npos || last == string::npos)
-		return tstring();
-
-	return str.substr(first, last - first + 1 );
 }
 
 void DoEvents()

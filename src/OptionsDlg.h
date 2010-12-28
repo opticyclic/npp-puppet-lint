@@ -27,7 +27,7 @@ public:
 	void ReadOptions();
 	void SaveOptions();
 
-	tstring GetOptionsString() const;
+	tstring GetOptionsCommentString() const;
 	tstring GetOptionsJSONString() const;
 
 	tstring GetOptionName(UINT id) const;
@@ -52,7 +52,8 @@ private:
 	enum OptionType {
 		OPTION_TYPE_UNKNOW,
 		OPTION_TYPE_BOOL,
-		OPTION_TYPE_INT
+		OPTION_TYPE_INT,
+		OPTION_TYPE_ARR_STRING
 	};
 
 	struct Option {
@@ -64,8 +65,8 @@ private:
 			, value(TEXT("false"))
 			, defaultValue(TEXT("false")) {}
 
-		Option(const tstring& name, const tstring& value) 
-			: type(OPTION_TYPE_INT)
+		Option(OptionType type, const tstring& name, const tstring& value) 
+			: type(type)
 			, name(name)
 			, value(value)
 			, defaultValue(value) {}

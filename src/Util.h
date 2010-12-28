@@ -20,6 +20,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 tstring TrimSpaces(const tstring& str);
+void StringSplit(tstring str, tstring delim, vector<tstring>& results);
+void FindReplace(tstring& str, const tstring& strOld, const tstring& strNew);
+
 BOOL CenterWindow(HWND hWnd, HWND hParentWnd, BOOL bRepaint = FALSE);
 void DoEvents();
 

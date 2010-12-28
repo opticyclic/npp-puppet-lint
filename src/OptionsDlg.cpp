@@ -40,6 +40,16 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 			}
 		}
 
+		// predefined
+		TCHAR szPredefined[32];
+		GetWindowText(GetDlgItem(hDlg, IDC_PREDEFINED), szPredefined, _countof(szPredefined));
+		tstring strPredefined = TrimSpaces(szPredefined);
+		if (!strPredefined.empty()) {
+			jsLintOptions.SetOption(IDC_PREDEFINED, strPredefined);
+		} else {
+			jsLintOptions.ResetOption(IDC_PREDEFINED);
+		}
+
 		// indent
 		if (jsLintOptions.IsOptionChecked(TEXT("white"))) {
 			TCHAR szIdent[32];
@@ -109,7 +119,7 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 	}
 
 	SetWindowText(GetDlgItem(hDlg, IDC_PREVIEW), 
-		jsLintOptions.GetOptionsString().c_str());
+		jsLintOptions.GetOptionsCommentString().c_str());
 
 	EnableWindow(GetDlgItem(hDlg, IDC_IDENT), 
 		jsLintOptions.IsOptionChecked(TEXT("white")));
@@ -209,9 +219,11 @@ JSLintOptions::JSLintOptions()
 	m_options[IDC_CHECK28] = Option(TEXT("immed"));
 	m_options[IDC_CHECK29] = Option(TEXT("strict"));
 
-	m_options[IDC_IDENT] = Option(TEXT("indent"), TEXT("4"));
-	m_options[IDC_MAXLEN] = Option(TEXT("maxlen"), TEXT(""));
-	m_options[IDC_MAXERR] = Option(TEXT("maxerr"), TEXT("50"));
+	m_options[IDC_PREDEFINED] = Option(OPTION_TYPE_ARR_STRING, TEXT("predef"), TEXT(""));
+
+	m_options[IDC_IDENT] = Option(OPTION_TYPE_INT, TEXT("indent"), TEXT("4"));
+	m_options[IDC_MAXLEN] = Option(OPTION_TYPE_INT, TEXT("maxlen"), TEXT(""));
+	m_options[IDC_MAXERR] = Option(OPTION_TYPE_INT, TEXT("maxerr"), TEXT("50"));
 
 	SetGoodParts();
 }
@@ -235,6 +247,8 @@ void JSLintOptions::ReadOptions()
 					if(_stscanf(strValue.c_str(), TEXT("%d"), &value) != EOF && value > 0) {
 						it->second.value = strValue;
 					}
+				} else if (it->second.type == OPTION_TYPE_ARR_STRING) {
+					it->second.value = strValue;
 				}
 			}
 		}
@@ -263,13 +277,13 @@ UINT JSLintOptions::GetOptionID(const tstring& optionName) const
 	return it->first;
 }
 
-tstring JSLintOptions::GetOptionsString() const
+tstring JSLintOptions::GetOptionsCommentString() const
 {
 	tstring strOptions;
 
 	std::map<UINT, Option>::const_iterator it;
 	for (it = m_options.begin(); it != m_options.end(); ++it) {
-		if (it->second.value != it->second.defaultValue) {
+		if (it->second.value != it->second.defaultValue && it->second.type != OPTION_TYPE_ARR_STRING) {
 			if (!strOptions.empty())
 				strOptions += TEXT(", ");
 			strOptions += it->second.name + TEXT(": ") + it->second.value;
@@ -286,9 +300,35 @@ tstring JSLintOptions::GetOptionsJSONString() const
 	std::map<UINT, Option>::const_iterator it;
 	for (it = m_options.begin(); it != m_options.end(); ++it) {
 		if (it->second.value != it->second.defaultValue) {
-			if (!strOptions.empty())
-				strOptions += TEXT(", ");
-			strOptions += it->second.name + TEXT(": ") + it->second.value;
+			tstring value;
+
+			if (it->second.type == OPTION_TYPE_ARR_STRING) {
+				vector<tstring> arr;
+				StringSplit(it->second.value, TEXT(","), arr);
+				vector<tstring>::const_iterator itArr;
+				for (itArr = arr.begin(); itArr != arr.end(); ++itArr) {
+					if (value.empty())
+						value += TEXT("[");
+					else
+						value += TEXT(", ");
+
+					tstring element = TrimSpaces(*itArr);
+					FindReplace(element, TEXT("\\"), TEXT("\\\\"));
+					FindReplace(element, TEXT("\""), TEXT("\\\""));
+
+					value += TEXT("\"") + element + TEXT("\"");
+				}
+				if (!value.empty())
+					value += TEXT("]");
+			} else {
+				value = it->second.value;
+			}
+
+			if (!value.empty()) {
+				if (!strOptions.empty())
+					strOptions += TEXT(", ");
+				strOptions += it->second.name + TEXT(": ") + value;
+			}
 		}
 	}
 
@@ -349,7 +389,7 @@ void JSLintOptions::UpdateDialog(HWND hDlg)
 	for (it = m_options.begin(); it != m_options.end(); ++it) {
 		if (it->second.type == OPTION_TYPE_BOOL) {
 			Button_SetCheck(GetDlgItem(hDlg, it->first), it->second.value == TEXT("true"));
-		} else if (it->second.type == OPTION_TYPE_INT) {
+		} else if (it->second.type == OPTION_TYPE_INT || it->second.type == OPTION_TYPE_ARR_STRING) {
 			SetWindowText(GetDlgItem(hDlg, it->first), it->second.value.c_str());
 		}
 	}
