@@ -32,7 +32,7 @@ EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "JSLint"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_OUTPUT,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,8,302,167
+    CONTROL         "",IDC_OUTPUT,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,8,302,167
 END
 
 IDD_OPTIONS DIALOGEX 0, 0, 398, 283
@@ -152,8 +152,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,3,0,104
- PRODUCTVERSION 0,3,0,104
+ FILEVERSION 0,3,1,105
+ PRODUCTVERSION 0,3,1,105
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -169,12 +169,12 @@ BEGIN
         BLOCK "041a04b0"
         BEGIN
             VALUE "FileDescription", "JSLint Plugin for Notepad++"
-            VALUE "FileVersion", "0, 3, 0, 104"
+            VALUE "FileVersion", "0, 3, 1, 105"
             VALUE "InternalName", "JSLintNpp"
             VALUE "LegalCopyright", "Copyright (C) 2010 Martin Vladic, JSLint Copyright (C) 2002 Douglas Crockford"
             VALUE "OriginalFilename", "JSLintNpp.dll"
             VALUE "ProductName", "JSLint Plugin for Notepad++"
-            VALUE "ProductVersion", "0, 3, 0, 104"
+            VALUE "ProductVersion", "0, 3, 1, 105"
         END
     END
     BLOCK "VarFileInfo"

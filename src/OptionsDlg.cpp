@@ -41,9 +41,11 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 		}
 
 		// predefined
-		TCHAR szPredefined[32];
-		GetWindowText(GetDlgItem(hDlg, IDC_PREDEFINED), szPredefined, _countof(szPredefined));
+		int nPredefinedLength = GetWindowTextLength(GetDlgItem(hDlg, IDC_PREDEFINED));
+		TCHAR *szPredefined = new TCHAR[nPredefinedLength+1];
+		GetWindowText(GetDlgItem(hDlg, IDC_PREDEFINED), szPredefined, nPredefinedLength+1);
 		tstring strPredefined = TrimSpaces(szPredefined);
+		delete [] szPredefined;
 		if (!strPredefined.empty()) {
 			jsLintOptions.SetOption(IDC_PREDEFINED, strPredefined);
 		} else {

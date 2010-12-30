@@ -82,12 +82,10 @@ private:
 
 	void InitializeToolbar();
 	void InitializeListViewCtrl();
-
 	void Resize();
-
 	void GetNameStrFromCmd(UINT resID, LPTSTR tip, UINT count);
-
 	void ShowLint(int i);
+	void CopyToClipboard();
 };
 
 #endif //OUTPUT_DLG_H

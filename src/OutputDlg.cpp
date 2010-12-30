@@ -62,7 +62,14 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 
 		case WM_NOTIFY: {
 				LPNMHDR pNMHDR = (LPNMHDR) lParam;
-				if (pNMHDR->idFrom == IDC_OUTPUT && pNMHDR->code == NM_DBLCLK) {
+				if (pNMHDR->idFrom == IDC_OUTPUT && pNMHDR->code == LVN_KEYDOWN) {
+					LPNMLVKEYDOWN pnkd = (LPNMLVKEYDOWN) lParam;
+					if (pnkd->wVKey == 'A' && (::GetKeyState(VK_CONTROL) >> 15 & 1)) {
+						ListView_SetItemState(m_hWndListView, -1, LVIS_SELECTED, LVIS_SELECTED);
+					} else if (pnkd->wVKey == 'C' && (::GetKeyState(VK_CONTROL) >> 15 & 1)) {
+						CopyToClipboard();
+					}
+				} else if (pNMHDR->idFrom == IDC_OUTPUT && pNMHDR->code == NM_DBLCLK) {
 					LPNMITEMACTIVATE lpnmitem = (LPNMITEMACTIVATE) lParam;
 					if (lpnmitem->iItem != -1) {
 						ShowLint(lpnmitem->iItem);
@@ -84,7 +91,7 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 					LPTOOLTIPTEXT lpttt; 
 
 					lpttt = (LPTOOLTIPTEXT)pNMHDR; 
-					lpttt->hinst = _hInst; 
+					lpttt->hinst = _hInst;
 
 					// Specify the resource identifier of the descriptive 
 					// text for the given button.
@@ -299,6 +306,8 @@ void OutputDlg::SelectNextLint()
 	int i = ListView_GetNextItem(m_hWndListView, -1, LVNI_FOCUSED | LVNI_SELECTED);
 	if (++i == count)
 		i = 0;
+
+	ListView_SetItemState(m_hWndListView, -1, 0, LVIS_SELECTED | LVIS_FOCUSED);
 	
 	ListView_SetItemState(m_hWndListView, i, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 	ListView_EnsureVisible(m_hWndListView, i, FALSE);
@@ -318,6 +327,8 @@ void OutputDlg::SelectPrevLint()
 	if (--i == -1)
 		i = count - 1;
 	
+	ListView_SetItemState(m_hWndListView, -1, 0, LVIS_SELECTED | LVIS_FOCUSED);
+
 	ListView_SetItemState(m_hWndListView, i, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 	ListView_EnsureVisible(m_hWndListView, i, FALSE);
 	ShowLint(i);
@@ -363,5 +374,57 @@ void OutputDlg::ShowLint(int i)
 				}
 			}
 		}
+	}
+}
+
+void OutputDlg::CopyToClipboard()
+{
+	basic_stringstream<TCHAR> stream;
+
+	bool bFirst = true;
+	int i = ListView_GetNextItem(m_hWndListView, -1, LVNI_SELECTED);
+	while (i != -1) {
+		const FileLint& fileLint = m_fileLints[i];
+
+		if (bFirst) {
+			bFirst = false;
+		} else {
+			stream << _T("\r\n");
+		}
+
+		stream << _T("Line ") << fileLint.lint.GetLine() 
+			<< _T(", column ") << fileLint.lint.GetCharacter()
+			<< _T(": ") << fileLint.lint.GetReason().c_str() 
+			<< _T("\r\n\t") << fileLint.lint.GetEvidence().c_str() << _T("\r\n");
+
+		i = ListView_GetNextItem(m_hWndListView, i, LVNI_SELECTED);
+	}
+
+	tstring str = stream.str();
+	if (str.empty())
+		return;
+
+	if (OpenClipboard(_hSelf)) {
+		if (EmptyClipboard()) {
+			size_t size = (str.size() + 1) * sizeof(TCHAR);
+			HGLOBAL hResult = GlobalAlloc(GMEM_MOVEABLE, size); 
+			LPTSTR lpsz = (LPTSTR) GlobalLock(hResult); 
+			memcpy(lpsz, str.c_str(), size); 
+			GlobalUnlock(hResult); 
+
+			#ifndef _UNICODE
+			if (SetClipboardData(CF_TEXT, hResult) == NULL) {
+			#else
+			if (SetClipboardData(CF_UNICODETEXT, hResult) == NULL) {
+			#endif
+				GlobalFree(hResult);
+				MessageBox(_hSelf, TEXT("Unable to set Clipboard data"), _T("JSLint"), MB_OK | MB_ICONERROR);
+			}
+		} else {
+			MessageBox(_hSelf, TEXT("Cannot empty the Clipboard"), _T("JSLint"), MB_OK | MB_ICONERROR);
+		}
+		CloseClipboard();
+	} else {
+		MessageBox(_hSelf, TEXT("Cannot open the Clipboard"), _T("JSLint"), MB_OK | MB_ICONERROR);
 	}
 }

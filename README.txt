@@ -41,6 +41,10 @@ JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
+0.3.1   - Bug fixes
+        - List control now supports multiple selection (use Ctrl+A to select all lints)
+        - Added clipboard copy for the selected lints (use Ctrl+C)
+
 0.3.0   - New option "Predefined (, separated)" added in Options dialog; 
           this option should be used to specify the names of predefined 
           global variables
