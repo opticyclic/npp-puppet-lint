@@ -41,6 +41,10 @@ JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
+0.4.0   - Bug Fixes
+        - Context menu in list control is added
+        - Easily add predefined globals (Ticket ID 3159082)
+
 0.3.1   - Bug fixes
         - List control now supports multiple selection (use Ctrl+A to select all lints)
         - Added clipboard copy for the selected lints (use Ctrl+C)
