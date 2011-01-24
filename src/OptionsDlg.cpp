@@ -357,6 +357,15 @@ void JSLintOptions::SetOption(UINT id, const tstring& value)
 	m_options[id].value = value;
 }
 
+void JSLintOptions::AppendOption(UINT id, const tstring& value)
+{
+	Option& option = m_options[id];
+	if (option.value.empty())
+		option.value = value;
+	else
+		option.value += _T(", ") + value;
+}
+
 void JSLintOptions::ResetOption(UINT id)
 {
 	m_options[id].value = m_options[id].defaultValue;

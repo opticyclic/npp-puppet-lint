@@ -22,8 +22,8 @@
 
 tstring TrimSpaces(const tstring& str)
 {
-    size_t first = str.find_first_not_of(TEXT(" \t"));
-    size_t last = str.find_last_not_of(TEXT(" \t"));
+    size_t first = str.find_first_not_of(TEXT(" \t\r\n"));
+    size_t last = str.find_last_not_of(TEXT(" \t\r\n"));
  
     if (first == string::npos || last == string::npos)
 		return tstring();

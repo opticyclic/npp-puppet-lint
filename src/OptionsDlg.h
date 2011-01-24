@@ -39,6 +39,7 @@ public:
 	bool IsOptionChecked(const tstring& name);
 
 	void SetOption(UINT id, const tstring& value);
+	void AppendOption(UINT id, const tstring& value);
 	void ResetOption(UINT id);
 
 	void ClearAllOptions();

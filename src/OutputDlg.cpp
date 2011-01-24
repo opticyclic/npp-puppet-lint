@@ -18,8 +18,14 @@
 #include "StdHeaders.h"
 #include "OutputDlg.h"
 #include "PluginDefinition.h"
+#include "OptionsDlg.h"
 
 ////////////////////////////////////////////////////////////////////////////////
+
+#define ID_COPY_LINTS     1500
+#define ID_SHOW_LINT      1501
+#define ID_ADD_PREDEFINED 1502
+#define ID_SELECT_ALL     1503
 
 #define	IDM_TOOLBAR 2000
 
@@ -52,10 +58,34 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case WM_COMMAND: {
-				if ((HWND)lParam == m_toolbar.getHSelf())
-				{
+				if ((HWND)lParam == m_toolbar.getHSelf()) {
 					OnToolbarCmd(LOWORD(wParam));
 					return TRUE;
+				} else {
+					if (LOWORD(wParam) == ID_COPY_LINTS) {
+						CopyToClipboard();
+						return TRUE;
+					} else if (LOWORD(wParam) == ID_SHOW_LINT) {
+						int i = ListView_GetNextItem(m_hWndListView, -1, LVIS_FOCUSED | LVIS_SELECTED);
+						if (i != -1) {
+							ShowLint(i);
+						}
+						return TRUE;
+					} else if (LOWORD(wParam) == ID_ADD_PREDEFINED) {
+						int iFocused = ListView_GetNextItem(m_hWndListView, -1, LVIS_FOCUSED | LVIS_SELECTED);
+						if (iFocused != -1) {
+							const FileLint& fileLint = m_fileLints[iFocused];
+							tstring var = fileLint.lint.GetUndefinedVar();
+							if (!var.empty()) {
+								extern JSLintOptions g_jsLintOptions;
+								g_jsLintOptions.AppendOption(IDC_PREDEFINED, var);
+							}
+						}
+						return TRUE;
+					} else if (LOWORD(wParam) == ID_SELECT_ALL) {
+						ListView_SetItemState(m_hWndListView, -1, LVIS_SELECTED, LVIS_SELECTED);
+						return TRUE;
+					}
 				}
 			}
 			break;
@@ -104,6 +134,55 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				DockingDlgInterface::run_dlgProc(message, wParam, lParam);
 				return FALSE;
+			}
+			break;
+
+		case WM_CONTEXTMENU: {
+				// build context menu
+				HMENU menu = ::CreatePopupMenu();
+
+				int numSelected = ListView_GetSelectedCount(m_hWndListView);
+
+				int iFocused = -1;
+				if (numSelected > 0) {
+					iFocused = ListView_GetNextItem(m_hWndListView, -1, LVIS_FOCUSED | LVIS_SELECTED);
+				}
+
+				bool reasonIsVarIsNotDefined = false;
+				if (iFocused != -1) {
+					const FileLint& fileLint = m_fileLints[iFocused];
+					reasonIsVarIsNotDefined = fileLint.lint.IsReasonVarIsNotDefined();
+				}
+
+				if (iFocused != -1) {
+					AppendMenu(menu, MF_ENABLED, ID_SHOW_LINT, _T("Show"));
+				}
+
+				if (reasonIsVarIsNotDefined) {
+					AppendMenu(menu, MF_ENABLED, ID_ADD_PREDEFINED, _T("Add to the Predefined List"));
+				}
+
+				if (GetMenuItemCount(menu) > 0)
+					AppendMenu(menu, MF_SEPARATOR, 0, NULL);
+
+				if (numSelected > 0) {
+					AppendMenu(menu, MF_ENABLED, ID_COPY_LINTS, _T("Copy"));
+				}
+
+				AppendMenu(menu, MF_ENABLED, ID_SELECT_ALL, _T("Select All"));
+
+				// determine context menu position
+				POINT point;
+				point.x = LOWORD(lParam);
+				point.y = HIWORD(lParam);
+				if (point.x == 65535 || point.y == 65535) {
+					point.x = 0;
+					point.y = 0;
+					ClientToScreen(m_hWndListView, &point);
+				}
+
+				// show context menu
+				TrackPopupMenu(menu, 0, point.x, point.y, 0, _hSelf, NULL);
 			}
 			break;
 
@@ -274,7 +353,7 @@ void OutputDlg::AddLints(const tstring& strFilePath, const list<JSLintReportItem
 		
 		ListView_InsertItem(m_hWndListView, &lvI);
 
-		tstring strReason = TextConversion::UTF8_To_T(lint.GetReason());
+		tstring strReason = lint.GetReason();
 		ListView_SetItemText(m_hWndListView, lvI.iItem, COL_REASON, (LPTSTR)strReason.c_str());
 
 		tstring strFile = Path::GetFileName(strFilePath);

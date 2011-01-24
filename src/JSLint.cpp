@@ -24,6 +24,29 @@ extern HANDLE g_hDllModule;
 
 ////////////////////////////////////////////////////////////////////////////////
 
+bool JSLintReportItem::IsReasonVarIsNotDefined() const
+{
+	// check if reason matches: /'.+' is not defined/
+	const TCHAR *pattern = _T("' is not defined.");
+	const size_t len = _tcslen(pattern);
+	return m_strReason.size() > len+1 
+		&& m_strReason[0] == _T('\'') 
+		&& m_strReason.substr(m_strReason.size() - len) == pattern;
+}
+
+tstring JSLintReportItem::GetUndefinedVar() const
+{
+	if (!IsReasonVarIsNotDefined())
+		return tstring();
+
+	tstring::size_type i1 = m_strReason.find_first_of(_T('\''));
+	tstring::size_type i2 = m_strReason.find_last_of(_T('\''));
+
+	return m_strReason.substr(i1+1, i2-i1-1);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 // JSLint script is executed by using cscript.exe program. 
 // Input script is sent to the JSLint by using standard input.
 // Result from JSLint is read from the standard output.
@@ -223,7 +246,9 @@ void JSLint::ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
 			// read evidence
 			string strEvidence = base64_decode(strLint);
 
-			items.push_back(JSLintReportItem(line - 1, character - 1, strReason, strEvidence));
+			items.push_back(JSLintReportItem(line - 1, character - 1, 
+				TextConversion::UTF8_To_T(strReason), 
+				TextConversion::UTF8_To_T(strEvidence)));
 		}
 	}
 }

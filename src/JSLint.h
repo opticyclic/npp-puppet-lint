@@ -24,7 +24,7 @@
 class JSLintReportItem
 {
 public:
-	JSLintReportItem(int line, int character, const string& strReason, const string& strEvidence)
+	JSLintReportItem(int line, int character, const tstring& strReason, const tstring& strEvidence)
 		: m_line(line)
 		, m_character(character)
 		, m_strReason(strReason)
@@ -34,14 +34,17 @@ public:
 
 	int GetLine() const { return m_line; }
 	int GetCharacter() const { return m_character; }
-	string GetReason() const { return m_strReason; }
-	string GetEvidence() const { return m_strEvidence; }
+	tstring GetReason() const { return m_strReason; }
+	tstring GetEvidence() const { return m_strEvidence; }
+
+	bool IsReasonVarIsNotDefined() const;
+	tstring GetUndefinedVar() const;
 
 private:
 	int m_line;
 	int m_character;
-	string m_strReason;
-	string m_strEvidence;
+	tstring m_strReason;
+	tstring m_strEvidence;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
