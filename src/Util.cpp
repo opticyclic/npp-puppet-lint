@@ -43,6 +43,19 @@ void StringSplit(tstring str, tstring delim, vector<tstring>& results)
 		results.push_back(str);
 }
 
+tstring StringJoin(vector<tstring>& results, tstring delim)
+{
+	tstring result;
+
+	for (vector<tstring>::const_iterator it = results.begin(); it != results.end(); ++it) {
+		if (!result.empty())
+			result += delim;
+		result += *it;
+	}
+
+	return result;
+}
+
 void FindReplace(tstring& str, const tstring& strOld, const tstring& strNew)
 {
   size_t pos = 0;

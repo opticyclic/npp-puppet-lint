@@ -41,28 +41,32 @@ JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
-0.4.0   - Bug Fixes
-        - Context menu in list control is added
-        - Easily add predefined globals (Ticket ID 3159082)
+0.4.0   
+    - Bug Fixes
+    - Context menu in list control is added
+    - Easily add predefined globals (Ticket ID 3159082)
 
-0.3.1   - Bug fixes
-        - List control now supports multiple selection (use Ctrl+A to select all lints)
-        - Added clipboard copy for the selected lints (use Ctrl+C)
+0.3.1   
+    - Bug fixes
+    - List control now supports multiple selection (use Ctrl+A to select all 
+      lints)
+    - Added clipboard copy for the selected lints (use Ctrl+C)
 
-0.3.0   - New option "Predefined (, separated)" added in Options dialog; 
-          this option should be used to specify the names of predefined 
-          global variables
-        - Added toolbar button that opens Options dialog
-        - JSLint script updated to version from 2010-12-23
+0.3.0   
+    - New option "Predefined (, separated)" added in Options dialog; this 
+      option should be used to specify the names of predefined global variables
+    - Added toolbar button that opens Options dialog
+    - JSLint script updated to version from 2010-12-23
 
 0.2.1
-	- Configuration is now saved in AppData directory (or in whatever directory
-	  is returned by NPPM_GETPLUGINSCONFIGDIR message)
+	- Configuration is now saved in AppData directory (or in whatever
+      directory is returned by NPPM_GETPLUGINSCONFIGDIR message)
 
 0.2.0
 	- Memory leaks fixed
 	- Toolbar added to the JSLint dockable window
-	- Visibility state of the JSLint dockable window is now preserved after restart
+	- Visibility state of the JSLint dockable window is now preserved after 
+      restart
 	- Shortcuts changed (to avoid clashes with existing shortcuts of Notepad++)
 
 0.1.1

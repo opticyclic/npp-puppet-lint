@@ -132,12 +132,46 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 	return TRUE;
 }
 
+INT_PTR CALLBACK PredefinedControlWndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam)
+{
+	if (uMessage == WM_PASTE) {
+		if (IsClipboardFormatAvailable(CF_TEXT)) {
+			if (OpenClipboard(NULL)) {
+				HGLOBAL hGlobal = GetClipboardData(CF_TEXT);
+				if (hGlobal) {
+					LPSTR lpData = (LPSTR)GlobalLock(hGlobal);
+					if (lpData != NULL) {
+						tstring str(TextConversion::A_To_T(lpData));
+						
+						vector<tstring> results;
+						StringSplit(str, _T(" \t\r\n"), results);
+						str = StringJoin(results, _T(", "));
+						
+						SendMessage(hWnd, EM_REPLACESEL, TRUE, (LPARAM)str.c_str());
+					}
+					GlobalUnlock(hGlobal);
+				}
+				CloseClipboard();
+			}
+		}
+		return 0;
+	}
+
+	WNDPROC oldWndProc = (WNDPROC)GetProp(hWnd, TEXT("OldWndProc"));
+	return (*oldWndProc)(hWnd, uMessage, wParam, lParam);
+}
+
 INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPARAM lParam)
 {
 	if (uMessage == WM_INITDIALOG) {
 		jsLintOptions = g_jsLintOptions;
 		UpdateOptions(hDlg, false, false);
         CenterWindow(hDlg, g_nppData._nppHandle);
+
+		// subclass IDC_PREDEFINED
+		HWND hWndPredefined = GetDlgItem(hDlg, IDC_PREDEFINED);
+		WNDPROC oldWndProc = (WNDPROC)SetWindowLongPtr(hWndPredefined, GWLP_WNDPROC, (LONG_PTR)PredefinedControlWndProc);
+		SetProp(hWndPredefined, TEXT("OldWndProc"), (HANDLE)oldWndProc);
     } else if (uMessage == WM_COMMAND) {
 		if (HIWORD(wParam) == BN_CLICKED) {
 			if (LOWORD(wParam) >= IDC_CHECK1 && LOWORD(wParam) <= IDC_CHECK29) {

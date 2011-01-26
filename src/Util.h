@@ -21,6 +21,7 @@
 
 tstring TrimSpaces(const tstring& str);
 void StringSplit(tstring str, tstring delim, vector<tstring>& results);
+tstring StringJoin(vector<tstring>& results, tstring delim);
 void FindReplace(tstring& str, const tstring& strOld, const tstring& strNew);
 
 BOOL CenterWindow(HWND hWnd, HWND hParentWnd, BOOL bRepaint = FALSE);
@@ -181,6 +182,19 @@ public:
 		return W_To_UTF8(tstr);
 	#else
 		return A_To_UTF8(tstr);
+	#endif
+	}
+
+	static tstring A_To_T(const string& str) {
+	#if defined(UNICODE) || defined(_UNICODE)
+		int wsize = MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);
+		wchar_t* wbuffer = new wchar_t[wsize];
+		MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, wbuffer, wsize);
+		wstring result(wbuffer);
+		delete [] wbuffer;
+		return result;
+	#else
+		return str;
 	#endif
 	}
 };
