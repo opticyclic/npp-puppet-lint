@@ -33,6 +33,8 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 {
 	if (bSaveOrValidate) {
 		for (UINT id = IDC_CHECK1; id <= IDC_CHECK29; ++id) {
+			if (GetDlgItem(hDlg, id) == NULL)
+				continue;
 			if (Button_GetCheck(GetDlgItem(hDlg, id))) {
 				jsLintOptions.CheckOption(id);
 			} else {
@@ -232,10 +234,8 @@ JSLintOptions::JSLintOptions()
 	m_options[IDC_CHECK7] = Option(TEXT("rhino"));
 	m_options[IDC_CHECK8] = Option(TEXT("safe"));
 	m_options[IDC_CHECK9] = Option(TEXT("adsafe"));
-
 	m_options[IDC_CHECK10] = Option(TEXT("debug"));
 	m_options[IDC_CHECK11] = Option(TEXT("evil"));
-	m_options[IDC_CHECK12] = Option(TEXT("laxbreak"));
 	m_options[IDC_CHECK13] = Option(TEXT("forin"));
 	m_options[IDC_CHECK14] = Option(TEXT("sub"));
 	m_options[IDC_CHECK15] = Option(TEXT("css"));
@@ -243,16 +243,13 @@ JSLintOptions::JSLintOptions()
 	m_options[IDC_CHECK17] = Option(TEXT("on"));
 	m_options[IDC_CHECK18] = Option(TEXT("fragment"));
 	m_options[IDC_CHECK19] = Option(TEXT("es5"));
-
 	m_options[IDC_CHECK20] = Option(TEXT("onevar"));
 	m_options[IDC_CHECK21] = Option(TEXT("undef"));
 	m_options[IDC_CHECK22] = Option(TEXT("nomen"));
-	m_options[IDC_CHECK23] = Option(TEXT("eqeqeq"));
 	m_options[IDC_CHECK24] = Option(TEXT("plusplus"));
 	m_options[IDC_CHECK25] = Option(TEXT("bitwise"));
 	m_options[IDC_CHECK26] = Option(TEXT("regexp"));
 	m_options[IDC_CHECK27] = Option(TEXT("newcap"));
-	m_options[IDC_CHECK28] = Option(TEXT("immed"));
 	m_options[IDC_CHECK29] = Option(TEXT("strict"));
 
 	m_options[IDC_PREDEFINED] = Option(OPTION_TYPE_ARR_STRING, TEXT("predef"), TEXT(""));
@@ -419,13 +416,11 @@ void JSLintOptions::SetGoodParts()
 	m_options[GetOptionID(TEXT("white"))].value = TEXT("true");
 	m_options[GetOptionID(TEXT("onevar"))].value = TEXT("true");
 	m_options[GetOptionID(TEXT("undef"))].value = TEXT("true");
+	m_options[GetOptionID(TEXT("newcap"))].value = TEXT("true");
 	m_options[GetOptionID(TEXT("nomen"))].value = TEXT("true");
-	m_options[GetOptionID(TEXT("eqeqeq"))].value = TEXT("true");
+	m_options[GetOptionID(TEXT("regexp"))].value = TEXT("true");
 	m_options[GetOptionID(TEXT("plusplus"))].value = TEXT("true");
 	m_options[GetOptionID(TEXT("bitwise"))].value = TEXT("true");
-	m_options[GetOptionID(TEXT("regexp"))].value = TEXT("true");
-	m_options[GetOptionID(TEXT("newcap"))].value = TEXT("true");
-	m_options[GetOptionID(TEXT("immed"))].value = TEXT("true");
 }
 
 void JSLintOptions::UpdateDialog(HWND hDlg)

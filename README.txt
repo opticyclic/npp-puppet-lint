@@ -42,9 +42,10 @@ JSLintNppA.dll - ANSI version of plugin
 = History =
 
 0.4.0   
-    - Bug Fixes
-    - Context menu in list control is added
+    - JSLint script updated to version from 2011-01-28
+    - Added context menu in list control
     - Easily add predefined globals (Ticket ID 3159082)
+    - Bug Fixes
 
 0.3.1   
     - Bug fixes
@@ -59,24 +60,18 @@ JSLintNppA.dll - ANSI version of plugin
     - JSLint script updated to version from 2010-12-23
 
 0.2.1
-	- Configuration is now saved in AppData directory (or in whatever
+    - Configuration is now saved in AppData directory (or in whatever
       directory is returned by NPPM_GETPLUGINSCONFIGDIR message)
 
 0.2.0
-	- Memory leaks fixed
-	- Toolbar added to the JSLint dockable window
-	- Visibility state of the JSLint dockable window is now preserved after 
+    - Memory leaks fixed
+    - Toolbar added to the JSLint dockable window
+    - Visibility state of the JSLint dockable window is now preserved after 
       restart
-	- Shortcuts changed (to avoid clashes with existing shortcuts of Notepad++)
+    - Shortcuts changed (to avoid clashes with existing shortcuts of Notepad++)
 
 0.1.1
-	- Bug fixes
+    - Bug fixes
 
 0.1.0
-	- Initial release
-
-= Todo =
-
-- Display list of global variables (and other useful informations that JSLint
-  produces) used in your JS script
-  
+    - Initial release
