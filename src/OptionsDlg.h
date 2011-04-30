@@ -36,7 +36,7 @@ public:
 	void CheckOption(UINT id);
 	void UncheckOption(UINT id);
 
-	bool IsOptionChecked(const tstring& name);
+	bool IsOptionChecked(const tstring& name) const;
 
 	void SetOption(UINT id, const tstring& value);
 	void AppendOption(UINT id, const tstring& value);
@@ -79,6 +79,8 @@ private:
 	};
 
 	std::map<UINT, Option> m_options;
+
+    bool IsOptionIncluded(const Option& option) const;
 };
 
 extern JSLintOptions g_jsLintOptions;

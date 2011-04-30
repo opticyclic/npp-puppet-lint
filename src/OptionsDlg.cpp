@@ -68,13 +68,8 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 					}
 					return FALSE;
 				}
-
-				jsLintOptions.SetOption(IDC_IDENT, strIdent);
-			} else {
-				jsLintOptions.ResetOption(IDC_IDENT);
 			}
-		} else {
-			jsLintOptions.ResetOption(IDC_IDENT);
+			jsLintOptions.SetOption(IDC_IDENT, strIdent);
 		}
 
 		// maxlen
@@ -90,11 +85,8 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 				}
 				return FALSE;
 			}
-			
-			jsLintOptions.SetOption(IDC_MAXLEN, strMaxlen);
-		} else {
-			jsLintOptions.ResetOption(IDC_MAXLEN);
 		}
+		jsLintOptions.SetOption(IDC_MAXLEN, strMaxlen);
 
 		// maxerr
 		if (!jsLintOptions.IsOptionChecked(TEXT("passfail"))) {
@@ -110,14 +102,9 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 					}
 					return FALSE;
 				}
-				
-				jsLintOptions.SetOption(IDC_MAXERR, strMaxerr);
-			} else {
-				jsLintOptions.ResetOption(IDC_MAXERR);
 			}
-		} else {
-			jsLintOptions.ResetOption(IDC_MAXERR);
-		}
+            jsLintOptions.SetOption(IDC_MAXERR, strMaxerr);
+        }
 	} else {
 		jsLintOptions.UpdateDialog(hDlg);
 	}
@@ -236,6 +223,7 @@ JSLintOptions::JSLintOptions()
 	m_options[IDC_CHECK9] = Option(TEXT("adsafe"));
 	m_options[IDC_CHECK10] = Option(TEXT("debug"));
 	m_options[IDC_CHECK11] = Option(TEXT("evil"));
+    m_options[IDC_CHECK12] = Option(TEXT("continue"));
 	m_options[IDC_CHECK13] = Option(TEXT("forin"));
 	m_options[IDC_CHECK14] = Option(TEXT("sub"));
 	m_options[IDC_CHECK15] = Option(TEXT("css"));
@@ -246,6 +234,7 @@ JSLintOptions::JSLintOptions()
 	m_options[IDC_CHECK20] = Option(TEXT("onevar"));
 	m_options[IDC_CHECK21] = Option(TEXT("undef"));
 	m_options[IDC_CHECK22] = Option(TEXT("nomen"));
+    m_options[IDC_CHECK23] = Option(TEXT("node"));
 	m_options[IDC_CHECK24] = Option(TEXT("plusplus"));
 	m_options[IDC_CHECK25] = Option(TEXT("bitwise"));
 	m_options[IDC_CHECK26] = Option(TEXT("regexp"));
@@ -310,17 +299,30 @@ UINT JSLintOptions::GetOptionID(const tstring& optionName) const
 	return it->first;
 }
 
+bool JSLintOptions::IsOptionIncluded(const Option& option) const
+{
+    if (option.name == TEXT("indent") && IsOptionChecked(TEXT("white")))
+        return !option.value.empty();
+
+    if (option.name == TEXT("maxerr") && !IsOptionChecked(TEXT("passfail")))
+        return !option.value.empty();
+
+    return option.value != option.defaultValue;
+}
+
 tstring JSLintOptions::GetOptionsCommentString() const
 {
 	tstring strOptions;
 
 	std::map<UINT, Option>::const_iterator it;
 	for (it = m_options.begin(); it != m_options.end(); ++it) {
-		if (it->second.value != it->second.defaultValue && it->second.type != OPTION_TYPE_ARR_STRING) {
-			if (!strOptions.empty())
-				strOptions += TEXT(", ");
-			strOptions += it->second.name + TEXT(": ") + it->second.value;
-		}
+        if (IsOptionIncluded(it->second)) {
+            if (it->second.type != OPTION_TYPE_ARR_STRING) {
+			    if (!strOptions.empty())
+				    strOptions += TEXT(", ");
+			    strOptions += it->second.name + TEXT(": ") + it->second.value;
+		    }
+        }
 	}
 
 	return TEXT("/*jslint ") + strOptions + TEXT(" */");
@@ -332,7 +334,7 @@ tstring JSLintOptions::GetOptionsJSONString() const
 
 	std::map<UINT, Option>::const_iterator it;
 	for (it = m_options.begin(); it != m_options.end(); ++it) {
-		if (it->second.value != it->second.defaultValue) {
+		if (IsOptionIncluded(it->second)) {
 			tstring value;
 
 			if (it->second.type == OPTION_TYPE_ARR_STRING) {
@@ -378,9 +380,9 @@ void JSLintOptions::UncheckOption(UINT id)
 	m_options[id].value = TEXT("false");
 }
 
-bool JSLintOptions::IsOptionChecked(const tstring& name)
+bool JSLintOptions::IsOptionChecked(const tstring& name) const
 {
-	return m_options[GetOptionID(name)].value == _T("true");
+	return m_options.find(GetOptionID(name))->second.value == _T("true");
 }
 
 void JSLintOptions::SetOption(UINT id, const tstring& value)

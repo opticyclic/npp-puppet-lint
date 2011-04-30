@@ -257,14 +257,14 @@ int JSLint::GetNumTabs(const string& strScript, int line, int character, int tab
 {
 	int numTabs = 0;
 
-	int i = 0;
+	size_t i = 0;
 
 	while (line-- > 0) {
 		i = strScript.find('\n', i) + 1;
 	}
 
 	while (character > 0) {
-		if (strScript[i++] == '\t') {
+        if (i < strScript.length() && strScript[i++] == '\t') {
 			++numTabs;
 			character -= tabWidth;
 		} else {

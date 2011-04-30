@@ -1,0 +1,3 @@
+- Download from https://github.com/douglascrockford/JSLint/blob/master/jslint.js
+- Save jslint.js as jslint.debug.js
+- Use jsMin to minimize jslint.debug.js and save as jslint.js

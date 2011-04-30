@@ -41,6 +41,9 @@ JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
+0.5.0   
+    - JSLint script updated to version from 2011-04-28
+
 0.4.0   
     - JSLint script updated to version from 2011-01-28
     - Added context menu in list control
