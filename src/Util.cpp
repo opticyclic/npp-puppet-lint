@@ -84,6 +84,16 @@ BOOL CenterWindow(HWND hWnd, HWND hParentWnd, BOOL bRepaint)
   return ::MoveWindow(hWnd, x, y, width, height, bRepaint);
 }
 
+tstring GetWindowText(HWND hWnd)
+{
+	int nLength = GetWindowTextLength(hWnd);
+	TCHAR *szBuffer = new TCHAR[nLength + 1];
+	GetWindowText(hWnd, szBuffer, nLength + 1);
+	tstring result = szBuffer;
+	delete [] szBuffer;
+    return result;
+}
+
 void DoEvents()
 {
     MSG msg;

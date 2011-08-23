@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\DockingFeature;.\"
+				AdditionalIncludeDirectories=".\DockingFeature;.\;..\..\..\v8\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;JSLINTNPP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,9 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="shlwapi.lib comctl32.lib "
+				AdditionalDependencies="shlwapi.lib comctl32.lib v8.lib Ws2_32.lib Winmm.lib Winhttp.lib"
 				OutputFile="$(OutDir)/$(ProjectName)_DebugA.dll"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\..\v8\"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/JSLintNpp.pdb"
 				SubSystem="2"
@@ -120,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".\DockingFeature;.\"
+				AdditionalIncludeDirectories=".\DockingFeature;.\;..\..\..\v8\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;JSLINTNPP_EXPORTS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -140,9 +141,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="shlwapi.lib comctl32.lib "
+				AdditionalDependencies="shlwapi.lib comctl32.lib v8.lib Ws2_32.lib Winmm.lib Winhttp.lib"
 				OutputFile="$(OutDir)/$(ProjectName)A.dll"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\..\v8\"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -198,7 +200,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".\DockingFeature;.\"
+				AdditionalIncludeDirectories=".\DockingFeature;.\;..\..\..\v8\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;JSLINTNPP_EXPORTS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -218,9 +220,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="shlwapi.lib comctl32.lib "
+				AdditionalDependencies="shlwapi.lib comctl32.lib v8.lib Ws2_32.lib Winmm.lib Winhttp.lib"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\..\v8\"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -277,7 +280,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\DockingFeature;.\"
+				AdditionalIncludeDirectories=".\DockingFeature;.\;..\..\..\v8\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;JSLINTNPP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -298,9 +301,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="shlwapi.lib comctl32.lib "
+				AdditionalDependencies="shlwapi.lib comctl32.lib v8.lib Ws2_32.lib Winmm.lib Winhttp.lib"
 				OutputFile="$(OutDir)/$(ProjectName)_Debug.dll"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\..\v8\"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/JSLintNpp.pdb"
 				SubSystem="2"
@@ -346,7 +350,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\base64.cpp"
+				RelativePath=".\DownloadJSLint.cpp"
 				>
 			</File>
 			<File
@@ -403,7 +407,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\OptionsDlg.cpp"
+				RelativePath=".\JSLintOptions.cpp"
 				>
 			</File>
 			<File
@@ -487,6 +491,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Settings.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\StdHeaders.cpp"
 				>
 				<FileConfiguration
@@ -541,7 +549,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\base64.h"
+				RelativePath=".\DownloadJSLint.h"
 				>
 			</File>
 			<File
@@ -549,7 +557,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\OptionsDlg.h"
+				RelativePath=".\JSLintOptions.h"
 				>
 			</File>
 			<File
@@ -562,6 +570,10 @@
 			</File>
 			<File
 				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Settings.h"
 				>
 			</File>
 			<File

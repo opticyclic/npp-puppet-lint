@@ -17,7 +17,13 @@
 
 #pragma once
 
+////////////////////////////////////////////////////////////////////////////////
+
 #include "Util.h"
+
+////////////////////////////////////////////////////////////////////////////////
+
+#define DEFAULT_UNDEF_VAR_ERR_MSG TEXT("'%s' was used before it was defined.")
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -37,8 +43,8 @@ public:
 	tstring GetReason() const { return m_strReason; }
 	tstring GetEvidence() const { return m_strEvidence; }
 
-	bool IsReasonVarIsNotDefined() const;
-	tstring GetUndefinedVar() const;
+	bool IsReasonUndefVar() const;
+	tstring GetUndefVar() const;
 
 private:
 	int m_line;
@@ -56,37 +62,27 @@ public:
 		int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items);
 
 private:
-	TempFile m_jsLintScriptFileName;
-
-	void CreateJSLintFile();
+	string LoadCustomDataResource(HMODULE hModule, LPCTSTR lpName, LPCTSTR lpType);
 	
-	void LoadCustomDataResource(HMODULE hModule, 
-		LPCTSTR lpName, LPCTSTR lpType, LPVOID* ppData, LPDWORD pdwSize);
-	
-	static void WriteString(HANDLE hFile, const string& str);
-	
-	void ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
-		int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items);
-
 	int GetNumTabs(const string& strScript, int line, int character, int tabWidth);
-	
-	void ReadError(HANDLE hProcess, HANDLE hPipe, string& strError);
-	
-	bool ReadFromPipe(HANDLE hProcess, HANDLE hPipe, char *buffer, 
-		DWORD dwBufferSize, DWORD& dwRead);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
 class JSLintException : public exception 
 {
+public:
+    JSLintException(const char* what) : exception(what) {}
 };
 
-
-class JSLintResourceException : public JSLintException 
+class JSLintResourceException : public JSLintException
 {
+public:
+    JSLintResourceException() : JSLintException("Failed to load JSLINT script from resource!") {}
 };
 
 class JSLintUnexpectedException : public JSLintException 
 {
+public:
+    JSLintUnexpectedException() : JSLintException("Unexpected error while running JSLINT script!") {}
 };

@@ -35,54 +35,61 @@ BEGIN
     CONTROL         "",IDC_OUTPUT,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,8,302,167
 END
 
-IDD_OPTIONS DIALOGEX 0, 0, 398, 272
+IDD_JSLINT_OPTIONS DIALOGEX 0, 0, 398, 316
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "JSLint Options"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "Strict white space",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,7,73,10
-    CONTROL         "Allow one var statement per function",IDC_CHECK20,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,20,135,10
-    CONTROL         "Disallow undefined variables",IDC_CHECK21,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,33,106,10
-    CONTROL         "Disallow dangling _ in identifiers",IDC_CHECK22,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,46,117,10
-    CONTROL         "Disallow . and [^...] in /RegExp/",IDC_CHECK26,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,120,10
-    CONTROL         "Disallow ++ and --",IDC_CHECK24,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,75,10
-    CONTROL         "Disallow bitwise operators",IDC_CHECK25,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,99,10
-    CONTROL         "Require Initial Caps for constructors",IDC_CHECK27,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,111,131,10
-    CONTROL         "Require ""use strict"";",IDC_CHECK29,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,124,80,10
-    CONTROL         "Assume console, alert, ...",IDC_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,7,99,10
-    CONTROL         "Assume a browser",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,20,75,10
-    CONTROL         "Assume Node.js",IDC_CHECK23,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,33,67,10
-    CONTROL         "Assume Rhino",IDC_CHECK7,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,46,61,10
-    CONTROL         "Assume a Yahoo Widget",IDC_CHECK5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,59,93,10
-    CONTROL         "Assume Windows",IDC_CHECK6,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,72,71,10
-    CONTROL         "Stop on first error",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,85,73,10
-    CONTROL         "Safe Subset",IDC_CHECK8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,111,55,10
-    CONTROL         "Verify ADsafe",IDC_CHECK9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,124,60,10
-    CONTROL         "Tolerate debugger statements",IDC_CHECK10,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,7,113,10
-    CONTROL         "Tolerate eval",IDC_CHECK11,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,20,58,10
-    CONTROL         "Tolerate unfiltered forin",IDC_CHECK13,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,33,92,10
-    CONTROL         "Tolerate inefficient subscripting",IDC_CHECK14,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,46,116,10
-    CONTROL         "Tolerate continue",IDC_CHECK12,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,59,72,10
-    CONTROL         "Tolerate ES5 syntax",IDC_CHECK19,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,72,81,10
-    CONTROL         "Tolerate CSS workarounds",IDC_CHECK15,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,85,101,10
-    CONTROL         "Tolerate HTML case",IDC_CHECK16,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,98,79,10
-    CONTROL         "Tolerate HTML event handlers",IDC_CHECK17,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,111,112,10
-    CONTROL         "Tolerate HTML fragments",IDC_CHECK18,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,124,97,10
-    LTEXT           "Predefined (, separated):",IDC_STATIC,7,141,83,8
-    EDITTEXT        IDC_PREDEFINED,110,138,281,14,ES_AUTOHSCROLL
-    LTEXT           "Strict &white space indentation:",IDC_STATIC,7,159,98,8
-    EDITTEXT        IDC_IDENT,110,156,40,14,ES_AUTOHSCROLL
-    LTEXT           "Maximum line &length:",IDC_STATIC,7,177,68,8
-    EDITTEXT        IDC_MAXLEN,110,174,40,14,ES_AUTOHSCROLL
-    LTEXT           "Maximum number of &errors:",IDC_STATIC,7,195,89,8
-    EDITTEXT        IDC_MAXERR,110,192,40,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "The &Good Parts",IDC_GOOD_PARTS,275,174,68,14
-    PUSHBUTTON      "&Clear All Options",IDC_CLEAR_ALL,275,192,68,14
-    EDITTEXT        IDC_PREVIEW,7,214,384,30,ES_MULTILINE | ES_READONLY | WS_VSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,287,251,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,341,251,50,14
+    CONTROL         "Assume console, alert, ...",IDC_CHECK_DEVEL,"Button",BS_3STATE | WS_TABSTOP,7,7,99,10
+    CONTROL         "Assume a browser",IDC_CHECK_BROWSER,"Button",BS_3STATE | WS_TABSTOP,7,20,75,10
+    CONTROL         "Assume Node.js",IDC_CHECK_NODE,"Button",BS_3STATE | WS_TABSTOP,7,33,67,10
+    CONTROL         "Assume Rhino",IDC_CHECK_RHINO,"Button",BS_3STATE | WS_TABSTOP,7,46,61,10
+    CONTROL         "Assume a Yahoo Widget",IDC_CHECK_WIDGET,"Button",BS_3STATE | WS_TABSTOP,7,59,93,10
+    CONTROL         "Assume Windows",IDC_CHECK_WINDOWS,"Button",BS_3STATE | WS_TABSTOP,7,72,71,10
+    CONTROL         "Stop on first error",IDC_CHECK_PASSFAIL,"Button",BS_3STATE | WS_TABSTOP,7,98,73,10
+    CONTROL         "Safe Subset",IDC_CHECK_SAFE,"Button",BS_3STATE | WS_TABSTOP,7,124,55,10
+    CONTROL         "Verify ADsafe",IDC_CHECK_ADSAFE,"Button",BS_3STATE | WS_TABSTOP,7,137,60,10
+    CONTROL         "Tolerate bitwise operators",IDC_CHECK_BITWISE,"Button",BS_3STATE | WS_TABSTOP,110,7,100,10
+    CONTROL         "Tolerate type confusion",IDC_CHECK_CONFUSION,"Button",BS_3STATE | WS_TABSTOP,110,20,92,10
+    CONTROL         "Tolerate continue",IDC_CHECK_CONTINUE,"Button",BS_3STATE | WS_TABSTOP,110,33,72,10
+    CONTROL         "Tolerate debugger statements",IDC_CHECK_DEBUG,"Button",BS_3STATE | WS_TABSTOP,110,46,113,10
+    CONTROL         "Tolerate == and !=",IDC_CHECK_EQEQ,"Button",BS_3STATE | WS_TABSTOP,110,59,79,10
+    CONTROL         "Tolerate ES5 syntax",IDC_CHECK_ES5,"Button",BS_3STATE | WS_TABSTOP,110,72,81,10
+    CONTROL         "Tolerate eval",IDC_CHECK_EVIL,"Button",BS_3STATE | WS_TABSTOP,110,85,58,10
+    CONTROL         "Tolerate unfiltered for in",IDC_CHECK_FORIN,"Button",BS_3STATE | WS_TABSTOP,110,98,94,10
+    CONTROL         "Tolerate uncapitalized constructors",IDC_CHECK_NEWCAP,
+                    "Button",BS_3STATE | WS_TABSTOP,110,111,128,10
+    CONTROL         "Tolerate dangling _ in identifiers",IDC_CHECK_NOMEN,
+                    "Button",BS_3STATE | WS_TABSTOP,110,124,118,10
+    CONTROL         "Tolerate ++ and --",IDC_CHECK_PLUSPLUS,"Button",BS_3STATE | WS_TABSTOP,110,137,77,10
+    CONTROL         "Tolerate . and [^...] in /RegExp/",IDC_CHECK_REGEXP,
+                    "Button",BS_3STATE | WS_TABSTOP,238,7,121,10
+    CONTROL         "Tolerate misordered definitions",IDC_CHECK_UNDEF,"Button",BS_3STATE | WS_TABSTOP,238,20,115,10
+    CONTROL         "Tolerate unused parameters",IDC_CHECK_UNPARAM,"Button",BS_3STATE | WS_TABSTOP,238,33,107,10
+    CONTROL         "Tolerate missing 'use strict' pragma",IDC_CHECK_SLOPPY,
+                    "Button",BS_3STATE | WS_TABSTOP,238,46,127,10
+    CONTROL         "Tolerate inefficient subscripting",IDC_CHECK_SUB,"Button",BS_3STATE | WS_TABSTOP,238,59,116,10
+    CONTROL         "Tolerate many var statements per function",IDC_CHECK_VARS,
+                    "Button",BS_3STATE | WS_TABSTOP,238,72,153,10
+    CONTROL         "Tolerate messy white space",IDC_CHECK_WHITE,"Button",BS_3STATE | WS_TABSTOP,238,85,105,10
+    CONTROL         "Tolerate CSS workarounds",IDC_CHECK_CSS,"Button",BS_3STATE | WS_TABSTOP,238,98,101,10
+    CONTROL         "Tolerate HTML case",IDC_CHECK_CAP,"Button",BS_3STATE | WS_TABSTOP,238,111,79,10
+    CONTROL         "Tolerate HTML event handlers",IDC_CHECK_ON,"Button",BS_3STATE | WS_TABSTOP,238,124,112,10
+    CONTROL         "Tolerate HTML fragments",IDC_CHECK_FRAGMENT,"Button",BS_3STATE | WS_TABSTOP,238,137,97,10
+    LTEXT           "Indentation:",IDC_STATIC,7,153,41,8
+    EDITTEXT        IDC_IDENT,110,151,40,14,ES_AUTOHSCROLL
+    LTEXT           "Maximum line &length:",IDC_STATIC,7,171,68,8
+    EDITTEXT        IDC_MAXLEN,110,169,40,14,ES_AUTOHSCROLL
+    LTEXT           "Maximum number of &errors:",IDC_STATIC,7,189,89,8
+    EDITTEXT        IDC_MAXERR,110,187,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PREVIEW,7,205,384,28,ES_MULTILINE | ES_READONLY | WS_VSCROLL
+    PUSHBUTTON      "&Clear All Options",IDC_CLEAR_ALL,323,237,68,14
+    LTEXT           "Predefined (, separated):",IDC_STATIC,7,257,83,8
+    EDITTEXT        IDC_PREDEFINED,95,255,296,14,ES_AUTOHSCROLL
+    LTEXT           "Additional options:",IDC_STATIC,7,275,60,8
+    EDITTEXT        IDC_ADDITIONAL_OPTIONS,95,273,296,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,287,295,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,341,295,50,14
 END
 
 IDD_ABOUT DIALOGEX 0, 0, 201, 148
@@ -104,6 +111,24 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,76,127,50,14
 END
 
+IDD_SETTINGS DIALOGEX 0, 0, 279, 126
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Settings"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "JSLint script source",IDC_STATIC,7,7,265,90
+    CONTROL         "&Builtin",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,20,35,10
+    CONTROL         "&Downloaded from GitHub",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,14,32,95,10
+    LTEXT           "&Version:",IDC_JSLINT_SCRIPT_VERSION_LABEL,25,48,27,8
+    COMBOBOX        IDC_JSLINT_SCRIPT_VERSION,56,46,123,167,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Download &Latest ...",IDC_DOWNLOAD_LATEST,183,46,80,14
+    CONTROL         "&Specify 'undefined variable' error message text",IDC_SPEC_UNDEF_VAR_ERR_MSG,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,64,167,10
+    EDITTEXT        IDC_UNDEF_VAR_ERR_MSG,36,76,227,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,168,105,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,222,105,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -121,12 +146,12 @@ BEGIN
         BOTTOMMARGIN, 175
     END
 
-    IDD_OPTIONS, DIALOG
+    IDD_JSLINT_OPTIONS, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 391
         TOPMARGIN, 7
-        BOTTOMMARGIN, 265
+        BOTTOMMARGIN, 309
     END
 
     IDD_ABOUT, DIALOG
@@ -135,6 +160,14 @@ BEGIN
         RIGHTMARGIN, 194
         TOPMARGIN, 7
         BOTTOMMARGIN, 141
+    END
+
+    IDD_SETTINGS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 272
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 119
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -184,7 +217,6 @@ END
 //
 
 IDR_JSLINT              JS                      "res\\jslint.js"
-IDR_JSLINT_OUTPUT       JS                      "res\\jslint_output.js"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -208,6 +240,42 @@ IDB_TB_LINT_OPTIONS     BITMAP                  "res\\TB_LintOptions.bmp"
 LANGUAGE LANG_CROATIAN, SUBLANG_DEFAULT
 #pragma code_page(1250)
 #endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_JSLINT_DOWNLOAD_PROGRESS DIALOGEX 0, 0, 316, 34
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Downloading JSLint Script"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Download URL:",IDC_STATIC,7,7,50,8
+    LTEXT           "Static",IDC_URL,61,7,248,8,SS_PATHELLIPSIS
+    LTEXT           "Progress:",IDC_STATIC,7,19,32,8
+    LTEXT           "Static",IDC_PROGRESS,61,19,248,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_JSLINT_DOWNLOAD_PROGRESS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 27
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

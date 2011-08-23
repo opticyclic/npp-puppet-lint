@@ -25,6 +25,7 @@ tstring StringJoin(vector<tstring>& results, tstring delim);
 void FindReplace(tstring& str, const tstring& strOld, const tstring& strNew);
 
 BOOL CenterWindow(HWND hWnd, HWND hParentWnd, BOOL bRepaint = FALSE);
+tstring GetWindowText(HWND hWnd);
 void DoEvents();
 
 ////////////////////////////////////////////////////////////////////////////////

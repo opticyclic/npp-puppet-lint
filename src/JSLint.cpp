@@ -17,132 +17,144 @@
 
 #include "StdHeaders.h"
 #include "JSLint.h"
+#include "Settings.h"
+#include "DownloadJSLint.h"
 #include "resource.h"
-#include "base64.h"
+#include <v8.h>
+
+using namespace v8;
 
 extern HANDLE g_hDllModule;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-bool JSLintReportItem::IsReasonVarIsNotDefined() const
+bool JSLintReportItem::IsReasonUndefVar() const
 {
-	// check if reason matches: /'.+' is not defined/
-	const TCHAR *pattern = _T("' is not defined.");
-	const size_t len = _tcslen(pattern);
-	return m_strReason.size() > len+1 
-		&& m_strReason[0] == _T('\'') 
-		&& m_strReason.substr(m_strReason.size() - len) == pattern;
+    return !GetUndefVar().empty();
 }
 
-tstring JSLintReportItem::GetUndefinedVar() const
+tstring JSLintReportItem::GetUndefVar() const
 {
-	if (!IsReasonVarIsNotDefined())
-		return tstring();
+    tstring var;
 
-	tstring::size_type i1 = m_strReason.find_first_of(_T('\''));
-	tstring::size_type i2 = m_strReason.find_last_of(_T('\''));
+    tstring errMsg = Settings::GetInstance().GetJSLintScriptSource() == Settings::JSLINT_SCRIPT_SOURCE_DOWNLOADED &&
+        Settings::GetInstance().GetSpecUndefVarErrMsg() ? 
+        Settings::GetInstance().GetUndefVarErrMsg() : DEFAULT_UNDEF_VAR_ERR_MSG;
 
-	return m_strReason.substr(i1+1, i2-i1-1);
+    tstring::size_type i = errMsg.find(TEXT("%s"));
+    if (i != tstring::npos) {
+        int nAfter = errMsg.size() - (i + 2);
+        if (m_strReason.substr(0, i) == errMsg.substr(0, i) &&
+            m_strReason.substr(m_strReason.size() - nAfter) == errMsg.substr(i + 2)) 
+        {
+            var = m_strReason.substr(i, m_strReason.size() - nAfter - i);
+        }
+    }
+
+    return var;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// JSLint script is executed by using cscript.exe program. 
-// Input script is sent to the JSLint by using standard input.
-// Result from JSLint is read from the standard output.
+void trt(const char* location, const char* message)
+{
+}
+
+void mrt(Handle<Message> message, Handle<Value> data)
+{
+    Local<String> msg = message->Get();
+    String::AsciiValue str(msg);
+    const char* sz = *str;
+    const char* a = sz;
+    int line = message->GetLineNumber();
+    int sc = message->GetStartColumn();
+    int ec = message->GetEndColumn();
+}
+
+
 void JSLint::CheckScript(const string& strOptions, const string& strScript, 
 	int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items)
 {
-	if (!m_jsLintScriptFileName)
-		CreateJSLintFile();
+    V8::SetFatalErrorHandler(trt);
+    V8::AddMessageListener(mrt);
 
-	// initialize process info structure
-	PROCESS_INFORMATION piProcInfo;
-	ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
+    HandleScope handle_scope;
+    Persistent<Context> context = Context::New();
+    Context::Scope context_scope(context);
 
-	// create pipes for standard input/output redirection
-	SECURITY_ATTRIBUTES saAttr;
-	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES); 
-	saAttr.bInheritHandle = TRUE; 
-	saAttr.lpSecurityDescriptor = NULL; 
+    Handle<Script> script;
 
-	Win32Handle hChildStdOutputRead;
-	Win32Handle hChildStdOutputWrite;
-	if (!CreatePipe(&hChildStdOutputRead, &hChildStdOutputWrite, &saAttr, 0)) {
-		throw IOException();
-	}
-	if (!SetHandleInformation(hChildStdOutputRead, HANDLE_FLAG_INHERIT, 0)) {
-		throw IOException();
-	}
+    string strJSLintScript;
+    if (Settings::GetInstance().GetJSLintScriptSource() == Settings::JSLINT_SCRIPT_SOURCE_BUILTIN) {
+        strJSLintScript = LoadCustomDataResource((HMODULE)g_hDllModule, MAKEINTRESOURCE(IDR_JSLINT), TEXT("JS"));
+    } else {
+        strJSLintScript = DownloadJSLint::GetInstance().GetVersion(
+            Settings::GetInstance().GetJSLintScriptVersion()).GetContent();
+    }
+    if (strJSLintScript.empty()) {
+        throw JSLintException("Invalid JSLint script!");
+    }
+    script = Script::Compile(String::New(strJSLintScript.c_str()));
+    if (script.IsEmpty()) {
+        throw JSLintException("Invalid JSLint script!");
+    }
+    script->Run();
 
-	Win32Handle hChildStdErrorRead;
-	Win32Handle hChildStdErrorWrite;
-	if (!CreatePipe(&hChildStdErrorRead, &hChildStdErrorWrite, &saAttr, 0)) {
-		throw IOException();
-	}
-	if (!SetHandleInformation(hChildStdErrorRead, HANDLE_FLAG_INHERIT, 0)) {
-		throw IOException();
-	}
+    // init script variable
+    context->Global()->Set(String::New("script"), String::New(strScript.c_str()));
 
-	Win32Handle hChildStdInputRead;
-	Win32Handle hChildStdInputWrite;
-	if (!CreatePipe(&hChildStdInputRead, &hChildStdInputWrite, &saAttr, 0)) {
-		throw IOException();
-	}
-	if (!SetHandleInformation(hChildStdInputWrite, HANDLE_FLAG_INHERIT, 0)) {
-		throw IOException();
-	}
+    // init options variable
+    script = Script::Compile(String::New(("options = " + strOptions).c_str()));
+    if (script.IsEmpty()) {
+        throw JSLintException("Invalid JSLint options (probably error in additional options)!");
+    }
+    script->Run();
 
-	// initialize startup info structure
-	STARTUPINFO siStartInfo;
-	ZeroMemory(&siStartInfo, sizeof(STARTUPINFO));
-	siStartInfo.cb = sizeof(STARTUPINFO); 
-	siStartInfo.hStdOutput = hChildStdOutputWrite;
-	siStartInfo.hStdError = hChildStdErrorWrite;
-	siStartInfo.hStdInput = hChildStdInputRead;
-	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
+    // call JSLINT
+    script = Script::Compile(String::New("JSLINT(script, options);"));
+    if (script.IsEmpty()) {
+        throw JSLintUnexpectedException();
+    }
+    script->Run();
 
-	// create cscript process
-	tstring strCmdLine = TEXT("cscript.exe /Nologo /E:JScript \"") 
-		+ m_jsLintScriptFileName.GetFileName() + TEXT("\"");
-	BOOL bSuccess = CreateProcess(NULL, (LPTSTR)strCmdLine.c_str(),
-		NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &siStartInfo, &piProcInfo);
-	if (!bSuccess) {
-		throw JSLintUnexpectedException();
-	}
-	Win32Handle hThread = piProcInfo.hThread;
-	Win32Handle hProcess = piProcInfo.hProcess;
+    // read errors
+    Handle<Object> jslint = context->Global()->Get(String::New("JSLINT"))->ToObject();
+    Handle<Object> errors = jslint->Get(String::New("errors"))->ToObject();
+    int32_t length = errors->Get(String::New("length"))->Int32Value();
+    for (int32_t i = 0; i < length; ++i) {
+        Handle<Value> eVal = errors->Get(Int32::New(i));
+        if (eVal->IsObject()) {
+            Handle<Object> e = eVal->ToObject();
 
-	// send input script to the standard input
-	WriteString(hChildStdInputWrite, strOptions + "\n" + strScript);
-	hChildStdInputWrite = NULL; // close std input pipe, so that JSLint can start
+            int line = e->Get(String::New("line"))->Int32Value();
+            int character = e->Get(String::New("character"))->Int32Value();
+            String::Utf8Value reason(e->Get(String::New("reason")));
+            String::Utf8Value evidence(e->Get(String::New("evidence")));
 
-	// read result from the standard output
-	ParseOutput(hProcess, hChildStdOutputRead, strScript, 
-		nppTabWidth, jsLintTabWidth, items);
+            // adjust character position if there is a difference 
+            // in tab width between Notepad++ and JSLint
+            if (nppTabWidth != jsLintTabWidth) {
+	            character += GetNumTabs(strScript, line, character, jsLintTabWidth) * (nppTabWidth - jsLintTabWidth);
+            }
 
-	// read data from the standard error stream
-	string strError;
-	ReadError(hProcess, hChildStdErrorRead, strError);
+            items.push_back(JSLintReportItem(line - 1, character - 1, 
+                TextConversion::UTF8_To_T(*reason), 
+	            TextConversion::UTF8_To_T(*evidence)));
+        }
+    }
 
-	// get exit code
-	DWORD exitCode = 0;
-	GetExitCodeProcess(hProcess, &exitCode);
+    context.Dispose();
 }
 
-void JSLint::LoadCustomDataResource(HMODULE hModule,
-	LPCTSTR lpName, LPCTSTR lpType, LPVOID* ppData, LPDWORD pdwSize)
+string JSLint::LoadCustomDataResource(HMODULE hModule, LPCTSTR lpName, LPCTSTR lpType)
 {
-	*pdwSize = 0;
-	*ppData = NULL; 
-
 	HRSRC hRes = FindResource(hModule, lpName, lpType);
 	if (hRes == NULL) {
 		throw JSLintResourceException();
 	}
 
-	*pdwSize = SizeofResource(hModule, hRes);
-	if (*pdwSize == 0) {
+	DWORD dwSize = SizeofResource(hModule, hRes);
+	if (dwSize == 0) {
 		throw JSLintResourceException();
 	}
 
@@ -151,106 +163,12 @@ void JSLint::LoadCustomDataResource(HMODULE hModule,
 		throw JSLintResourceException();
 	}
 
-	*ppData = LockResource(hResLoad);
-	if (*ppData == NULL) {
+	LPVOID pData = LockResource(hResLoad);
+	if (pData == NULL) {
 		throw JSLintResourceException();
 	}
-}
 
-void JSLint::CreateJSLintFile()
-{
-	// JSLint JavaScript source file is created by augmenting 
-	// jslint_output.js upon original jslint.js (WSH edition).
-
-	// create output file
-	m_jsLintScriptFileName.Create();
-	Win32Handle hJSLintFile = CreateFile(m_jsLintScriptFileName, GENERIC_WRITE, 0, NULL, 
-		CREATE_ALWAYS, FILE_ATTRIBUTE_TEMPORARY, NULL);
-	if ((HANDLE)hJSLintFile == INVALID_HANDLE_VALUE) {
-		throw IOException();
-	}
-
-	LPVOID pData;
-	DWORD dwSize;
-	DWORD dwWritten;
-
-	// load jslint.js from resource and write it to the output file
-	LoadCustomDataResource((HMODULE)g_hDllModule, MAKEINTRESOURCE(IDR_JSLINT), TEXT("JS"), &pData, &dwSize);
-	if (WriteFile(hJSLintFile, pData, dwSize, &dwWritten, NULL) != TRUE || dwWritten != dwSize) {
-		throw IOException();
-	}
-
-	// load jslint_ouput.js from resource and write it to the output file
-	LoadCustomDataResource((HMODULE)g_hDllModule, MAKEINTRESOURCE(IDR_JSLINT_OUTPUT), TEXT("JS"), &pData, &dwSize);
-	if (WriteFile(hJSLintFile, pData, dwSize, &dwWritten, NULL) != TRUE || dwWritten != dwSize) {
-		throw IOException();
-	}
-}
-
-void JSLint::WriteString(HANDLE hFile, const string& str)
-{
-	string strEncoded = base64_encode((unsigned char const*)str.c_str(), str.length());
-	DWORD dwSize = (DWORD)strlen(strEncoded.c_str()) * sizeof(char);
-	DWORD dwWritten;
-	if (WriteFile(hFile, (LPVOID)strEncoded.c_str(), dwSize, &dwWritten, NULL) == FALSE || dwWritten != dwSize) {
-		throw IOException();
-	}
-}
-
-void JSLint::ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
-	int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items)
-{
-	// read JSLint output
-	string strOutput;
-	while (true) {
-		// read data from pipe
-		char buffer[512];
-		DWORD dwRead;
-		if (!ReadFromPipe(hProcess, hPipe, buffer, _countof(buffer), dwRead))
-			return;
-
-		strOutput += string(buffer, dwRead);
-
-		// parse JSLint output, each lint is delimited with empty line (see jslint_output.js)
-		while (true) {
-			size_t i = strOutput.find("\r\n\r\n");
-			if (i == string::npos) {
-				break;
-			}
-
-			string strLint = strOutput.substr(0, i);
-			strOutput = strOutput.substr(i + 4);
-
-			// read line
-			i = strLint.find("\r\n");
-			int line = atoi(base64_decode(strLint.substr(0, i)).c_str());
-			strLint = strLint.substr(i+2);
-
-			// read character
-			i = strLint.find("\r\n");
-			int character = atoi(base64_decode(strLint.substr(0, i)).c_str());
-			
-			// adjust character position if there is a difference 
-			// in tab width between Notepad++ and JSLint
-			if (nppTabWidth != jsLintTabWidth) {
-				character += GetNumTabs(strScript, line, character, jsLintTabWidth) * (nppTabWidth - jsLintTabWidth);
-			}
-			
-			strLint = strLint.substr(i+2);
-
-			// read reason
-			i = strLint.find("\r\n");
-			string strReason = base64_decode(strLint.substr(0, i));
-			strLint = strLint.substr(i+2);
-			
-			// read evidence
-			string strEvidence = base64_decode(strLint);
-
-			items.push_back(JSLintReportItem(line - 1, character - 1, 
-				TextConversion::UTF8_To_T(strReason), 
-				TextConversion::UTF8_To_T(strEvidence)));
-		}
-	}
+    return string((const char*)pData, dwSize);
 }
 
 int JSLint::GetNumTabs(const string& strScript, int line, int character, int tabWidth)
@@ -274,47 +192,4 @@ int JSLint::GetNumTabs(const string& strScript, int line, int character, int tab
 	}
 
 	return numTabs;
-}
-
-void JSLint::ReadError(HANDLE hProcess, HANDLE hPipe, string& strError)
-{
-	strError = "";
-	while (true) {
-		// read data from pipe
-		char buffer[512];
-		DWORD dwRead;
-		if (!ReadFromPipe(hProcess, hPipe, buffer, _countof(buffer), dwRead))
-			return;
-
-		strError += string(buffer, dwRead);
-	}
-}
-
-bool JSLint::ReadFromPipe(HANDLE hProcess, HANDLE hPipe, char *buffer, 
-	DWORD dwBufferSize, DWORD& dwRead)
-{
-	// first check if there is data in pipe
-	DWORD bytesAvailable;
-	while (true) {
-		PeekNamedPipe(hPipe, NULL, 0, NULL, &bytesAvailable, NULL);
-		if (bytesAvailable > 0)
-			break;
-
-		// no data, check if process is alive
-		DWORD exitCode = 0;
-		GetExitCodeProcess(hProcess, &exitCode);
-		if (exitCode != STILL_ACTIVE) {
-			return false;
-		}
-
-		Sleep(100);
-	}
-
-	// read data from pipe
-	BOOL bSuccess = ReadFile(hPipe, buffer, min(dwBufferSize, bytesAvailable), 
-		&dwRead, NULL);
-	if (!bSuccess || dwRead == 0)
-		return false;
-
-	return true;
 }

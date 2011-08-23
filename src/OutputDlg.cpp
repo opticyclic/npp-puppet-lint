@@ -18,7 +18,7 @@
 #include "StdHeaders.h"
 #include "OutputDlg.h"
 #include "PluginDefinition.h"
-#include "OptionsDlg.h"
+#include "JSLintOptions.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -33,7 +33,7 @@
 #define	IDM_TB_JSLINT_ALL_FILES    (IDM_TOOLBAR + 2)
 #define	IDM_TB_PREV_LINT           (IDM_TOOLBAR + 3)
 #define	IDM_TB_NEXT_LINT           (IDM_TOOLBAR + 4)
-#define	IDM_TB_LINT_OPTIONS        (IDM_TOOLBAR + 5)
+#define	IDM_TB_JSLINT_OPTIONS      (IDM_TOOLBAR + 5)
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -75,10 +75,9 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 						int iFocused = ListView_GetNextItem(m_hWndListView, -1, LVIS_FOCUSED | LVIS_SELECTED);
 						if (iFocused != -1) {
 							const FileLint& fileLint = m_fileLints[iFocused];
-							tstring var = fileLint.lint.GetUndefinedVar();
+							tstring var = fileLint.lint.GetUndefVar();
 							if (!var.empty()) {
-								extern JSLintOptions g_jsLintOptions;
-								g_jsLintOptions.AppendOption(IDC_PREDEFINED, var);
+                                JSLintOptions::GetInstance().AppendOption(IDC_PREDEFINED, var);
 							}
 						}
 						return TRUE;
@@ -148,28 +147,28 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 					iFocused = ListView_GetNextItem(m_hWndListView, -1, LVIS_FOCUSED | LVIS_SELECTED);
 				}
 
-				bool reasonIsVarIsNotDefined = false;
+				bool reasonIsUndefVar = false;
 				if (iFocused != -1) {
 					const FileLint& fileLint = m_fileLints[iFocused];
-					reasonIsVarIsNotDefined = fileLint.lint.IsReasonVarIsNotDefined();
+					reasonIsUndefVar = fileLint.lint.IsReasonUndefVar();
 				}
 
 				if (iFocused != -1) {
-					AppendMenu(menu, MF_ENABLED, ID_SHOW_LINT, _T("Show"));
+					AppendMenu(menu, MF_ENABLED, ID_SHOW_LINT, TEXT("Show"));
 				}
 
-				if (reasonIsVarIsNotDefined) {
-					AppendMenu(menu, MF_ENABLED, ID_ADD_PREDEFINED, _T("Add to the Predefined List"));
+				if (reasonIsUndefVar) {
+					AppendMenu(menu, MF_ENABLED, ID_ADD_PREDEFINED, TEXT("Add to the Predefined List"));
 				}
 
 				if (GetMenuItemCount(menu) > 0)
 					AppendMenu(menu, MF_SEPARATOR, 0, NULL);
 
 				if (numSelected > 0) {
-					AppendMenu(menu, MF_ENABLED, ID_COPY_LINTS, _T("Copy"));
+					AppendMenu(menu, MF_ENABLED, ID_COPY_LINTS, TEXT("Copy"));
 				}
 
-				AppendMenu(menu, MF_ENABLED, ID_SELECT_ALL, _T("Select All"));
+				AppendMenu(menu, MF_ENABLED, ID_SELECT_ALL, TEXT("Select All"));
 
 				// determine context menu position
 				POINT point;
@@ -217,8 +216,8 @@ void OutputDlg::OnToolbarCmd(UINT message)
 		case IDM_TB_PREV_LINT:
 			gotoPrevLint();
 			break;
-		case IDM_TB_LINT_OPTIONS:
-			options();
+		case IDM_TB_JSLINT_OPTIONS:
+			showJSLintOptionsDlg();
 			break;
 	}
 }
@@ -236,7 +235,7 @@ void OutputDlg::InitializeToolbar()
 		{IDM_TB_PREV_LINT,           IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDB_TB_PREV_LINT, 0},
 		{IDM_TB_NEXT_LINT,           IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDB_TB_NEXT_LINT, 0},
 		{0,                          IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, 0},
-		{IDM_TB_LINT_OPTIONS,        IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDB_TB_LINT_OPTIONS, 0},
+		{IDM_TB_JSLINT_OPTIONS,      IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDI_SEPARATOR_ICON, IDB_TB_LINT_OPTIONS, 0},
 	};
 
 	m_toolbar.init(_hInst, _hSelf, TB_STANDARD, toolBarIcons, sizeof(toolBarIcons) / sizeof(ToolBarButtonUnit));
@@ -314,11 +313,11 @@ void OutputDlg::GetNameStrFromCmd(UINT resID, LPTSTR tip, UINT count)
 {
 	// NOTE: On change, keep sure to change order of IDM_EX_... in toolBarIcons also
 	static LPTSTR szToolTip[] = {
-		_T("JSLint Current File"),
-		_T("JSLint All Files"),
-		_T("Go To Previous Lint"),
-		_T("Go To Next Lint"),
-		_T("JSLint Options"),
+		TEXT("JSLint Current File"),
+		TEXT("JSLint All Files"),
+		TEXT("Go To Previous Lint"),
+		TEXT("Go To Next Lint"),
+		TEXT("JSLint Options"),
 	};
 
 	_tcscpy(tip, szToolTip[resID - IDM_TB_JSLINT_CURRENT_FILE]);
@@ -468,13 +467,13 @@ void OutputDlg::CopyToClipboard()
 		if (bFirst) {
 			bFirst = false;
 		} else {
-			stream << _T("\r\n");
+			stream << TEXT("\r\n");
 		}
 
-		stream << _T("Line ") << fileLint.lint.GetLine() 
-			<< _T(", column ") << fileLint.lint.GetCharacter()
-			<< _T(": ") << fileLint.lint.GetReason().c_str() 
-			<< _T("\r\n\t") << fileLint.lint.GetEvidence().c_str() << _T("\r\n");
+		stream << TEXT("Line ") << fileLint.lint.GetLine() 
+			<< TEXT(", column ") << fileLint.lint.GetCharacter()
+			<< TEXT(": ") << fileLint.lint.GetReason().c_str() 
+			<< TEXT("\r\n\t") << fileLint.lint.GetEvidence().c_str() << TEXT("\r\n");
 
 		i = ListView_GetNextItem(m_hWndListView, i, LVNI_SELECTED);
 	}
@@ -497,13 +496,13 @@ void OutputDlg::CopyToClipboard()
 			if (SetClipboardData(CF_UNICODETEXT, hResult) == NULL) {
 			#endif
 				GlobalFree(hResult);
-				MessageBox(_hSelf, TEXT("Unable to set Clipboard data"), _T("JSLint"), MB_OK | MB_ICONERROR);
+				MessageBox(_hSelf, TEXT("Unable to set Clipboard data"), TEXT("JSLint"), MB_OK | MB_ICONERROR);
 			}
 		} else {
-			MessageBox(_hSelf, TEXT("Cannot empty the Clipboard"), _T("JSLint"), MB_OK | MB_ICONERROR);
+			MessageBox(_hSelf, TEXT("Cannot empty the Clipboard"), TEXT("JSLint"), MB_OK | MB_ICONERROR);
 		}
 		CloseClipboard();
 	} else {
-		MessageBox(_hSelf, TEXT("Cannot open the Clipboard"), _T("JSLint"), MB_OK | MB_ICONERROR);
+		MessageBox(_hSelf, TEXT("Cannot open the Clipboard"), TEXT("JSLint"), MB_OK | MB_ICONERROR);
 	}
 }

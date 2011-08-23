@@ -19,7 +19,9 @@
 #include "AboutDlg.h"
 #include "JSLint.h"
 #include "menuCmdID.h"
-#include "OptionsDlg.h"
+#include "JSLintOptions.h"
+#include "Settings.h"
+#include "DownloadJSLint.h"
 #include "OutputDlg.h"
 #include "PluginDefinition.h"
 
@@ -42,7 +44,6 @@ OutputDlg g_outputDlg;
 bool setCommand(size_t index, TCHAR *cmdName, PFUNCPLUGINCMD pFunc, ShortcutKey *sk = NULL, bool check0nInit = false);
 void createOutputWindow();
 void doJSLint();
-INT_PTR pluginDialogBox(UINT idDlg, DLGPROC lpDlgProc);
 
 //
 // Interface functions
@@ -57,12 +58,15 @@ void pluginInit(HANDLE hModule)
 
 void loadConfig()
 {
-	g_jsLintOptions.ReadOptions();
+    Settings::GetInstance().ReadOptions();
+    JSLintOptions::GetInstance().ReadOptions();
+    DownloadJSLint::GetInstance().LoadVersions();
 }
 
 void pluginCleanUp()
 {
-	g_jsLintOptions.SaveOptions();
+    Settings::GetInstance().SaveOptions();
+	JSLintOptions::GetInstance().SaveOptions();
 }
 
 void commandMenuInit()
@@ -106,8 +110,11 @@ void commandMenuInit()
 	setCommand(FUNC_INDEX_SHOW_LINTS, TEXT("Show Lints"), showLints, NULL, false);
 
 	setCommand(6, TEXT("---"), NULL, NULL, false);
-	setCommand(FUNC_INDEX_OPTIONS, TEXT("Options"), options, NULL, false);
-	setCommand(FUNC_INDEX_ABOUT, TEXT("About"), about, NULL, false);
+	setCommand(FUNC_INDEX_JSLINT_OPTIONS, TEXT("JSLint Options"), showJSLintOptionsDlg, NULL, false);
+    setCommand(FUNC_INDEX_SETTINGS, TEXT("Settings"), showSettingsDlg, NULL, false);
+
+    setCommand(9, TEXT("---"), NULL, NULL, false);
+	setCommand(FUNC_INDEX_ABOUT, TEXT("About"), showAboutDlg, NULL, false);
 }
 
 void commandMenuCleanUp()
@@ -129,10 +136,10 @@ void jsLintCurrentFile()
 
 	int type;
 	::SendMessage(g_nppData._nppHandle, NPPM_GETCURRENTLANGTYPE, 0, (LPARAM)&type);
-	if (type != L_JS) {
+	if (type != L_JS && type != L_HTML && type != L_CSS) {
 		::MessageBox(
 			g_nppData._nppHandle, 
-			TEXT("Current file is not JavaScript file!\nJSLint works only for the JavaScript files."),
+			TEXT("JSLint can operate only on JavaScript, HTML or CSS files."),
 			TEXT("JSLint"),
 			MB_OK | MB_ICONINFORMATION
 		);
@@ -175,7 +182,7 @@ void jsLintAllFiles()
 
 			int type;
 			::SendMessage(g_nppData._nppHandle, NPPM_GETCURRENTLANGTYPE, 0, (LPARAM)&type);
-			if (type == L_JS) {
+			if (type == L_JS || type == L_HTML || type == L_CSS) {
 				++numJSFiles;
 				doJSLint();
 			}
@@ -193,7 +200,7 @@ void jsLintAllFiles()
 	if (numJSFiles == 0) {
 		::MessageBox(
 			g_nppData._nppHandle, 
-			TEXT("There is no JavaScript file opened in Notepad++!"),
+			TEXT("There is no JavaScript, HTML or CSS file opened in Notepad++!"),
 			TEXT("JSLint"),
 			MB_OK | MB_ICONINFORMATION
 		);
@@ -217,12 +224,17 @@ void showLints()
 	g_outputDlg.display();
 }
 
-void options()
+void showJSLintOptionsDlg()
 {
-	pluginDialogBox(IDD_OPTIONS, OptionsDlgProc);
+    JSLintOptions::GetInstance().ShowDialog();
 }
 
-void about()
+void showSettingsDlg()
+{
+	Settings::GetInstance().ShowDialog();
+}
+
+void showAboutDlg()
 {
 	pluginDialogBox(IDD_ABOUT, AboutDlgProc);
 }
@@ -329,22 +341,21 @@ void doJSLint()
 		JSLint jsLint;
 
 		string strOptions = TextConversion::T_To_UTF8(
-			g_jsLintOptions.GetOptionsJSONString());
+			JSLintOptions::GetInstance().GetOptionsJSONString());
 		list<JSLintReportItem> lints;
 
 		int nppTabWidth = (int) ::SendMessage(hWndScintilla, SCI_GETTABWIDTH, 0, 0);
-		int jsLintTabWidth = g_jsLintOptions.GetTabWidth();
+		int jsLintTabWidth = JSLintOptions::GetInstance().GetTabWidth();
 
 		jsLint.CheckScript(strOptions, strScript, nppTabWidth, jsLintTabWidth, lints);
 
 		g_outputDlg.AddLints(filePath, lints);
 
 		DoEvents();
-	} catch (exception&) {
-		// TODO better exception handling and much more descriptive error message
+	} catch (exception& e) {
 		::MessageBox(
 			g_nppData._nppHandle, 
-			TEXT("Failed!"),
+            TextConversion::A_To_T(e.what()).c_str(),
 			TEXT("JSLint"),
 			MB_OK | MB_ICONERROR
 		);

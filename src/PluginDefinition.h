@@ -25,7 +25,7 @@
 // All definitions of plugin interface
 //
 const TCHAR NPP_PLUGIN_NAME[] = TEXT("JSLint");
-const int NB_FUNC = 9;
+const int NB_FUNC = 11;
 
 extern NppData g_nppData;
 extern HANDLE g_hDllModule;
@@ -36,8 +36,9 @@ extern FuncItem g_funcItem[NB_FUNC];
 #define FUNC_INDEX_GOTO_PREV_LINT      3
 #define FUNC_INDEX_GOTO_NEXT_LINT      4
 #define FUNC_INDEX_SHOW_LINTS          5
-#define FUNC_INDEX_OPTIONS             7
-#define FUNC_INDEX_ABOUT               8
+#define FUNC_INDEX_JSLINT_OPTIONS      7
+#define FUNC_INDEX_SETTINGS            8
+#define FUNC_INDEX_ABOUT               10
 
 //
 // Initialization of your plugin data
@@ -80,7 +81,10 @@ void jsLintAllFiles();
 void gotoNextLint();
 void gotoPrevLint();
 void showLints();
-void options();
-void about();
+void showJSLintOptionsDlg();
+void showSettingsDlg();
+void showAboutDlg();
+
+INT_PTR pluginDialogBox(UINT idDlg, DLGPROC lpDlgProc);
 
 #endif //PLUGINDEFINITION_H

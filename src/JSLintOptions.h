@@ -17,12 +17,12 @@
 
 #pragma once
 
-INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPARAM lParam);
-
 class JSLintOptions
 {
-public:
 	JSLintOptions();
+
+public:
+    static JSLintOptions& GetInstance();
 
 	void ReadOptions();
 	void SaveOptions();
@@ -35,19 +35,19 @@ public:
 
 	void CheckOption(UINT id);
 	void UncheckOption(UINT id);
-
-	bool IsOptionChecked(const tstring& name) const;
+    void ClearOption(UINT id);
 
 	void SetOption(UINT id, const tstring& value);
 	void AppendOption(UINT id, const tstring& value);
 	void ResetOption(UINT id);
 
-	void ClearAllOptions();
-	void SetGoodParts();
+    void SetAdditionalOptions(const tstring& additionalOptions);
 
-	void UpdateDialog(HWND hDlg);
+	void ClearAllOptions();
 
 	int GetTabWidth();
+
+    void ShowDialog();
 
 private:
 	enum OptionType {
@@ -63,8 +63,8 @@ private:
 		Option(const tstring& name) 
 			: type(OPTION_TYPE_BOOL)
 			, name(name)
-			, value(TEXT("false"))
-			, defaultValue(TEXT("false")) {}
+			, value(TEXT(""))
+			, defaultValue(TEXT("")) {}
 
 		Option(OptionType type, const tstring& name, const tstring& value) 
 			: type(type)
@@ -79,8 +79,15 @@ private:
 	};
 
 	std::map<UINT, Option> m_options;
+    tstring m_additionalOptions;
+    JSLintOptions* m_pJSLintOptions;
 
     bool IsOptionIncluded(const Option& option) const;
-};
+    BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage);
 
-extern JSLintOptions g_jsLintOptions;
+    static INT_PTR CALLBACK PredefinedControlWndProc(HWND hWnd, 
+        UINT uMessage, WPARAM wParam, LPARAM lParam);
+
+    static INT_PTR CALLBACK DlgProc(HWND hDlg, 
+        UINT uMessage, WPARAM wParam, LPARAM lParam);
+};

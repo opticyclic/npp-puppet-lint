@@ -25,6 +25,7 @@
 #include <Shellapi.h>
 #include <Shlwapi.h>
 #include <zmouse.h>
+#include <Winhttp.h>
 
 #pragma warning(disable:4996)
 

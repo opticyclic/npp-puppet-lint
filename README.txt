@@ -31,7 +31,7 @@ Notepad++ Plugins folder. You will need to re-start Notepad++ afterward.
    press Ctrl+Shift+F8 repeatedly to view errors.
 
 You can play with different JSLint options by choosing 
-menu option "Plugins - JSLint - Options".
+menu option "Plugins - JSLint - JSLint Options".
 
 = Files =
 
@@ -40,6 +40,15 @@ JSLintNpp.dll  - Unicode version of plugin
 JSLintNppA.dll - ANSI version of plugin
 
 = History =
+
+0.6.0
+    - V8 JavaScript engine replaced WScript.exe, meaning *major* performance boost
+    - JSLint script updated to version from 2011-08-15
+    - JSLint plugin is now able to handle HTML text and inspect CSS files
+    - Changes in JSLint Options dialog to reflect changes in updated JSLint script
+    - New Settings dialog (choose menu option Plugins - JSLint - Settings); here you
+      can download latest version of JSLint to experiment with newer version of JSLint, 
+      before plugin is updated.
 
 0.5.0   
     - JSLint script updated to version from 2011-04-28
