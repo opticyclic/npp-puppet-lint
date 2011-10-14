@@ -57,11 +57,22 @@ protected :
 	void OnToolbarDropDown(LPNMTOOLBAR lpnmtb);
 
 private:
-	ReBar m_rebar;
+	HICON m_hTabIcon;
+
+    ReBar m_rebar;
 	ToolBar m_toolbar;
 
-	HWND m_hWndListView;
-	HICON m_hTabIcon;
+    HWND m_hWndTab;
+
+    static const int NUM_LIST_VIEWS = 2;
+	HWND m_hWndListViews[NUM_LIST_VIEWS];
+
+    struct TabDefinition {
+        LPCTSTR m_strTabName;
+        UINT m_listViewID;
+        bool m_errorList;
+    };
+    static TabDefinition m_tabs[NUM_LIST_VIEWS];
 
 	struct FileLint {
 		FileLint(const tstring& strFilePath, const JSLintReportItem& lint)
@@ -69,20 +80,13 @@ private:
 		tstring strFilePath;
 		JSLintReportItem lint;
 	};
-
-	vector<FileLint> m_fileLints;
-
-	enum {
-		COL_NUM    = 0,
-		COL_REASON = 1,
-		COL_FILE   = 2,
-		COL_LINE   = 3,
-		COL_COLUMN = 4
-	};
+	vector<FileLint> m_fileLints[NUM_LIST_VIEWS];
 
 	void InitializeToolbar();
-	void InitializeListViewCtrl();
+    void InitializeTab();
+    void InitializeListView(int i);
 	void Resize();
+    void OnTabSelChanged();
 	void GetNameStrFromCmd(UINT resID, LPTSTR tip, UINT count);
 	void ShowLint(int i);
 	void CopyToClipboard();

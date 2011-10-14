@@ -12,9 +12,8 @@
 #define IDB_TB_JSLINT_ALL_FILES         111
 #define IDB_TB_NEXT_LINT                112
 #define IDB_TB_PREV_LINT                113
-#define IDB_TB_PREV_LINT1               114
 #define IDB_TB_LINT_OPTIONS             114
-#define IDD_JSLINT_DOWNLOAD_PROGRESS    114
+#define IDD_JSLINT_DOWNLOAD_PROGRESS    115
 #define IDC_CHECK_FIRST_OPTION          1001
 #define IDC_CHECK_PASSFAIL              1001
 #define IDC_CHECK_WHITE                 1002
@@ -49,36 +48,38 @@
 #define IDC_CHECK_EQEQ                  1031
 #define IDC_CHECK_LAST_OPTION           1031
 #define IDC_CLEAR_ALL                   1032
-#define IDC_GOOD_PARTS                  1033
-#define IDC_IDENT                       1034
-#define IDC_MAXLEN                      1035
-#define IDC_MAXERR                      1036
-#define IDC_OUTPUT                      1037
+#define IDC_IDENT                       1033
+#define IDC_MAXLEN                      1034
+#define IDC_MAXERR                      1035
+#define IDC_OUTPUT                      1036
+#define IDC_ERROR_LIST                  1037
 #define IDC_PREVIEW                     1038
 #define IDC_VERSION_STATIC              1039
-#define IDC_SYSLINK1                    1040
-#define IDC_SYSLINK2                    1041
-#define IDC_TOOLBAR                     1042
-#define IDC_PREDEFINED                  1043
-#define IDC_ADVANCED_OPTIONS            1044
-#define IDC_ADDITIONAL_OPTIONS          1045
-#define IDC_RADIO1                      1046
-#define IDC_RADIO2                      1047
-#define IDC_JSLINT_SCRIPT_VERSION       1048
-#define IDC_DOWNLOAD_LATEST             1049
-#define IDC_SPEC_UNDEF_VAR_ERR_MSG      1050
-#define IDC_UNDEF_VAR_ERR_MSG           1051
-#define IDC_JSLINT_SCRIPT_VERSION_LABEL 1052
-#define IDC_URL                         1053
-#define IDC_PROGRESS                    1054
+#define IDC_UNUSED_LIST                 1040
+#define IDC_SYSLINK1                    1041
+#define IDC_SYSLINK2                    1042
+#define IDC_TOOLBAR                     1043
+#define IDC_PREDEFINED                  1044
+#define IDC_ADVANCED_OPTIONS            1045
+#define IDC_ADDITIONAL_OPTIONS          1046
+#define IDC_RADIO1                      1047
+#define IDC_RADIO2                      1048
+#define IDC_JSLINT_SCRIPT_VERSION       1049
+#define IDC_DOWNLOAD_LATEST             1050
+#define IDC_SPEC_UNDEF_VAR_ERR_MSG      1051
+#define IDC_UNDEF_VAR_ERR_MSG           1052
+#define IDC_JSLINT_SCRIPT_VERSION_LABEL 1053
+#define IDC_URL                         1054
+#define IDC_PROGRESS                    1055
+#define IDC_TAB                         1056
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        115
+#define _APS_NEXT_RESOURCE_VALUE        116
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1055
+#define _APS_NEXT_CONTROL_VALUE         1057
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

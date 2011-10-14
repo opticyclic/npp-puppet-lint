@@ -30,14 +30,21 @@
 class JSLintReportItem
 {
 public:
-	JSLintReportItem(int line, int character, const tstring& strReason, const tstring& strEvidence)
-		: m_line(line)
+    enum Type {
+        LINT_TYPE_ERROR,
+        LINT_TYPE_UNUSED
+    };
+
+	JSLintReportItem(Type type, int line, int character, const tstring& strReason, const tstring& strEvidence)
+		: m_type(type)
+        , m_line(line)
 		, m_character(character)
 		, m_strReason(strReason)
 		, m_strEvidence(strEvidence)
 	{
 	}
 
+	Type GetType() const { return m_type; }
 	int GetLine() const { return m_line; }
 	int GetCharacter() const { return m_character; }
 	tstring GetReason() const { return m_strReason; }
@@ -47,6 +54,7 @@ public:
 	tstring GetUndefVar() const;
 
 private:
+    Type m_type;
 	int m_line;
 	int m_character;
 	tstring m_strReason;

@@ -37,10 +37,27 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
+OutputDlg::TabDefinition OutputDlg::m_tabs[] = {
+    {
+        TEXT("Errors"),
+        IDC_ERROR_LIST,
+        true
+    },
+    {
+        TEXT("Unused"),
+        IDC_UNUSED_LIST,
+        false
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
 OutputDlg::OutputDlg()
 	: DockingDlgInterface(IDD_OUTPUT)
-	, m_hWndListView(NULL)
 {
+    for (int i = 0; i < NUM_LIST_VIEWS; ++i) {
+        m_hWndListViews[i] = 0;
+    }
 }
 
 OutputDlg::~OutputDlg()
@@ -50,11 +67,17 @@ OutputDlg::~OutputDlg()
 
 BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
+    int i;
+
 	switch (message) 
 	{
 		case WM_INITDIALOG:
 			InitializeToolbar();
-			InitializeListViewCtrl();
+            InitializeTab();
+            for (i = 0; i < NUM_LIST_VIEWS; ++i) {
+			    InitializeListView(i);
+            }
+            OnTabSelChanged();
 			break;
 
 		case WM_COMMAND: {
@@ -66,15 +89,17 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 						CopyToClipboard();
 						return TRUE;
 					} else if (LOWORD(wParam) == ID_SHOW_LINT) {
-						int i = ListView_GetNextItem(m_hWndListView, -1, LVIS_FOCUSED | LVIS_SELECTED);
-						if (i != -1) {
-							ShowLint(i);
+                        int iTab = TabCtrl_GetCurSel(m_hWndTab);
+                        int iLint = ListView_GetNextItem(m_hWndListViews[iTab], -1, LVIS_FOCUSED | LVIS_SELECTED);
+						if (iLint != -1) {
+							ShowLint(iLint);
 						}
 						return TRUE;
 					} else if (LOWORD(wParam) == ID_ADD_PREDEFINED) {
-						int iFocused = ListView_GetNextItem(m_hWndListView, -1, LVIS_FOCUSED | LVIS_SELECTED);
-						if (iFocused != -1) {
-							const FileLint& fileLint = m_fileLints[iFocused];
+                        int iTab = TabCtrl_GetCurSel(m_hWndTab);
+                        int iLint = ListView_GetNextItem(m_hWndListViews[iTab], -1, LVIS_FOCUSED | LVIS_SELECTED);
+						if (iLint != -1) {
+							const FileLint& fileLint = m_fileLints[iTab][iLint];
 							tstring var = fileLint.lint.GetUndefVar();
 							if (!var.empty()) {
                                 JSLintOptions::GetInstance().AppendOption(IDC_PREDEFINED, var);
@@ -82,7 +107,7 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 						}
 						return TRUE;
 					} else if (LOWORD(wParam) == ID_SELECT_ALL) {
-						ListView_SetItemState(m_hWndListView, -1, LVIS_SELECTED, LVIS_SELECTED);
+                        ListView_SetItemState(m_hWndListViews[TabCtrl_GetCurSel(m_hWndTab)], -1, LVIS_SELECTED, LVIS_SELECTED);
 						return TRUE;
 					}
 				}
@@ -91,17 +116,18 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 
 		case WM_NOTIFY: {
 				LPNMHDR pNMHDR = (LPNMHDR) lParam;
-				if (pNMHDR->idFrom == IDC_OUTPUT && pNMHDR->code == LVN_KEYDOWN) {
+                if (pNMHDR->idFrom == m_tabs[TabCtrl_GetCurSel(m_hWndTab)].m_listViewID && pNMHDR->code == LVN_KEYDOWN) {
 					LPNMLVKEYDOWN pnkd = (LPNMLVKEYDOWN) lParam;
 					if (pnkd->wVKey == 'A' && (::GetKeyState(VK_CONTROL) >> 15 & 1)) {
-						ListView_SetItemState(m_hWndListView, -1, LVIS_SELECTED, LVIS_SELECTED);
+						ListView_SetItemState(m_hWndListViews[TabCtrl_GetCurSel(m_hWndTab)], -1, LVIS_SELECTED, LVIS_SELECTED);
 					} else if (pnkd->wVKey == 'C' && (::GetKeyState(VK_CONTROL) >> 15 & 1)) {
 						CopyToClipboard();
 					}
-				} else if (pNMHDR->idFrom == IDC_OUTPUT && pNMHDR->code == NM_DBLCLK) {
+				} else if (pNMHDR->idFrom == m_tabs[TabCtrl_GetCurSel(m_hWndTab)].m_listViewID && pNMHDR->code == NM_DBLCLK) {
 					LPNMITEMACTIVATE lpnmitem = (LPNMITEMACTIVATE) lParam;
-					if (lpnmitem->iItem != -1) {
-						ShowLint(lpnmitem->iItem);
+                    int iFocused = lpnmitem->iItem;
+					if (iFocused != -1) {
+						ShowLint(iFocused);
 					}
 				} else if (pNMHDR->hwndFrom == m_toolbar.getHSelf() && pNMHDR->code == TBN_DROPDOWN) {
 					OnToolbarDropDown((LPNMTOOLBAR) lParam);
@@ -130,7 +156,10 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 					GetNameStrFromCmd(resId, tip, sizeof(tip));
 					lpttt->lpszText = tip;
 					return TRUE;
-				}
+                } else if (pNMHDR->idFrom == IDC_TAB && pNMHDR->code == TCN_SELCHANGE) {
+                    OnTabSelChanged();
+                    return TRUE;
+                }
 				DockingDlgInterface::run_dlgProc(message, wParam, lParam);
 				return FALSE;
 			}
@@ -140,16 +169,18 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 				// build context menu
 				HMENU menu = ::CreatePopupMenu();
 
-				int numSelected = ListView_GetSelectedCount(m_hWndListView);
+				int numSelected = ListView_GetSelectedCount(m_hWndListViews[TabCtrl_GetCurSel(m_hWndTab)]);
+
+                int iTab = TabCtrl_GetCurSel(m_hWndTab);
 
 				int iFocused = -1;
 				if (numSelected > 0) {
-					iFocused = ListView_GetNextItem(m_hWndListView, -1, LVIS_FOCUSED | LVIS_SELECTED);
+					iFocused = ListView_GetNextItem(m_hWndListViews[iTab], -1, LVIS_FOCUSED | LVIS_SELECTED);
 				}
 
 				bool reasonIsUndefVar = false;
 				if (iFocused != -1) {
-					const FileLint& fileLint = m_fileLints[iFocused];
+					const FileLint& fileLint = m_fileLints[iTab][iFocused];
 					reasonIsUndefVar = fileLint.lint.IsReasonUndefVar();
 				}
 
@@ -177,7 +208,7 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 				if (point.x == 65535 || point.y == 65535) {
 					point.x = 0;
 					point.y = 0;
-					ClientToScreen(m_hWndListView, &point);
+					ClientToScreen(m_hWndListViews[TabCtrl_GetCurSel(m_hWndTab)], &point);
 				}
 
 				// show context menu
@@ -244,45 +275,75 @@ void OutputDlg::InitializeToolbar()
 	m_rebar.setIDVisible(REBAR_BAR_TOOLBAR, true);
 }
 
-void OutputDlg::InitializeListViewCtrl()
+void OutputDlg::InitializeTab()
 {
-	m_hWndListView = ::GetDlgItem(_hSelf, IDC_OUTPUT);
+    m_hWndTab = ::GetDlgItem(_hSelf, IDC_TAB);
 
-	ListView_SetExtendedListViewStyle(m_hWndListView, LVS_EX_FULLROWSELECT);
+    TCITEM tie;
+
+    tie.mask = TCIF_TEXT | TCIF_IMAGE; 
+    tie.iImage = -1; 
+
+    for (int i = 0; i < NUM_LIST_VIEWS; ++i) {
+        tie.pszText = (LPTSTR)m_tabs[i].m_strTabName; 
+        TabCtrl_InsertItem(m_hWndTab, i, &tie); 
+    }
+}
+
+void OutputDlg::InitializeListView(int i)
+{
+    m_hWndListViews[i] = ::GetDlgItem(_hSelf, m_tabs[i].m_listViewID);
+
+	ListView_SetExtendedListViewStyle(m_hWndListViews[i], LVS_EX_FULLROWSELECT);
 
 	LVCOLUMN lvc;
-
 	lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 
-	lvc.iSubItem = COL_NUM;
+    int iCol = 0;
+
+	lvc.iSubItem = iCol;
 	lvc.pszText = TEXT("");
 	lvc.cx = 28;
 	lvc.fmt = LVCFMT_RIGHT;
-	ListView_InsertColumn(m_hWndListView, COL_NUM, &lvc);
+	ListView_InsertColumn(m_hWndListViews[i], iCol++, &lvc);
 
-	lvc.iSubItem = COL_REASON;
-	lvc.pszText = TEXT("Reason");
-	lvc.cx = 500;
-	lvc.fmt = LVCFMT_LEFT;
-	ListView_InsertColumn(m_hWndListView, COL_REASON, &lvc);
+    if (m_tabs[i].m_errorList) {
+	    lvc.iSubItem = iCol;
+	    lvc.pszText = TEXT("Reason");
+	    lvc.cx = 500;
+	    lvc.fmt = LVCFMT_LEFT;
+	    ListView_InsertColumn(m_hWndListViews[i], iCol++, &lvc);
+    } else {
+	    lvc.iSubItem = iCol;
+	    lvc.pszText = TEXT("Variable");
+	    lvc.cx = 250;
+	    lvc.fmt = LVCFMT_LEFT;
+	    ListView_InsertColumn(m_hWndListViews[i], iCol++, &lvc);
 
-	lvc.iSubItem = COL_FILE;
+	    lvc.iSubItem = iCol;
+	    lvc.pszText = TEXT("Function");
+	    lvc.cx = 250;
+	    lvc.fmt = LVCFMT_LEFT;
+	    ListView_InsertColumn(m_hWndListViews[i], iCol++, &lvc);
+    }
+
+    lvc.iSubItem = iCol;
 	lvc.pszText = TEXT("File");
 	lvc.cx = 200;
 	lvc.fmt = LVCFMT_LEFT;
-	ListView_InsertColumn(m_hWndListView, COL_FILE, &lvc);
+	ListView_InsertColumn(m_hWndListViews[i], iCol++, &lvc);
 
-	lvc.iSubItem = COL_LINE;
+	lvc.iSubItem = iCol;
 	lvc.pszText = TEXT("Line");
 	lvc.cx = 50;
 	lvc.fmt = LVCFMT_RIGHT;
-	ListView_InsertColumn(m_hWndListView, COL_LINE, &lvc);
+	ListView_InsertColumn(m_hWndListViews[i], iCol++, &lvc);
 
-	lvc.iSubItem = COL_COLUMN;
+	lvc.iSubItem = iCol;
 	lvc.pszText = TEXT("Column");
 	lvc.cx = 50;
 	lvc.fmt = LVCFMT_RIGHT;
-	ListView_InsertColumn(m_hWndListView, COL_COLUMN, &lvc);
+	ListView_InsertColumn(m_hWndListViews[i], iCol++, &lvc);
 }
 
 void OutputDlg::Resize()
@@ -293,10 +354,28 @@ void OutputDlg::Resize()
 	m_toolbar.reSizeTo(rc);
 	m_rebar.reSizeTo(rc);
 
+    RECT rcToolbar;
+    GetWindowRect(m_toolbar.getHSelf(), &rcToolbar);
+
 	getClientRect(rc);
-	rc.top += 25;
-	InflateRect(&rc, -1, -1);
-	::MoveWindow(m_hWndListView, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
+    rc.top += rcToolbar.bottom - rcToolbar.top;
+
+    //InflateRect(&rc, -4, -4);
+    ::MoveWindow(m_hWndTab, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
+
+    TabCtrl_AdjustRect(m_hWndTab, FALSE, &rc);
+    //InflateRect(&rc, -4, -4);
+    for (int i = 0; i < NUM_LIST_VIEWS; ++i) {
+        ::SetWindowPos(m_hWndListViews[i], m_hWndTab, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, 0);
+    }
+}
+
+void OutputDlg::OnTabSelChanged()
+{
+    int iSel = TabCtrl_GetCurSel(m_hWndTab);
+    for (int i = 0; i < NUM_LIST_VIEWS; ++i) {
+        ShowWindow(m_hWndListViews[i], iSel == i ? SW_SHOW : SW_HIDE);
+    }
 }
 
 HICON OutputDlg::GetTabIcon()
@@ -325,8 +404,10 @@ void OutputDlg::GetNameStrFromCmd(UINT resID, LPTSTR tip, UINT count)
 
 void OutputDlg::ClearAllLints()
 {
-	m_fileLints.clear();
-	ListView_DeleteAllItems(m_hWndListView);
+    for (int i = 0; i < NUM_LIST_VIEWS; ++i) {
+    	m_fileLints[i].clear();
+	    ListView_DeleteAllItems(m_hWndListViews[i]);
+    }
 }
 
 void OutputDlg::AddLints(const tstring& strFilePath, const list<JSLintReportItem>& lints)
@@ -339,8 +420,10 @@ void OutputDlg::AddLints(const tstring& strFilePath, const list<JSLintReportItem
 	for (list<JSLintReportItem>::const_iterator it = lints.begin(); it != lints.end(); ++it) {
 		const JSLintReportItem& lint = *it;
 
+        HWND hWndListView = m_hWndListViews[lint.GetType()];
+
 		lvI.iSubItem = 0;
-		lvI.iItem = ListView_GetItemCount(m_hWndListView);
+		lvI.iItem = ListView_GetItemCount(hWndListView);
 		lvI.state = 0;
 		lvI.stateMask = 0;
 
@@ -350,26 +433,53 @@ void OutputDlg::AddLints(const tstring& strFilePath, const list<JSLintReportItem
 
 		lvI.pszText = (LPTSTR)strNum.c_str();
 		
-		ListView_InsertItem(m_hWndListView, &lvI);
+		ListView_InsertItem(hWndListView, &lvI);
 
-		tstring strReason = lint.GetReason();
-		ListView_SetItemText(m_hWndListView, lvI.iItem, COL_REASON, (LPTSTR)strReason.c_str());
+        int iCol = 1;
+
+        if (m_tabs[lint.GetType()].m_errorList) {
+		    tstring strReason = lint.GetReason();
+		    ListView_SetItemText(hWndListView, lvI.iItem, iCol++, (LPTSTR)strReason.c_str());
+        } else {
+		    tstring strVariable = lint.GetReason();
+		    ListView_SetItemText(hWndListView, lvI.iItem, iCol++, (LPTSTR)strVariable.c_str());
+		    tstring strFunction = lint.GetEvidence();
+		    ListView_SetItemText(hWndListView, lvI.iItem, iCol++, (LPTSTR)strFunction.c_str());
+        }
 
 		tstring strFile = Path::GetFileName(strFilePath);
-		ListView_SetItemText(m_hWndListView, lvI.iItem, COL_FILE, (LPTSTR)strFile.c_str());
+		ListView_SetItemText(hWndListView, lvI.iItem, iCol++, (LPTSTR)strFile.c_str());
 
 		stream.str(TEXT(""));
 		stream << lint.GetLine() + 1;
 		tstring strLine = stream.str();
-		ListView_SetItemText(m_hWndListView, lvI.iItem, COL_LINE, (LPTSTR)strLine.c_str());
+		ListView_SetItemText(hWndListView, lvI.iItem, iCol++, (LPTSTR)strLine.c_str());
 		
 		stream.str(TEXT(""));
 		stream << lint.GetCharacter() + 1;
 		tstring strColumn = stream.str();
-		ListView_SetItemText(m_hWndListView, lvI.iItem, COL_COLUMN, (LPTSTR)strColumn.c_str());
+		ListView_SetItemText(hWndListView, lvI.iItem, iCol++, (LPTSTR)strColumn.c_str());
 
-		m_fileLints.push_back(FileLint(strFilePath, lint));
+        m_fileLints[lint.GetType()].push_back(FileLint(strFilePath, lint));
 	}
+
+    for (int i = 0; i < NUM_LIST_VIEWS; ++i) {
+        tstring strTabName;
+        int count = ListView_GetItemCount(m_hWndListViews[i]);
+        if (count > 0) {
+            stream.str(TEXT(""));
+            stream << m_tabs[i].m_strTabName << TEXT(" (") << count << TEXT(")");
+    		strTabName = stream.str();
+        } else {
+            strTabName = m_tabs[i].m_strTabName;
+        }
+        TCITEM tie;
+        tie.mask = TCIF_TEXT; 
+        tie.pszText = (LPTSTR)strTabName.c_str(); 
+        TabCtrl_SetItem(m_hWndTab, i, &tie);
+    }
+
+    InvalidateRect(getHSelf(), NULL, TRUE);
 }
 
 void OutputDlg::SelectNextLint()
@@ -377,18 +487,21 @@ void OutputDlg::SelectNextLint()
 	if (_hSelf == NULL)
 		return;
 
-	int count = ListView_GetItemCount(m_hWndListView);
+    int iTab = TabCtrl_GetCurSel(m_hWndTab);
+    HWND hWndListView = m_hWndListViews[iTab];
+
+	int count = ListView_GetItemCount(hWndListView);
 	if (count == 0)
 		return;
 
-	int i = ListView_GetNextItem(m_hWndListView, -1, LVNI_FOCUSED | LVNI_SELECTED);
+	int i = ListView_GetNextItem(hWndListView, -1, LVNI_FOCUSED | LVNI_SELECTED);
 	if (++i == count)
 		i = 0;
 
-	ListView_SetItemState(m_hWndListView, -1, 0, LVIS_SELECTED | LVIS_FOCUSED);
+	ListView_SetItemState(hWndListView, -1, 0, LVIS_SELECTED | LVIS_FOCUSED);
 	
-	ListView_SetItemState(m_hWndListView, i, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
-	ListView_EnsureVisible(m_hWndListView, i, FALSE);
+	ListView_SetItemState(hWndListView, i, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+	ListView_EnsureVisible(hWndListView, i, FALSE);
 	ShowLint(i);
 }
 
@@ -397,24 +510,28 @@ void OutputDlg::SelectPrevLint()
 	if (_hSelf == NULL)
 		return;
 
-	int count = ListView_GetItemCount(m_hWndListView);
+    int iTab = TabCtrl_GetCurSel(m_hWndTab);
+    HWND hWndListView = m_hWndListViews[iTab];
+
+    int count = ListView_GetItemCount(hWndListView);
 	if (count == 0)
 		return;
 
-	int i = ListView_GetNextItem(m_hWndListView, -1, LVNI_FOCUSED | LVNI_SELECTED);
+	int i = ListView_GetNextItem(hWndListView, -1, LVNI_FOCUSED | LVNI_SELECTED);
 	if (--i == -1)
 		i = count - 1;
 	
-	ListView_SetItemState(m_hWndListView, -1, 0, LVIS_SELECTED | LVIS_FOCUSED);
+	ListView_SetItemState(hWndListView, -1, 0, LVIS_SELECTED | LVIS_FOCUSED);
 
-	ListView_SetItemState(m_hWndListView, i, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
-	ListView_EnsureVisible(m_hWndListView, i, FALSE);
+	ListView_SetItemState(hWndListView, i, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+	ListView_EnsureVisible(hWndListView, i, FALSE);
 	ShowLint(i);
 }
 
 void OutputDlg::ShowLint(int i)
 {
-	const FileLint& fileLint = m_fileLints[i];
+    int iTab = TabCtrl_GetCurSel(m_hWndTab);
+	const FileLint& fileLint = m_fileLints[iTab][i];
 	
 	int line = fileLint.lint.GetLine();
 	int column = fileLint.lint.GetCharacter();
@@ -453,16 +570,20 @@ void OutputDlg::ShowLint(int i)
 			}
 		}
 	}
+
+    InvalidateRect(getHSelf(), NULL, TRUE);
 }
 
 void OutputDlg::CopyToClipboard()
 {
 	basic_stringstream<TCHAR> stream;
 
+    int iTab = TabCtrl_GetCurSel(m_hWndTab);
+
 	bool bFirst = true;
-	int i = ListView_GetNextItem(m_hWndListView, -1, LVNI_SELECTED);
+	int i = ListView_GetNextItem(m_hWndListViews[iTab], -1, LVNI_SELECTED);
 	while (i != -1) {
-		const FileLint& fileLint = m_fileLints[i];
+		const FileLint& fileLint = m_fileLints[iTab][i];
 
 		if (bFirst) {
 			bFirst = false;
@@ -470,12 +591,12 @@ void OutputDlg::CopyToClipboard()
 			stream << TEXT("\r\n");
 		}
 
-		stream << TEXT("Line ") << fileLint.lint.GetLine() 
-			<< TEXT(", column ") << fileLint.lint.GetCharacter()
+		stream << TEXT("Line ") << fileLint.lint.GetLine() + 1
+			<< TEXT(", column ") << fileLint.lint.GetCharacter() + 1
 			<< TEXT(": ") << fileLint.lint.GetReason().c_str() 
 			<< TEXT("\r\n\t") << fileLint.lint.GetEvidence().c_str() << TEXT("\r\n");
 
-		i = ListView_GetNextItem(m_hWndListView, i, LVNI_SELECTED);
+		i = ListView_GetNextItem(m_hWndListViews[TabCtrl_GetCurSel(m_hWndTab)], i, LVNI_SELECTED);
 	}
 
 	tstring str = stream.str();

@@ -27,12 +27,14 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 IDD_OUTPUT DIALOGEX 0, 0, 316, 182
-STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "JSLint"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_OUTPUT,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,8,302,167
+    CONTROL         "",IDC_ERROR_LIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,58,151,117
+    CONTROL         "",IDC_TAB,"SysTabControl32",0x0,7,8,302,42
+    CONTROL         "",IDC_UNUSED_LIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,165,57,151,117
 END
 
 IDD_JSLINT_OPTIONS DIALOGEX 0, 0, 398, 316
@@ -129,6 +131,17 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,222,105,50,14
 END
 
+IDD_JSLINT_DOWNLOAD_PROGRESS DIALOGEX 0, 0, 316, 34
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Downloading JSLint Script"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Download URL:",IDC_STATIC,7,7,50,8
+    LTEXT           "Static",IDC_URL,61,7,248,8,SS_PATHELLIPSIS
+    LTEXT           "Progress:",IDC_STATIC,7,19,32,8
+    LTEXT           "Static",IDC_PROGRESS,61,19,248,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -169,6 +182,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 119
     END
+
+    IDD_JSLINT_DOWNLOAD_PROGRESS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 27
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -179,8 +200,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,5,0,109
- PRODUCTVERSION 0,5,0,109
+ FILEVERSION 0,7,0,111
+ PRODUCTVERSION 0,7,0,111
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -196,12 +217,12 @@ BEGIN
         BLOCK "041a04b0"
         BEGIN
             VALUE "FileDescription", "JSLint Plugin for Notepad++"
-            VALUE "FileVersion", "0, 5, 0, 109"
+            VALUE "FileVersion", "0, 7, 0, 111"
             VALUE "InternalName", "JSLintNpp"
             VALUE "LegalCopyright", "Copyright (C) 2010 Martin Vladic, JSLint Copyright (C) 2002 Douglas Crockford"
             VALUE "OriginalFilename", "JSLintNpp.dll"
             VALUE "ProductName", "JSLint Plugin for Notepad++"
-            VALUE "ProductVersion", "0, 5, 0, 109"
+            VALUE "ProductVersion", "0, 7, 0, 111"
         END
     END
     BLOCK "VarFileInfo"
@@ -228,6 +249,15 @@ IDB_TB_JSLINT_ALL_FILES BITMAP                  "res\\TB_JSLintAllFiles.bmp"
 IDB_TB_NEXT_LINT        BITMAP                  "res\\TB_NextLint.bmp"
 IDB_TB_PREV_LINT        BITMAP                  "res\\TB_PrevLint.bmp"
 IDB_TB_LINT_OPTIONS     BITMAP                  "res\\TB_LintOptions.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_JSLINT_TAB          ICON                    "res\\JSLintTab.ico"
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -240,42 +270,6 @@ IDB_TB_LINT_OPTIONS     BITMAP                  "res\\TB_LintOptions.bmp"
 LANGUAGE LANG_CROATIAN, SUBLANG_DEFAULT
 #pragma code_page(1250)
 #endif //_WIN32
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDD_JSLINT_DOWNLOAD_PROGRESS DIALOGEX 0, 0, 316, 34
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Downloading JSLint Script"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "Download URL:",IDC_STATIC,7,7,50,8
-    LTEXT           "Static",IDC_URL,61,7,248,8,SS_PATHELLIPSIS
-    LTEXT           "Progress:",IDC_STATIC,7,19,32,8
-    LTEXT           "Static",IDC_PROGRESS,61,19,248,8
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
-BEGIN
-    IDD_JSLINT_DOWNLOAD_PROGRESS, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 309
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 27
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -302,15 +296,6 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDI_JSLINT_TAB          ICON                    "res\\JSLintTab.ico"
 #endif    // Croatian resources
 /////////////////////////////////////////////////////////////////////////////
 

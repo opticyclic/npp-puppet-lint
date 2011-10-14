@@ -842,6 +842,10 @@
 				RelativePath=".\DockingFeature\ToolBar.h"
 				>
 			</File>
+			<File
+				RelativePath=".\DockingFeature\Window.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

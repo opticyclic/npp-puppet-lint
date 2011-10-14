@@ -41,6 +41,12 @@ JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
+0.7.0
+    - JSLint plugin now reports unused variables. ("The variables that are
+      declared in the function that are not used. This may be an indication of
+      an error.")
+    - JSLint script updated to version from 2011-10-11
+
 0.6.0
     - V8 JavaScript engine replaced WScript.exe, meaning *major* performance boost
     - JSLint script updated to version from 2011-08-15
