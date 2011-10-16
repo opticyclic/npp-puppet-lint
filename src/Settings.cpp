@@ -34,6 +34,8 @@
 #define PROFILE_SPEC_UNDEF_VAR_ERR_MSG_KEY_NAME TEXT("spec_undef_var_err_msg")
 #define PROFILE_UNDEF_VAR_ERR_MSG_KEY_NAME TEXT("undef_var_err_msg")
 
+#define MIN_VERSION_BUILD 110
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Settings::Settings()
@@ -57,13 +59,18 @@ void Settings::ReadOptions()
     if (Path::IsFileExists(strConfigFileName)) {
 	    GetPrivateProfileString(PROFILE_JSLINT_GROUP_NAME, PROFILE_BUILD_KEY_NAME,
             NULL, szValue, _countof(szValue), strConfigFileName.c_str());
-        if (_ttoi(szValue) >= VERSION_BUILD) {
-	        GetPrivateProfileString(PROFILE_SETTINGS_GROUP_NAME, 
-                PROFILE_JSLINT_SCRIPT_SOURCE_KEY_NAME,
-                NULL, szValue, _countof(szValue), strConfigFileName.c_str());
-            if (_tcscmp(szValue, PROFILE_JSLINT_SCRIPT_SOURCE_DOWNLOADED) == 0) {
-                m_jsLintScriptSource = JSLINT_SCRIPT_SOURCE_DOWNLOADED;
+        if (_ttoi(szValue) >= MIN_VERSION_BUILD) {
+            if (_ttoi(szValue) >= VERSION_BUILD) {
+	            GetPrivateProfileString(PROFILE_SETTINGS_GROUP_NAME, 
+                    PROFILE_JSLINT_SCRIPT_SOURCE_KEY_NAME,
+                    NULL, szValue, _countof(szValue), strConfigFileName.c_str());
+                if (_tcscmp(szValue, PROFILE_JSLINT_SCRIPT_SOURCE_DOWNLOADED) == 0) {
+                    m_jsLintScriptSource = JSLINT_SCRIPT_SOURCE_DOWNLOADED;
+                } else {
+                    m_jsLintScriptSource = JSLINT_SCRIPT_SOURCE_BUILTIN;
+                }
             } else {
+                // if old config switch to builtin source
                 m_jsLintScriptSource = JSLINT_SCRIPT_SOURCE_BUILTIN;
             }
 

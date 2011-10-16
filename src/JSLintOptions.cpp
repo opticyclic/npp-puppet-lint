@@ -28,6 +28,8 @@
 #define PROFILE_JSLINT_OPTIONS_GROUP_NAME TEXT("JSLint Options")
 #define PROFILE_ADDITIONAL_OPTIONS_KEY_NAME TEXT("jslintnpp_additional_options")
 
+#define MIN_VERSION_BUILD 110
+
 ////////////////////////////////////////////////////////////////////////////////
 
 JSLintOptions::JSLintOptions()
@@ -85,7 +87,7 @@ void JSLintOptions::ReadOptions()
     if (Path::IsFileExists(strConfigFileName)) {
 	    GetPrivateProfileString(PROFILE_JSLINT_GROUP_NAME, PROFILE_BUILD_KEY_NAME,
             NULL, szValue, _countof(szValue), strConfigFileName.c_str());
-        if (_ttoi(szValue) >= VERSION_BUILD) {
+        if (_ttoi(szValue) >= MIN_VERSION_BUILD) {
 	        std::map<UINT, Option>::iterator it;
 	        for (it = m_options.begin(); it != m_options.end(); ++it) {
 		        GetPrivateProfileString(PROFILE_JSLINT_OPTIONS_GROUP_NAME, it->second.name.c_str(),

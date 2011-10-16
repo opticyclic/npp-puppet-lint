@@ -41,6 +41,9 @@ JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
+0.7.1
+    - Bug fixed: version 0.7.0 doesn't read JSLint options from version 0.6.0
+
 0.7.0
     - JSLint plugin now reports unused variables. ("The variables that are
       declared in the function that are not used. This may be an indication of
