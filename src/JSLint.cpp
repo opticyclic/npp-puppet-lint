@@ -81,6 +81,13 @@ void JSLint::CheckScript(const string& strOptions, const string& strScript,
     //V8::SetFatalErrorHandler(fatalErrorHandler);
     //V8::AddMessageListener(messageListener);
 
+    // bug fix:
+    // In presence of WebEdit plugin (https://sourceforge.net/projects/notepad-plus/forums/forum/482781/topic/4875421)
+    // JSLint crashes below when executing Context::New(). V8 expects that fp divide by zero doesn't throw exception,
+    // but in presence of WebEdit it does. So, here we are setting fp control word to the default (no fp exceptions are thrown).
+    unsigned int cw = _controlfp(0, 0); // Get the default fp control word
+    unsigned int cwOriginal = _controlfp(cw, MCW_EM);
+
     HandleScope handle_scope;
     Persistent<Context> context = Context::New();
     Context::Scope context_scope(context);
@@ -180,6 +187,8 @@ void JSLint::CheckScript(const string& strOptions, const string& strScript,
     }
 
     context.Dispose();
+
+    _controlfp(cwOriginal, MCW_EM);  // Restore the original gp control world
 }
 
 string JSLint::LoadCustomDataResource(HMODULE hModule, LPCTSTR lpName, LPCTSTR lpType)

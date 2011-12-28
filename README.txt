@@ -41,6 +41,10 @@ JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
+0.7.2
+    - Bug fixed: JSLint plugin crashes in presence of WebEdit plugin
+    - JSLint script updated to version from 2011-12-21
+
 0.7.1
     - Bug fixed: version 0.7.0 doesn't read JSLint options from version 0.6.0
 

@@ -301,7 +301,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="shlwapi.lib comctl32.lib v8.lib Ws2_32.lib Winmm.lib Winhttp.lib"
+				AdditionalDependencies="shlwapi.lib comctl32.lib v8_g.lib Ws2_32.lib Winmm.lib Winhttp.lib"
 				OutputFile="$(OutDir)/$(ProjectName)_Debug.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\v8\"

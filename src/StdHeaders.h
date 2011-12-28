@@ -38,6 +38,7 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include <float.h>
 
 using namespace std;
 
