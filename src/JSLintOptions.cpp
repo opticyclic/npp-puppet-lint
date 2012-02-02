@@ -63,7 +63,6 @@ JSLintOptions::JSLintOptions()
 	m_options[IDC_CHECK_NEWCAP]    = Option(TEXT("newcap"));
     m_options[IDC_CHECK_UNPARAM]   = Option(TEXT("unparam"));
 	m_options[IDC_CHECK_SLOPPY]    = Option(TEXT("sloppy"));
-    m_options[IDC_CHECK_CONFUSION] = Option(TEXT("confusion"));
     m_options[IDC_CHECK_EQEQ]      = Option(TEXT("eqeq"));
 
 	m_options[IDC_IDENT] = Option(OPTION_TYPE_INT, TEXT("indent"), TEXT("4"));

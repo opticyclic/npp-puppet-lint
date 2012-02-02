@@ -52,28 +52,27 @@ BEGIN
     CONTROL         "Safe Subset",IDC_CHECK_SAFE,"Button",BS_3STATE | WS_TABSTOP,7,124,55,10
     CONTROL         "Verify ADsafe",IDC_CHECK_ADSAFE,"Button",BS_3STATE | WS_TABSTOP,7,137,60,10
     CONTROL         "Tolerate bitwise operators",IDC_CHECK_BITWISE,"Button",BS_3STATE | WS_TABSTOP,110,7,100,10
-    CONTROL         "Tolerate type confusion",IDC_CHECK_CONFUSION,"Button",BS_3STATE | WS_TABSTOP,110,20,92,10
-    CONTROL         "Tolerate continue",IDC_CHECK_CONTINUE,"Button",BS_3STATE | WS_TABSTOP,110,33,72,10
-    CONTROL         "Tolerate debugger statements",IDC_CHECK_DEBUG,"Button",BS_3STATE | WS_TABSTOP,110,46,113,10
-    CONTROL         "Tolerate == and !=",IDC_CHECK_EQEQ,"Button",BS_3STATE | WS_TABSTOP,110,59,79,10
-    CONTROL         "Tolerate ES5 syntax",IDC_CHECK_ES5,"Button",BS_3STATE | WS_TABSTOP,110,72,81,10
-    CONTROL         "Tolerate eval",IDC_CHECK_EVIL,"Button",BS_3STATE | WS_TABSTOP,110,85,58,10
-    CONTROL         "Tolerate unfiltered for in",IDC_CHECK_FORIN,"Button",BS_3STATE | WS_TABSTOP,110,98,94,10
+    CONTROL         "Tolerate continue",IDC_CHECK_CONTINUE,"Button",BS_3STATE | WS_TABSTOP,110,20,72,10
+    CONTROL         "Tolerate debugger statements",IDC_CHECK_DEBUG,"Button",BS_3STATE | WS_TABSTOP,110,33,113,10
+    CONTROL         "Tolerate == and !=",IDC_CHECK_EQEQ,"Button",BS_3STATE | WS_TABSTOP,110,46,79,10
+    CONTROL         "Tolerate ES5 syntax",IDC_CHECK_ES5,"Button",BS_3STATE | WS_TABSTOP,110,59,81,10
+    CONTROL         "Tolerate eval",IDC_CHECK_EVIL,"Button",BS_3STATE | WS_TABSTOP,110,72,58,10
+    CONTROL         "Tolerate unfiltered for in",IDC_CHECK_FORIN,"Button",BS_3STATE | WS_TABSTOP,110,85,94,10
     CONTROL         "Tolerate uncapitalized constructors",IDC_CHECK_NEWCAP,
-                    "Button",BS_3STATE | WS_TABSTOP,110,111,128,10
+                    "Button",BS_3STATE | WS_TABSTOP,110,98,128,10
     CONTROL         "Tolerate dangling _ in identifiers",IDC_CHECK_NOMEN,
-                    "Button",BS_3STATE | WS_TABSTOP,110,124,118,10
-    CONTROL         "Tolerate ++ and --",IDC_CHECK_PLUSPLUS,"Button",BS_3STATE | WS_TABSTOP,110,137,77,10
+                    "Button",BS_3STATE | WS_TABSTOP,110,111,118,10
+    CONTROL         "Tolerate ++ and --",IDC_CHECK_PLUSPLUS,"Button",BS_3STATE | WS_TABSTOP,110,124,77,10
     CONTROL         "Tolerate . and [^...] in /RegExp/",IDC_CHECK_REGEXP,
-                    "Button",BS_3STATE | WS_TABSTOP,238,7,121,10
-    CONTROL         "Tolerate misordered definitions",IDC_CHECK_UNDEF,"Button",BS_3STATE | WS_TABSTOP,238,20,115,10
-    CONTROL         "Tolerate unused parameters",IDC_CHECK_UNPARAM,"Button",BS_3STATE | WS_TABSTOP,238,33,107,10
+                    "Button",BS_3STATE | WS_TABSTOP,110,137,121,10
+    CONTROL         "Tolerate misordered definitions",IDC_CHECK_UNDEF,"Button",BS_3STATE | WS_TABSTOP,238,7,115,10
+    CONTROL         "Tolerate unused parameters",IDC_CHECK_UNPARAM,"Button",BS_3STATE | WS_TABSTOP,238,20,107,10
     CONTROL         "Tolerate missing 'use strict' pragma",IDC_CHECK_SLOPPY,
-                    "Button",BS_3STATE | WS_TABSTOP,238,46,127,10
-    CONTROL         "Tolerate inefficient subscripting",IDC_CHECK_SUB,"Button",BS_3STATE | WS_TABSTOP,238,59,116,10
+                    "Button",BS_3STATE | WS_TABSTOP,238,33,127,10
+    CONTROL         "Tolerate inefficient subscripting",IDC_CHECK_SUB,"Button",BS_3STATE | WS_TABSTOP,238,46,116,10
     CONTROL         "Tolerate many var statements per function",IDC_CHECK_VARS,
-                    "Button",BS_3STATE | WS_TABSTOP,238,72,153,10
-    CONTROL         "Tolerate messy white space",IDC_CHECK_WHITE,"Button",BS_3STATE | WS_TABSTOP,238,85,105,10
+                    "Button",BS_3STATE | WS_TABSTOP,238,59,153,10
+    CONTROL         "Tolerate messy white space",IDC_CHECK_WHITE,"Button",BS_3STATE | WS_TABSTOP,238,72,105,10
     CONTROL         "Tolerate CSS workarounds",IDC_CHECK_CSS,"Button",BS_3STATE | WS_TABSTOP,238,98,101,10
     CONTROL         "Tolerate HTML case",IDC_CHECK_CAP,"Button",BS_3STATE | WS_TABSTOP,238,111,79,10
     CONTROL         "Tolerate HTML event handlers",IDC_CHECK_ON,"Button",BS_3STATE | WS_TABSTOP,238,124,112,10
@@ -200,8 +199,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,7,1,112
- PRODUCTVERSION 0,7,1,112
+ FILEVERSION 0,7,3,114
+ PRODUCTVERSION 0,7,3,114
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -217,12 +216,12 @@ BEGIN
         BLOCK "041a04b0"
         BEGIN
             VALUE "FileDescription", "JSLint Plugin for Notepad++"
-            VALUE "FileVersion", "0, 7, 1, 112"
+            VALUE "FileVersion", "0, 7, 3, 114"
             VALUE "InternalName", "JSLintNpp"
             VALUE "LegalCopyright", "Copyright (C) 2010 Martin Vladic, JSLint Copyright (C) 2002 Douglas Crockford"
             VALUE "OriginalFilename", "JSLintNpp.dll"
             VALUE "ProductName", "JSLint Plugin for Notepad++"
-            VALUE "ProductVersion", "0, 7, 1, 112"
+            VALUE "ProductVersion", "0, 7, 3, 114"
         END
     END
     BLOCK "VarFileInfo"

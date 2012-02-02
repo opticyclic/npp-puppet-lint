@@ -44,9 +44,8 @@
 #define IDC_CHECK_NEWCAP                1027
 #define IDC_CHECK_UNPARAM               1028
 #define IDC_CHECK_SLOPPY                1029
-#define IDC_CHECK_CONFUSION             1030
-#define IDC_CHECK_EQEQ                  1031
-#define IDC_CHECK_LAST_OPTION           1031
+#define IDC_CHECK_EQEQ                  1030
+#define IDC_CHECK_LAST_OPTION           1030
 #define IDC_CLEAR_ALL                   1032
 #define IDC_IDENT                       1033
 #define IDC_MAXLEN                      1034
