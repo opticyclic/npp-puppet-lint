@@ -491,8 +491,12 @@ void OutputDlg::SelectNextLint()
     HWND hWndListView = m_hWndListViews[iTab];
 
 	int count = ListView_GetItemCount(hWndListView);
-	if (count == 0)
+    if (count == 0) {
+        // no lints, set focus to editor
+        HWND hWndScintilla = GetCurrentScintillaWindow();
+        SetFocus(hWndScintilla);
 		return;
+    }
 
 	int i = ListView_GetNextItem(hWndListView, -1, LVNI_FOCUSED | LVNI_SELECTED);
 	if (++i == count)
@@ -514,8 +518,12 @@ void OutputDlg::SelectPrevLint()
     HWND hWndListView = m_hWndListViews[iTab];
 
     int count = ListView_GetItemCount(hWndListView);
-	if (count == 0)
+    if (count == 0) {
+        // no lints, set focus to editor
+        HWND hWndScintilla = GetCurrentScintillaWindow();
+        SetFocus(hWndScintilla);
 		return;
+    }
 
 	int i = ListView_GetNextItem(hWndListView, -1, LVNI_FOCUSED | LVNI_SELECTED);
 	if (--i == -1)
