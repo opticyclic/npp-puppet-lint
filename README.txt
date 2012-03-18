@@ -42,6 +42,7 @@ JSLintNppA.dll - ANSI version of plugin
 = History =
 
 0.7.4
+    - JSLint script updated to version from 2012-03-15
     - Bug fixed:
       "Editor caret is lost when the code has no errors/warnings - ID: 3507651"
 
