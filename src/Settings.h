@@ -17,10 +17,34 @@
 
 #pragma once
 
+#include "DownloadJSLint.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #define PROFILE_JSLINT_GROUP_NAME TEXT("JSLint")
 #define PROFILE_BUILD_KEY_NAME TEXT("build")
+
+////////////////////////////////////////////////////////////////////////////////
+
+enum ScriptSource {
+	SCRIPT_SOURCE_BUILTIN,
+	SCRIPT_SOURCE_DOWNLOADED
+};
+
+struct ScriptSourceDef {
+    ScriptSourceDef(Linter linter);
+
+    Linter m_linter;
+
+    ScriptSource m_scriptSource;
+    tstring m_scriptVersion;
+    bool m_bSpecUndefVarErrMsg;
+    tstring m_undefVarErrMsg;
+
+    int GetScriptResourceID();
+    LPCTSTR GetDefaultUndefVarErrMsg();
+    LPCSTR GetNamespace();
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -34,50 +58,20 @@ public:
 	void ReadOptions();
 	void SaveOptions();
 
-	enum JSLintScriptSource {
-		JSLINT_SCRIPT_SOURCE_BUILTIN,
-		JSLINT_SCRIPT_SOURCE_DOWNLOADED
-	};
-
-    JSLintScriptSource GetJSLintScriptSource() { 
-        return m_jsLintScriptSource; 
-    }
-    void SetJSLintScriptSource(JSLintScriptSource jsLintScriptSource) { 
-        m_jsLintScriptSource = jsLintScriptSource; 
-    }
-
-    tstring GetJSLintScriptVersion() { 
-        return m_jsLintScriptVersion; 
-    }
-    void SetJSLintScriptVersion(tstring jsLintScriptVersion) { 
-        m_jsLintScriptVersion = jsLintScriptVersion; 
-    }
-
-    bool GetSpecUndefVarErrMsg() { 
-        return m_bSpecUndefVarErrMsg; 
-    }
-    void SetSpecUndefVarErrMsg(bool bSpecUndefVarErrMsg) { 
-        m_bSpecUndefVarErrMsg = bSpecUndefVarErrMsg; 
-    }
-
-    tstring GetUndefVarErrMsg() { 
-        return m_undefVarErrMsg; 
-    }
-    void SetUndefVarErrMsg(const tstring& undefVarErrMsg) { 
-        m_undefVarErrMsg = undefVarErrMsg; 
-    }
-
     void ShowDialog();
 
-private:
-    JSLintScriptSource m_jsLintScriptSource;
-    tstring m_jsLintScriptVersion;
-    bool m_bSpecUndefVarErrMsg;
-    tstring m_undefVarErrMsg;
+    ScriptSourceDef& GetScriptSource(Linter linter);
 
-    void LoadVersions(HWND hDlg);
+private:
+    ScriptSourceDef m_jsLintScript;
+    ScriptSourceDef m_jsHintScript;
+
+    void LoadVersions(HWND hDlg, int versionsComboBoxID, Linter linter);
     BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate);
     void UpdateControls(HWND hDlg);
+
+	void ReadOptions(const tstring& prefix, ScriptSourceDef& scriptSourceDef);
+	void SaveOptions(const tstring& prefix, const ScriptSourceDef& scriptSourceDef);
 
     static INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPARAM lParam);
 };

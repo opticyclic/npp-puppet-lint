@@ -19,7 +19,6 @@
 #include "Settings.h"
 #include "PluginDefinition.h"
 #include "JSLint.h"
-#include "DownloadJSLint.h"
 #include "resource.h"
 #include "Util.h"
 #include "Version.h"
@@ -27,21 +26,47 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #define PROFILE_SETTINGS_GROUP_NAME TEXT("Settings")
-#define PROFILE_JSLINT_SCRIPT_SOURCE_KEY_NAME TEXT("jslint_script_source")
-#define PROFILE_JSLINT_SCRIPT_SOURCE_BUILTIN TEXT("builtin")
-#define PROFILE_JSLINT_SCRIPT_SOURCE_DOWNLOADED TEXT("downloaded")
-#define PROFILE_JSLINT_SCRIPT_VERSION_KEY_NAME TEXT("jslint_script_version")
-#define PROFILE_SPEC_UNDEF_VAR_ERR_MSG_KEY_NAME TEXT("spec_undef_var_err_msg")
-#define PROFILE_UNDEF_VAR_ERR_MSG_KEY_NAME TEXT("undef_var_err_msg")
+
+#define PROFILE_SCRIPT_SOURCE_KEY_NAME TEXT("_script_source")
+#define PROFILE_SCRIPT_VERSION_KEY_NAME TEXT("_script_version")
+#define PROFILE_SPEC_UNDEF_VAR_ERR_MSG_KEY_NAME TEXT("_spec_undef_var_err_msg")
+#define PROFILE_UNDEF_VAR_ERR_MSG_KEY_NAME TEXT("_undef_var_err_msg")
+
+#define PROFILE_SCRIPT_SOURCE_BUILTIN TEXT("builtin")
+#define PROFILE_SCRIPT_SOURCE_DOWNLOADED TEXT("downloaded")
 
 #define MIN_VERSION_BUILD 110
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Settings::Settings()
-    : m_jsLintScriptSource(JSLINT_SCRIPT_SOURCE_BUILTIN)
+ScriptSourceDef::ScriptSourceDef(Linter linter)
+    : m_linter(linter)
+    , m_scriptSource(SCRIPT_SOURCE_BUILTIN)
     , m_bSpecUndefVarErrMsg(false)
-    , m_undefVarErrMsg(DEFAULT_UNDEF_VAR_ERR_MSG)
+    , m_undefVarErrMsg(GetDefaultUndefVarErrMsg())
+{
+}
+
+int ScriptSourceDef::GetScriptResourceID()
+{
+    return m_linter == LINTER_JSLINT ? IDR_JSLINT : IDR_JSHINT;
+}
+
+LPCTSTR ScriptSourceDef::GetDefaultUndefVarErrMsg()
+{
+    return m_linter == LINTER_JSLINT ? JSLINT_DEFAULT_UNDEF_VAR_ERR_MSG : JSHINT_DEFAULT_UNDEF_VAR_ERR_MSG;
+}
+
+LPCSTR ScriptSourceDef::GetNamespace()
+{
+    return m_linter == LINTER_JSLINT ? "JSLINT" : "JSHINT";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Settings::Settings()
+    : m_jsLintScript(LINTER_JSLINT)
+    , m_jsHintScript(LINTER_JSHINT)
 {
 }
 
@@ -53,6 +78,18 @@ Settings& Settings::GetInstance()
 
 void Settings::ReadOptions()
 {
+    ReadOptions(TEXT("jslint"), m_jsLintScript);
+    ReadOptions(TEXT("jshint"), m_jsHintScript);
+}
+
+void Settings::SaveOptions()
+{
+    SaveOptions(TEXT("jslint"), m_jsLintScript);
+    SaveOptions(TEXT("jshint"), m_jsHintScript);
+}
+
+void Settings::ReadOptions(const tstring& prefix, ScriptSourceDef& scriptSourceDef)
+{
     TCHAR szValue[65536]; // memory is cheap
 
     tstring strConfigFileName = GetConfigFileName();
@@ -62,78 +99,78 @@ void Settings::ReadOptions()
         if (_ttoi(szValue) >= MIN_VERSION_BUILD) {
             if (_ttoi(szValue) >= VERSION_BUILD) {
 	            GetPrivateProfileString(PROFILE_SETTINGS_GROUP_NAME, 
-                    PROFILE_JSLINT_SCRIPT_SOURCE_KEY_NAME,
+                    (prefix + PROFILE_SCRIPT_SOURCE_KEY_NAME).c_str(),
                     NULL, szValue, _countof(szValue), strConfigFileName.c_str());
-                if (_tcscmp(szValue, PROFILE_JSLINT_SCRIPT_SOURCE_DOWNLOADED) == 0) {
-                    m_jsLintScriptSource = JSLINT_SCRIPT_SOURCE_DOWNLOADED;
+                if (_tcscmp(szValue, PROFILE_SCRIPT_SOURCE_DOWNLOADED) == 0) {
+                    scriptSourceDef.m_scriptSource = SCRIPT_SOURCE_DOWNLOADED;
                 } else {
-                    m_jsLintScriptSource = JSLINT_SCRIPT_SOURCE_BUILTIN;
+                    scriptSourceDef.m_scriptSource = SCRIPT_SOURCE_BUILTIN;
                 }
             } else {
                 // if old config switch to builtin source
-                m_jsLintScriptSource = JSLINT_SCRIPT_SOURCE_BUILTIN;
+                scriptSourceDef.m_scriptSource = SCRIPT_SOURCE_BUILTIN;
             }
 
 	        GetPrivateProfileString(PROFILE_SETTINGS_GROUP_NAME, 
-                PROFILE_JSLINT_SCRIPT_VERSION_KEY_NAME,
+                (prefix + PROFILE_SCRIPT_VERSION_KEY_NAME).c_str(),
                 NULL, szValue, _countof(szValue), strConfigFileName.c_str());
-            m_jsLintScriptVersion = szValue;
+            scriptSourceDef.m_scriptVersion = szValue;
 
 	        GetPrivateProfileString(PROFILE_SETTINGS_GROUP_NAME, 
-                PROFILE_SPEC_UNDEF_VAR_ERR_MSG_KEY_NAME,
+                (prefix + PROFILE_SPEC_UNDEF_VAR_ERR_MSG_KEY_NAME).c_str(),
                 NULL, szValue, _countof(szValue), strConfigFileName.c_str());
-            m_bSpecUndefVarErrMsg = _tcscmp(szValue, TEXT("true")) == 0;
+            scriptSourceDef.m_bSpecUndefVarErrMsg = _tcscmp(szValue, TEXT("true")) == 0;
 
 	        GetPrivateProfileString(PROFILE_SETTINGS_GROUP_NAME, 
-                PROFILE_UNDEF_VAR_ERR_MSG_KEY_NAME,
+                (prefix + PROFILE_UNDEF_VAR_ERR_MSG_KEY_NAME).c_str(),
                 NULL, szValue, _countof(szValue), strConfigFileName.c_str());
             if (_tcslen(szValue) > 0) {
-                m_undefVarErrMsg = szValue;
+                scriptSourceDef.m_undefVarErrMsg = szValue;
             } else {
-                m_undefVarErrMsg = DEFAULT_UNDEF_VAR_ERR_MSG;
+                scriptSourceDef.m_undefVarErrMsg = scriptSourceDef.GetDefaultUndefVarErrMsg();
             }
         }
     }
 }
 
-void Settings::SaveOptions()
+void Settings::SaveOptions(const tstring& prefix, const ScriptSourceDef& scriptSourceDef)
 {
 	tstring strConfigFileName = GetConfigFileName();
 
     WritePrivateProfileString(PROFILE_JSLINT_GROUP_NAME, PROFILE_BUILD_KEY_NAME,
         STR(VERSION_BUILD), strConfigFileName.c_str());
 
-    if (m_jsLintScriptSource == JSLINT_SCRIPT_SOURCE_BUILTIN) {
+    if (scriptSourceDef.m_scriptSource == SCRIPT_SOURCE_BUILTIN) {
         WritePrivateProfileString(PROFILE_SETTINGS_GROUP_NAME, 
-            PROFILE_JSLINT_SCRIPT_SOURCE_KEY_NAME,
-            PROFILE_JSLINT_SCRIPT_SOURCE_BUILTIN, strConfigFileName.c_str());
+            (prefix + PROFILE_SCRIPT_SOURCE_KEY_NAME).c_str(),
+            PROFILE_SCRIPT_SOURCE_BUILTIN, strConfigFileName.c_str());
     } else {
         WritePrivateProfileString(PROFILE_SETTINGS_GROUP_NAME, 
-            PROFILE_JSLINT_SCRIPT_SOURCE_KEY_NAME,
-            PROFILE_JSLINT_SCRIPT_SOURCE_DOWNLOADED, strConfigFileName.c_str());
+            (prefix + PROFILE_SCRIPT_SOURCE_KEY_NAME).c_str(),
+            PROFILE_SCRIPT_SOURCE_DOWNLOADED, strConfigFileName.c_str());
     }
 
     WritePrivateProfileString(PROFILE_SETTINGS_GROUP_NAME, 
-        PROFILE_JSLINT_SCRIPT_VERSION_KEY_NAME,
-        m_jsLintScriptVersion.c_str(), strConfigFileName.c_str());
+        (prefix + PROFILE_SCRIPT_VERSION_KEY_NAME).c_str(),
+        scriptSourceDef.m_scriptVersion.c_str(), strConfigFileName.c_str());
 
     WritePrivateProfileString(PROFILE_SETTINGS_GROUP_NAME, 
-        PROFILE_SPEC_UNDEF_VAR_ERR_MSG_KEY_NAME,
-        m_bSpecUndefVarErrMsg ? TEXT("true") : TEXT("false"), 
+        (prefix + PROFILE_SPEC_UNDEF_VAR_ERR_MSG_KEY_NAME).c_str(),
+        scriptSourceDef.m_bSpecUndefVarErrMsg ? TEXT("true") : TEXT("false"), 
         strConfigFileName.c_str());
 
     WritePrivateProfileString(PROFILE_SETTINGS_GROUP_NAME, 
-        PROFILE_UNDEF_VAR_ERR_MSG_KEY_NAME,
-        m_undefVarErrMsg.c_str(), strConfigFileName.c_str());
+        (prefix + PROFILE_UNDEF_VAR_ERR_MSG_KEY_NAME).c_str(),
+        scriptSourceDef.m_undefVarErrMsg.c_str(), strConfigFileName.c_str());
 }
 
-void Settings::LoadVersions(HWND hDlg)
+void Settings::LoadVersions(HWND hDlg, int versionsComboBoxID, Linter linter)
 {
-    ComboBox_ResetContent(GetDlgItem(hDlg, IDC_JSLINT_SCRIPT_VERSION));
+    ComboBox_ResetContent(GetDlgItem(hDlg, versionsComboBoxID));
 
-    const map<tstring, JSLintVersion>& versions = DownloadJSLint::GetInstance().GetVersions();
+    const map<tstring, JSLintVersion>& versions = DownloadJSLint::GetInstance().GetVersions(linter);
     for (map<tstring, JSLintVersion>::const_iterator it = versions.begin(); it != versions.end(); ++it) {
-        ComboBox_AddString(GetDlgItem(hDlg, IDC_JSLINT_SCRIPT_VERSION), it->first.c_str());
+        ComboBox_AddString(GetDlgItem(hDlg, versionsComboBoxID), it->first.c_str());
     }
 }
 
@@ -141,9 +178,9 @@ BOOL Settings::UpdateOptions(HWND hDlg, bool bSaveOrValidate)
 {
     if (bSaveOrValidate) {
         if (IsDlgButtonChecked(hDlg, IDC_RADIO1)) {
-            SetJSLintScriptSource(Settings::JSLINT_SCRIPT_SOURCE_BUILTIN);
+            m_jsLintScript.m_scriptSource = SCRIPT_SOURCE_BUILTIN;
         } else {
-            SetJSLintScriptSource(Settings::JSLINT_SCRIPT_SOURCE_DOWNLOADED);
+            m_jsLintScript.m_scriptSource = SCRIPT_SOURCE_DOWNLOADED;
 
             int nCurSel = ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_JSLINT_SCRIPT_VERSION));
             if (nCurSel == CB_ERR) {
@@ -153,41 +190,92 @@ BOOL Settings::UpdateOptions(HWND hDlg, bool bSaveOrValidate)
 			    SetFocus(GetDlgItem(hDlg, IDC_JSLINT_SCRIPT_VERSION));
                 return FALSE;
             }
-            SetJSLintScriptVersion(GetWindowText(GetDlgItem(hDlg, IDC_JSLINT_SCRIPT_VERSION)));
+            m_jsLintScript.m_scriptVersion = GetWindowText(GetDlgItem(hDlg, IDC_JSLINT_SCRIPT_VERSION));
 
-            if (IsDlgButtonChecked(hDlg, IDC_SPEC_UNDEF_VAR_ERR_MSG)) {
-                SetSpecUndefVarErrMsg(true);
+            if (IsDlgButtonChecked(hDlg, IDC_JSLINT_SPEC_UNDEF_VAR_ERR_MSG)) {
+                m_jsLintScript.m_bSpecUndefVarErrMsg = true;
                 
-                tstring undefVarErrMsg = GetWindowText(GetDlgItem(hDlg, IDC_UNDEF_VAR_ERR_MSG));
+                tstring undefVarErrMsg = GetWindowText(GetDlgItem(hDlg, IDC_JSLINT_UNDEF_VAR_ERR_MSG));
                 if (undefVarErrMsg.empty()) {
 				    MessageBox(hDlg,
                         TEXT("Please enter 'undefined variable' error message text!"),
                         TEXT("JSLint"), MB_OK | MB_ICONERROR);
-				    SetFocus(GetDlgItem(hDlg, IDC_UNDEF_VAR_ERR_MSG));
+				    SetFocus(GetDlgItem(hDlg, IDC_JSLINT_UNDEF_VAR_ERR_MSG));
                     return FALSE;
                 }
-                SetUndefVarErrMsg(undefVarErrMsg);
+                m_jsLintScript.m_undefVarErrMsg = undefVarErrMsg;
             } else {
-                SetSpecUndefVarErrMsg(false);
+                m_jsLintScript.m_bSpecUndefVarErrMsg = false;
             }
         }
     } else {
-        if (GetJSLintScriptSource() == Settings::JSLINT_SCRIPT_SOURCE_BUILTIN) {
+        if (m_jsLintScript.m_scriptSource == SCRIPT_SOURCE_BUILTIN) {
             CheckRadioButton(hDlg, IDC_RADIO1, IDC_RADIO2, IDC_RADIO1);
         } else {
             CheckRadioButton(hDlg, IDC_RADIO1, IDC_RADIO2, IDC_RADIO2);
         }
 
-        ComboBox_SelectString(GetDlgItem(hDlg, IDC_JSLINT_SCRIPT_VERSION), -1,  GetJSLintScriptVersion().c_str());
+        ComboBox_SelectString(GetDlgItem(hDlg, IDC_JSLINT_SCRIPT_VERSION), -1,  m_jsLintScript.m_scriptVersion.c_str());
 
-        if (GetSpecUndefVarErrMsg()) {
-            CheckDlgButton(hDlg, IDC_SPEC_UNDEF_VAR_ERR_MSG, BST_CHECKED);
+        if (m_jsLintScript.m_bSpecUndefVarErrMsg) {
+            CheckDlgButton(hDlg, IDC_JSLINT_SPEC_UNDEF_VAR_ERR_MSG, BST_CHECKED);
         } else {
-            CheckDlgButton(hDlg, IDC_SPEC_UNDEF_VAR_ERR_MSG, BST_UNCHECKED);
+            CheckDlgButton(hDlg, IDC_JSLINT_SPEC_UNDEF_VAR_ERR_MSG, BST_UNCHECKED);
         }
 
-        SetWindowText(GetDlgItem(hDlg, IDC_UNDEF_VAR_ERR_MSG), 
-            GetUndefVarErrMsg().c_str());
+        SetWindowText(GetDlgItem(hDlg, IDC_JSLINT_UNDEF_VAR_ERR_MSG), 
+            m_jsLintScript.m_undefVarErrMsg.c_str());
+    }
+
+    if (bSaveOrValidate) {
+        if (IsDlgButtonChecked(hDlg, IDC_RADIO3)) {
+            m_jsHintScript.m_scriptSource = SCRIPT_SOURCE_BUILTIN;
+        } else {
+            m_jsHintScript.m_scriptSource = SCRIPT_SOURCE_DOWNLOADED;
+
+            int nCurSel = ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_JSHINT_SCRIPT_VERSION));
+            if (nCurSel == CB_ERR) {
+			    MessageBox(hDlg,
+                    TEXT("Please select JSHint script version!"),
+                    TEXT("JSLint"), MB_OK | MB_ICONERROR);
+			    SetFocus(GetDlgItem(hDlg, IDC_JSHINT_SCRIPT_VERSION));
+                return FALSE;
+            }
+            m_jsHintScript.m_scriptVersion = GetWindowText(GetDlgItem(hDlg, IDC_JSHINT_SCRIPT_VERSION));
+
+            if (IsDlgButtonChecked(hDlg, IDC_JSHINT_SPEC_UNDEF_VAR_ERR_MSG)) {
+                m_jsHintScript.m_bSpecUndefVarErrMsg = true;
+                
+                tstring undefVarErrMsg = GetWindowText(GetDlgItem(hDlg, IDC_JSHINT_UNDEF_VAR_ERR_MSG));
+                if (undefVarErrMsg.empty()) {
+				    MessageBox(hDlg,
+                        TEXT("Please enter 'undefined variable' error message text!"),
+                        TEXT("JSLint"), MB_OK | MB_ICONERROR);
+				    SetFocus(GetDlgItem(hDlg, IDC_JSHINT_UNDEF_VAR_ERR_MSG));
+                    return FALSE;
+                }
+                m_jsHintScript.m_undefVarErrMsg = undefVarErrMsg;
+            } else {
+                m_jsHintScript.m_bSpecUndefVarErrMsg = false;
+            }
+        }
+    } else {
+        if (m_jsHintScript.m_scriptSource == SCRIPT_SOURCE_BUILTIN) {
+            CheckRadioButton(hDlg, IDC_RADIO3, IDC_RADIO4, IDC_RADIO3);
+        } else {
+            CheckRadioButton(hDlg, IDC_RADIO3, IDC_RADIO4, IDC_RADIO4);
+        }
+
+        ComboBox_SelectString(GetDlgItem(hDlg, IDC_JSHINT_SCRIPT_VERSION), -1,  m_jsHintScript.m_scriptVersion.c_str());
+
+        if (m_jsHintScript.m_bSpecUndefVarErrMsg) {
+            CheckDlgButton(hDlg, IDC_JSHINT_SPEC_UNDEF_VAR_ERR_MSG, BST_CHECKED);
+        } else {
+            CheckDlgButton(hDlg, IDC_JSHINT_SPEC_UNDEF_VAR_ERR_MSG, BST_UNCHECKED);
+        }
+
+        SetWindowText(GetDlgItem(hDlg, IDC_JSHINT_UNDEF_VAR_ERR_MSG), 
+            m_jsHintScript.m_undefVarErrMsg.c_str());
     }
 
     return TRUE;
@@ -195,14 +283,23 @@ BOOL Settings::UpdateOptions(HWND hDlg, bool bSaveOrValidate)
 
 void Settings::UpdateControls(HWND hDlg)
 {
-    BOOL bDownload = IsDlgButtonChecked(hDlg, IDC_RADIO2);
+    BOOL bDownload;
+
+    bDownload = IsDlgButtonChecked(hDlg, IDC_RADIO2);
     EnableWindow(GetDlgItem(hDlg, IDC_JSLINT_SCRIPT_VERSION_LABEL), bDownload);
     EnableWindow(GetDlgItem(hDlg, IDC_JSLINT_SCRIPT_VERSION), bDownload);
-    EnableWindow(GetDlgItem(hDlg, IDC_DOWNLOAD_LATEST), bDownload);
-    EnableWindow(GetDlgItem(hDlg, IDC_SPEC_UNDEF_VAR_ERR_MSG), bDownload);
-    EnableWindow(GetDlgItem(hDlg, IDC_UNDEF_VAR_ERR_MSG), bDownload);
-    EnableWindow(GetDlgItem(hDlg, IDC_UNDEF_VAR_ERR_MSG), bDownload &&
-        IsDlgButtonChecked(hDlg, IDC_SPEC_UNDEF_VAR_ERR_MSG));
+    EnableWindow(GetDlgItem(hDlg, IDC_JSLINT_DOWNLOAD_LATEST), bDownload);
+    EnableWindow(GetDlgItem(hDlg, IDC_JSLINT_SPEC_UNDEF_VAR_ERR_MSG), bDownload);
+    EnableWindow(GetDlgItem(hDlg, IDC_JSLINT_UNDEF_VAR_ERR_MSG), bDownload &&
+        IsDlgButtonChecked(hDlg, IDC_JSLINT_SPEC_UNDEF_VAR_ERR_MSG));
+
+    bDownload = IsDlgButtonChecked(hDlg, IDC_RADIO4);
+    EnableWindow(GetDlgItem(hDlg, IDC_JSHINT_SCRIPT_VERSION_LABEL), bDownload);
+    EnableWindow(GetDlgItem(hDlg, IDC_JSHINT_SCRIPT_VERSION), bDownload);
+    EnableWindow(GetDlgItem(hDlg, IDC_JSHINT_DOWNLOAD_LATEST), bDownload);
+    EnableWindow(GetDlgItem(hDlg, IDC_JSHINT_SPEC_UNDEF_VAR_ERR_MSG), bDownload);
+    EnableWindow(GetDlgItem(hDlg, IDC_JSHINT_UNDEF_VAR_ERR_MSG), bDownload &&
+        IsDlgButtonChecked(hDlg, IDC_JSHINT_SPEC_UNDEF_VAR_ERR_MSG));
 }
 
 INT_PTR CALLBACK Settings::DlgProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPARAM lParam)
@@ -211,7 +308,8 @@ INT_PTR CALLBACK Settings::DlgProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPAR
 
     if (uMessage == WM_INITDIALOG) {
         settings = GetInstance();
-        settings.LoadVersions(hDlg);
+        settings.LoadVersions(hDlg, IDC_JSLINT_SCRIPT_VERSION, LINTER_JSLINT);
+        settings.LoadVersions(hDlg, IDC_JSHINT_SCRIPT_VERSION, LINTER_JSHINT);
         settings.UpdateOptions(hDlg, false);
         settings.UpdateControls(hDlg);
         CenterWindow(hDlg, g_nppData._nppHandle);
@@ -222,15 +320,33 @@ INT_PTR CALLBACK Settings::DlgProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPAR
 		    switch (LOWORD(wParam)) {
                 case IDC_RADIO1:
                 case IDC_RADIO2:
-                case IDC_SPEC_UNDEF_VAR_ERR_MSG:
+                case IDC_JSLINT_SPEC_UNDEF_VAR_ERR_MSG:
+                case IDC_RADIO3:
+                case IDC_RADIO4:
+                case IDC_JSHINT_SPEC_UNDEF_VAR_ERR_MSG:
                     settings.UpdateControls(hDlg);
                     break;
-                case IDC_DOWNLOAD_LATEST:
-                    switch (DownloadJSLint::GetInstance().DownloadLatest(latestVersion)) {
+                case IDC_JSLINT_DOWNLOAD_LATEST:
+                    switch (DownloadJSLint::GetInstance().DownloadLatest(LINTER_JSLINT, latestVersion)) {
                         case DownloadJSLint::DOWNLOAD_OK:
-                            settings.LoadVersions(hDlg);
+                            settings.LoadVersions(hDlg, IDC_JSLINT_SCRIPT_VERSION, LINTER_JSLINT);
                             ComboBox_SelectString(GetDlgItem(hDlg, IDC_JSLINT_SCRIPT_VERSION),
-                                -1,  latestVersion.c_str());
+                                -1, latestVersion.c_str());
+                            break;
+                        case DownloadJSLint::DOWNLOAD_NO_NEW_VERSION:
+                            MessageBox(hDlg, TEXT("You already have the latest version!"), TEXT("JSLint"), MB_OK | MB_ICONEXCLAMATION);
+                            break;
+                        case DownloadJSLint::DOWNLOAD_FAILED:
+                            MessageBox(hDlg, TEXT("Download error!"), TEXT("JSLint"), MB_OK | MB_ICONERROR);
+                            break;
+                    }
+                    break;
+                case IDC_JSHINT_DOWNLOAD_LATEST:
+                    switch (DownloadJSLint::GetInstance().DownloadLatest(LINTER_JSHINT, latestVersion)) {
+                        case DownloadJSLint::DOWNLOAD_OK:
+                            settings.LoadVersions(hDlg, IDC_JSHINT_SCRIPT_VERSION, LINTER_JSHINT);
+                            ComboBox_SelectString(GetDlgItem(hDlg, IDC_JSHINT_SCRIPT_VERSION),
+                                -1, latestVersion.c_str());
                             break;
                         case DownloadJSLint::DOWNLOAD_NO_NEW_VERSION:
                             MessageBox(hDlg, TEXT("You already have the latest version!"), TEXT("JSLint"), MB_OK | MB_ICONEXCLAMATION);
@@ -267,4 +383,9 @@ INT_PTR CALLBACK Settings::DlgProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPAR
 void Settings::ShowDialog()
 {
 	pluginDialogBox(IDD_SETTINGS, DlgProc);
+}
+
+ScriptSourceDef& Settings::GetScriptSource(Linter linter)
+{
+    return linter == LINTER_JSLINT ? m_jsLintScript : m_jsHintScript;
 }

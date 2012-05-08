@@ -11,8 +11,8 @@ JSLint Copyright 2002 Douglas Crockford.
 
 = Release Notes =
 
-This is beta version. Tested and works with Notepad++ version 5.7+; it also 
-may work with older versions.
+Tested and works with Notepad++ version 5.7+; it also may work with older
+versions.
 
 = Installation =
 
@@ -40,6 +40,11 @@ JSLintNpp.dll  - Unicode version of plugin
 JSLintNppA.dll - ANSI version of plugin
 
 = History =
+
+0.8.0
+    - JSHint is now supported (choose between original JSLint and JSHint
+      in JSLint Options dialog).
+    - JSLint script updated to version from 2012-04-15
 
 0.7.4
     - JSLint script updated to version from 2012-03-15

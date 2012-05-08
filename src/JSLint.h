@@ -23,7 +23,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#define DEFAULT_UNDEF_VAR_ERR_MSG TEXT("'%s' was used before it was defined.")
+#define JSLINT_DEFAULT_UNDEF_VAR_ERR_MSG TEXT("'%s' was used before it was defined.")
+#define JSHINT_DEFAULT_UNDEF_VAR_ERR_MSG TEXT("'%s' is not defined.")
 
 ////////////////////////////////////////////////////////////////////////////////
 

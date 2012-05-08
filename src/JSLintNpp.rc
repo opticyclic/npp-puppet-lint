@@ -37,63 +37,25 @@ BEGIN
     CONTROL         "",IDC_UNUSED_LIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,165,57,151,117
 END
 
-IDD_JSLINT_OPTIONS DIALOGEX 0, 0, 398, 316
+IDD_OPTIONS DIALOGEX 0, 0, 398, 336
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "JSLint Options"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "Assume console, alert, ...",IDC_CHECK_DEVEL,"Button",BS_3STATE | WS_TABSTOP,7,7,99,10
-    CONTROL         "Assume a browser",IDC_CHECK_BROWSER,"Button",BS_3STATE | WS_TABSTOP,7,20,75,10
-    CONTROL         "Assume Node.js",IDC_CHECK_NODE,"Button",BS_3STATE | WS_TABSTOP,7,33,67,10
-    CONTROL         "Assume Rhino",IDC_CHECK_RHINO,"Button",BS_3STATE | WS_TABSTOP,7,46,61,10
-    CONTROL         "Assume a Yahoo Widget",IDC_CHECK_WIDGET,"Button",BS_3STATE | WS_TABSTOP,7,59,93,10
-    CONTROL         "Assume Windows",IDC_CHECK_WINDOWS,"Button",BS_3STATE | WS_TABSTOP,7,72,71,10
-    CONTROL         "Stop on first error",IDC_CHECK_PASSFAIL,"Button",BS_3STATE | WS_TABSTOP,7,98,73,10
-    CONTROL         "Safe Subset",IDC_CHECK_SAFE,"Button",BS_3STATE | WS_TABSTOP,7,124,55,10
-    CONTROL         "Verify ADsafe",IDC_CHECK_ADSAFE,"Button",BS_3STATE | WS_TABSTOP,7,137,60,10
-    CONTROL         "Tolerate bitwise operators",IDC_CHECK_BITWISE,"Button",BS_3STATE | WS_TABSTOP,110,7,100,10
-    CONTROL         "Tolerate continue",IDC_CHECK_CONTINUE,"Button",BS_3STATE | WS_TABSTOP,110,20,72,10
-    CONTROL         "Tolerate debugger statements",IDC_CHECK_DEBUG,"Button",BS_3STATE | WS_TABSTOP,110,33,113,10
-    CONTROL         "Tolerate == and !=",IDC_CHECK_EQEQ,"Button",BS_3STATE | WS_TABSTOP,110,46,79,10
-    CONTROL         "Tolerate ES5 syntax",IDC_CHECK_ES5,"Button",BS_3STATE | WS_TABSTOP,110,59,81,10
-    CONTROL         "Tolerate eval",IDC_CHECK_EVIL,"Button",BS_3STATE | WS_TABSTOP,110,72,58,10
-    CONTROL         "Tolerate unfiltered for in",IDC_CHECK_FORIN,"Button",BS_3STATE | WS_TABSTOP,110,85,94,10
-    CONTROL         "Tolerate uncapitalized constructors",IDC_CHECK_NEWCAP,
-                    "Button",BS_3STATE | WS_TABSTOP,110,98,128,10
-    CONTROL         "Tolerate dangling _ in identifiers",IDC_CHECK_NOMEN,
-                    "Button",BS_3STATE | WS_TABSTOP,110,111,118,10
-    CONTROL         "Tolerate ++ and --",IDC_CHECK_PLUSPLUS,"Button",BS_3STATE | WS_TABSTOP,110,124,77,10
-    CONTROL         "Tolerate . and [^...] in /RegExp/",IDC_CHECK_REGEXP,
-                    "Button",BS_3STATE | WS_TABSTOP,110,137,121,10
-    CONTROL         "Tolerate misordered definitions",IDC_CHECK_UNDEF,"Button",BS_3STATE | WS_TABSTOP,238,7,115,10
-    CONTROL         "Tolerate unused parameters",IDC_CHECK_UNPARAM,"Button",BS_3STATE | WS_TABSTOP,238,20,107,10
-    CONTROL         "Tolerate missing 'use strict' pragma",IDC_CHECK_SLOPPY,
-                    "Button",BS_3STATE | WS_TABSTOP,238,33,127,10
-    CONTROL         "Tolerate inefficient subscripting",IDC_CHECK_SUB,"Button",BS_3STATE | WS_TABSTOP,238,46,116,10
-    CONTROL         "Tolerate many var statements per function",IDC_CHECK_VARS,
-                    "Button",BS_3STATE | WS_TABSTOP,238,59,153,10
-    CONTROL         "Tolerate messy white space",IDC_CHECK_WHITE,"Button",BS_3STATE | WS_TABSTOP,238,72,105,10
-    CONTROL         "Tolerate CSS workarounds",IDC_CHECK_CSS,"Button",BS_3STATE | WS_TABSTOP,238,98,101,10
-    CONTROL         "Tolerate HTML case",IDC_CHECK_CAP,"Button",BS_3STATE | WS_TABSTOP,238,111,79,10
-    CONTROL         "Tolerate HTML event handlers",IDC_CHECK_ON,"Button",BS_3STATE | WS_TABSTOP,238,124,112,10
-    CONTROL         "Tolerate HTML fragments",IDC_CHECK_FRAGMENT,"Button",BS_3STATE | WS_TABSTOP,238,137,97,10
-    LTEXT           "Indentation:",IDC_STATIC,7,153,41,8
-    EDITTEXT        IDC_IDENT,110,151,40,14,ES_AUTOHSCROLL
-    LTEXT           "Maximum line &length:",IDC_STATIC,7,171,68,8
-    EDITTEXT        IDC_MAXLEN,110,169,40,14,ES_AUTOHSCROLL
-    LTEXT           "Maximum number of &errors:",IDC_STATIC,7,189,89,8
-    EDITTEXT        IDC_MAXERR,110,187,40,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_PREVIEW,7,205,384,28,ES_MULTILINE | ES_READONLY | WS_VSCROLL
-    PUSHBUTTON      "&Clear All Options",IDC_CLEAR_ALL,323,237,68,14
-    LTEXT           "Predefined (, separated):",IDC_STATIC,7,257,83,8
-    EDITTEXT        IDC_PREDEFINED,95,255,296,14,ES_AUTOHSCROLL
-    LTEXT           "Additional options:",IDC_STATIC,7,275,60,8
-    EDITTEXT        IDC_ADDITIONAL_OPTIONS,95,273,296,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,287,295,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,341,295,50,14
+    LTEXT           "Choose JavaScript lint tool:",IDC_STATIC,7,9,88,8
+    COMBOBOX        IDC_SELECTED_LINTER,110,7,50,149,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_OPTIONS_PLACEHOLDER,"Static",SS_BLACKRECT | NOT WS_VISIBLE,7,26,384,192
+    EDITTEXT        IDC_PREVIEW,7,225,384,28,ES_MULTILINE | ES_READONLY | WS_VSCROLL
+    PUSHBUTTON      "&Clear All Options",IDC_CLEAR_ALL,323,257,68,14
+    LTEXT           "Predefined (, separated):",IDC_STATIC,7,277,83,8
+    EDITTEXT        IDC_PREDEFINED,95,275,296,14,ES_AUTOHSCROLL
+    LTEXT           "Additional options:",IDC_STATIC,7,295,60,8
+    EDITTEXT        IDC_ADDITIONAL_OPTIONS,95,293,296,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,287,315,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,341,315,50,14
 END
 
-IDD_ABOUT DIALOGEX 0, 0, 201, 148
+IDD_ABOUT DIALOGEX 0, 0, 201, 187
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -106,39 +68,135 @@ BEGIN
     CTEXT           "JSLint",IDC_STATIC,7,57,187,8
     CTEXT           "Copyright 2002 Douglas Crockford",IDC_STATIC,7,67,187,8
     CONTROL         "<a href=""http://www.jslint.com"">http://www.jslint.com</a>",IDC_SYSLINK2,
-                    "SysLink",WS_TABSTOP,65,76,71,14
-    CTEXT           "Special thanks to:",IDC_STATIC,7,97,187,8
-    CTEXT           "Douglas Crockford for JSLint",IDC_STATIC,7,107,187,8
-    DEFPUSHBUTTON   "OK",IDOK,76,127,50,14
+                    "SysLink",WS_TABSTOP,65,77,71,14
+    CTEXT           "Special thanks to:",IDC_STATIC,7,137,187,8
+    CTEXT           "Douglas Crockford for JSLint",IDC_STATIC,7,147,187,8
+    DEFPUSHBUTTON   "OK",IDOK,76,166,50,14
+    CTEXT           "by JSHint Community",IDC_STATIC,7,107,187,8
+    CONTROL         "<a href=""http://www.jslint.com"">http://www.jslint.com</a>",IDC_SYSLINK3,
+                    "SysLink",WS_TABSTOP,65,117,71,14
+    CTEXT           "JSHint",IDC_STATIC,7,97,187,8
 END
 
-IDD_SETTINGS DIALOGEX 0, 0, 279, 126
+IDD_SETTINGS DIALOGEX 0, 0, 279, 217
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Settings"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "JSLint script source",IDC_STATIC,7,7,265,90
-    CONTROL         "&Builtin",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,20,35,10
+    CONTROL         "&Built-in",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,20,37,10
     CONTROL         "&Downloaded from GitHub",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,14,32,95,10
     LTEXT           "&Version:",IDC_JSLINT_SCRIPT_VERSION_LABEL,25,48,27,8
     COMBOBOX        IDC_JSLINT_SCRIPT_VERSION,56,46,123,167,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "Download &Latest ...",IDC_DOWNLOAD_LATEST,183,46,80,14
-    CONTROL         "&Specify 'undefined variable' error message text",IDC_SPEC_UNDEF_VAR_ERR_MSG,
+    PUSHBUTTON      "Download &Latest ...",IDC_JSLINT_DOWNLOAD_LATEST,183,46,80,14
+    CONTROL         "&Specify 'undefined variable' error message text",IDC_JSLINT_SPEC_UNDEF_VAR_ERR_MSG,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,64,167,10
-    EDITTEXT        IDC_UNDEF_VAR_ERR_MSG,36,76,227,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,168,105,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,222,105,50,14
+    EDITTEXT        IDC_JSLINT_UNDEF_VAR_ERR_MSG,36,76,227,14,ES_AUTOHSCROLL
+    GROUPBOX        "JSHint script source",IDC_STATIC,7,101,265,90
+    CONTROL         "B&uilt-in",IDC_RADIO3,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,115,37,10
+    CONTROL         "D&ownloaded from GitHub",IDC_RADIO4,"Button",BS_AUTORADIOBUTTON,14,126,95,10
+    LTEXT           "V&ersion:",IDC_JSHINT_SCRIPT_VERSION_LABEL,25,142,27,8
+    COMBOBOX        IDC_JSHINT_SCRIPT_VERSION,56,141,123,167,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Download L&atest ...",IDC_JSHINT_DOWNLOAD_LATEST,183,141,80,14
+    CONTROL         "S&pecify 'undefined variable' error message text",IDC_JSHINT_SPEC_UNDEF_VAR_ERR_MSG,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,25,158,167,10
+    EDITTEXT        IDC_JSHINT_UNDEF_VAR_ERR_MSG,36,171,227,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,168,196,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,222,196,50,14
 END
 
-IDD_JSLINT_DOWNLOAD_PROGRESS DIALOGEX 0, 0, 316, 34
+IDD_DOWNLOAD_PROGRESS DIALOGEX 0, 0, 316, 34
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Downloading JSLint Script"
+CAPTION "Downloading %s Script"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Download URL:",IDC_STATIC,7,7,50,8
     LTEXT           "Static",IDC_URL,61,7,248,8,SS_PATHELLIPSIS
     LTEXT           "Progress:",IDC_STATIC,7,19,32,8
     LTEXT           "Static",IDC_PROGRESS,61,19,248,8
+END
+
+IDD_JSLINT_OPTIONS DIALOGEX 0, 0, 384, 192
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Assume console, alert, ...",IDC_CHECK_DEVEL,"Button",BS_3STATE | WS_TABSTOP,0,0,99,10
+    CONTROL         "Assume a browser",IDC_CHECK_BROWSER,"Button",BS_3STATE | WS_TABSTOP,0,12,75,10
+    CONTROL         "Assume Node.js",IDC_CHECK_NODE,"Button",BS_3STATE | WS_TABSTOP,0,24,67,10
+    CONTROL         "Assume Rhino",IDC_CHECK_RHINO,"Button",BS_3STATE | WS_TABSTOP,0,37,61,10
+    CONTROL         "Assume a Yahoo Widget",IDC_CHECK_WIDGET,"Button",BS_3STATE | WS_TABSTOP,0,50,93,10
+    CONTROL         "Assume Windows",IDC_CHECK_WINDOWS,"Button",BS_3STATE | WS_TABSTOP,0,63,71,10
+    CONTROL         "Stop on first error",IDC_CHECK_PASSFAIL,"Button",BS_3STATE | WS_TABSTOP,0,89,73,10
+    CONTROL         "Safe Subset",IDC_CHECK_SAFE,"Button",BS_3STATE | WS_TABSTOP,0,116,55,10
+    CONTROL         "Verify ADsafe",IDC_CHECK_ADSAFE,"Button",BS_3STATE | WS_TABSTOP,0,128,60,10
+    CONTROL         "Tolerate bitwise operators",IDC_CHECK_BITWISE,"Button",BS_3STATE | WS_TABSTOP,103,0,100,10
+    CONTROL         "Tolerate continue",IDC_CHECK_CONTINUE,"Button",BS_3STATE | WS_TABSTOP,103,12,72,10
+    CONTROL         "Tolerate debugger statements",IDC_CHECK_DEBUG,"Button",BS_3STATE | WS_TABSTOP,103,24,113,10
+    CONTROL         "Tolerate == and !=",IDC_CHECK_EQEQ,"Button",BS_3STATE | WS_TABSTOP,103,37,79,10
+    CONTROL         "Tolerate ES5 syntax",IDC_CHECK_ES5,"Button",BS_3STATE | WS_TABSTOP,103,50,81,10
+    CONTROL         "Tolerate eval",IDC_CHECK_EVIL,"Button",BS_3STATE | WS_TABSTOP,103,63,58,10
+    CONTROL         "Tolerate unfiltered for in",IDC_CHECK_FORIN,"Button",BS_3STATE | WS_TABSTOP,103,76,94,10
+    CONTROL         "Tolerate uncapitalized constructors",IDC_CHECK_NEWCAP,
+                    "Button",BS_3STATE | WS_TABSTOP,103,89,128,10
+    CONTROL         "Tolerate dangling _ in identifiers",IDC_CHECK_NOMEN,
+                    "Button",BS_3STATE | WS_TABSTOP,103,102,118,10
+    CONTROL         "Tolerate ++ and --",IDC_CHECK_PLUSPLUS,"Button",BS_3STATE | WS_TABSTOP,103,116,77,10
+    CONTROL         "Tolerate . and [^...] in /RegExp/",IDC_CHECK_REGEXP,
+                    "Button",BS_3STATE | WS_TABSTOP,103,128,121,10
+    CONTROL         "Tolerate misordered definitions",IDC_CHECK_UNDEF,"Button",BS_3STATE | WS_TABSTOP,231,0,115,10
+    CONTROL         "Tolerate unused parameters",IDC_CHECK_UNPARAM,"Button",BS_3STATE | WS_TABSTOP,231,12,107,10
+    CONTROL         "Tolerate missing 'use strict' pragma",IDC_CHECK_SLOPPY,
+                    "Button",BS_3STATE | WS_TABSTOP,231,24,127,10
+    CONTROL         "Tolerate stupidity",IDC_CHECK_STUPID,"Button",BS_3STATE | WS_TABSTOP,231,37,72,10
+    CONTROL         "Tolerate inefficient subscripting",IDC_CHECK_SUB,"Button",BS_3STATE | WS_TABSTOP,231,50,116,10
+    CONTROL         "Tolerate many var statements per function",IDC_CHECK_VARS,
+                    "Button",BS_3STATE | WS_TABSTOP,231,63,153,10
+    CONTROL         "Tolerate messy white space",IDC_CHECK_WHITE,"Button",BS_3STATE | WS_TABSTOP,231,76,105,10
+    CONTROL         "Tolerate CSS workarounds",IDC_CHECK_CSS,"Button",BS_3STATE | WS_TABSTOP,231,89,101,10
+    CONTROL         "Tolerate HTML case",IDC_CHECK_CAP,"Button",BS_3STATE | WS_TABSTOP,231,102,79,10
+    CONTROL         "Tolerate HTML event handlers",IDC_CHECK_ON,"Button",BS_3STATE | WS_TABSTOP,231,116,112,10
+    CONTROL         "Tolerate HTML fragments",IDC_CHECK_FRAGMENT,"Button",BS_3STATE | WS_TABSTOP,231,128,97,10
+    LTEXT           "Indentation:",IDC_STATIC,0,144,41,8
+    EDITTEXT        IDC_IDENT,103,142,40,14,ES_AUTOHSCROLL
+    LTEXT           "Maximum line &length:",IDC_STATIC,0,162,68,8
+    EDITTEXT        IDC_MAXLEN,103,160,40,14,ES_AUTOHSCROLL
+    LTEXT           "Maximum number of &errors:",IDC_STATIC,0,180,89,8
+    EDITTEXT        IDC_MAXERR,103,178,40,14,ES_AUTOHSCROLL
+END
+
+IDD_JSHINT_OPTIONS DIALOGEX 0, 0, 384, 192
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Warn",IDC_STATIC,0,2,265,187
+    CONTROL         "About debugging code",IDC_CHECK_DEBUG,"Button",BS_3STATE | WS_TABSTOP,5,17,88,10
+    CONTROL         "About unsafe for..in",IDC_CHECK_FORIN,"Button",BS_3STATE | WS_TABSTOP,5,31,81,10
+    CONTROL         "About == null",IDC_CHECK_EQNULL,"Button",BS_3STATE | WS_TABSTOP,5,45,61,10
+    CONTROL         "About arguments.caller and .callee",IDC_CHECK_NOARG,
+                    "Button",BS_3STATE | WS_TABSTOP,5,59,127,10
+    CONTROL         "About empty blocks",IDC_CHECK_NOEMPTY,"Button",BS_3STATE | WS_TABSTOP,5,73,79,10
+    CONTROL         "About unsafe comparisons",IDC_CHECK_EQEQEQ,"Button",BS_3STATE | WS_TABSTOP,5,87,101,10
+    CONTROL         "About assignments inside if/for/...",IDC_CHECK_BOSS,
+                    "Button",BS_3STATE | WS_TABSTOP,5,101,125,10
+    CONTROL         "About functions inside loops",IDC_CHECK_LOOPFUNC,"Button",BS_3STATE | WS_TABSTOP,5,115,105,10
+    CONTROL         "About eval",IDC_CHECK_EVIL,"Button",BS_3STATE | WS_TABSTOP,5,129,51,10
+    CONTROL         "About unsafe line breaks",IDC_CHECK_LAXBREAK,"Button",BS_3STATE | WS_TABSTOP,5,143,95,10
+    CONTROL         "When bitwise operators are used",IDC_CHECK_BITWISE,
+                    "Button",BS_3STATE | WS_TABSTOP,5,157,122,10
+    CONTROL         "When code is not in strict mode",IDC_CHECK_STRICT,
+                    "Button",BS_3STATE | WS_TABSTOP,5,171,116,10
+    CONTROL         "When variable is undefined",IDC_CHECK_UNDEF,"Button",BS_3STATE | WS_TABSTOP,136,17,103,10
+    CONTROL         "When blocks omit {}",IDC_CHECK_CURLY,"Button",BS_3STATE | WS_TABSTOP,136,31,80,10
+    CONTROL         "When new is used for side effects",IDC_CHECK_NONEW,
+                    "Button",BS_3STATE | WS_TABSTOP,136,45,125,10
+    GROUPBOX        "Assume",IDC_STATIC,269,2,115,187
+    CONTROL         "Browser",IDC_CHECK_BROWSER,"Button",BS_3STATE | WS_TABSTOP,274,17,42,10
+    CONTROL         "Development (console, etc.)",IDC_CHECK_DEVEL,"Button",BS_3STATE | WS_TABSTOP,274,31,107,10
+    CONTROL         "jQuery",IDC_CHECK_JQUERY,"Button",BS_3STATE | WS_TABSTOP,274,45,38,10
+    CONTROL         "EcmaScript 5",IDC_CHECK_ES5,"Button",BS_3STATE | WS_TABSTOP,274,59,57,10
+    CONTROL         "NodeJS",IDC_CHECK_NODE,"Button",BS_3STATE | WS_TABSTOP,274,73,40,10
 END
 
 
@@ -158,12 +216,12 @@ BEGIN
         BOTTOMMARGIN, 175
     END
 
-    IDD_JSLINT_OPTIONS, DIALOG
+    IDD_OPTIONS, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 391
         TOPMARGIN, 7
-        BOTTOMMARGIN, 309
+        BOTTOMMARGIN, 329
     END
 
     IDD_ABOUT, DIALOG
@@ -171,7 +229,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 194
         TOPMARGIN, 7
-        BOTTOMMARGIN, 141
+        BOTTOMMARGIN, 180
     END
 
     IDD_SETTINGS, DIALOG
@@ -179,10 +237,10 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 272
         TOPMARGIN, 7
-        BOTTOMMARGIN, 119
+        BOTTOMMARGIN, 210
     END
 
-    IDD_JSLINT_DOWNLOAD_PROGRESS, DIALOG
+    IDD_DOWNLOAD_PROGRESS, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 309
@@ -199,8 +257,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,7,4,115
- PRODUCTVERSION 0,7,4,115
+ FILEVERSION 0,8,0,116
+ PRODUCTVERSION 0,8,0,116
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -216,12 +274,12 @@ BEGIN
         BLOCK "041a04b0"
         BEGIN
             VALUE "FileDescription", "JSLint Plugin for Notepad++"
-            VALUE "FileVersion", "0, 7, 4, 115"
+            VALUE "FileVersion", "0, 8, 0, 116"
             VALUE "InternalName", "JSLintNpp"
             VALUE "LegalCopyright", "Copyright (C) 2010 Martin Vladic, JSLint Copyright (C) 2002 Douglas Crockford"
             VALUE "OriginalFilename", "JSLintNpp.dll"
             VALUE "ProductName", "JSLint Plugin for Notepad++"
-            VALUE "ProductVersion", "0, 7, 4, 115"
+            VALUE "ProductVersion", "0, 8, 0, 116"
         END
     END
     BLOCK "VarFileInfo"
@@ -237,6 +295,7 @@ END
 //
 
 IDR_JSLINT              JS                      "res\\jslint.js"
+IDR_JSHINT              JS                      "res\\jshint.js"
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -27,6 +27,9 @@
 #define JSLINT_GITHUB_URL_W L"https://raw.github.com/douglascrockford/JSLint/master/jslint.js"
 #define JSLINT_GITHUB_URL_T TEXT("https://raw.github.com/douglascrockford/JSLint/master/jslint.js")
 
+#define JSHINT_GITHUB_URL_W L"https://raw.github.com/jshint/jshint/master/jshint.js"
+#define JSHINT_GITHUB_URL_T TEXT("https://raw.github.com/jshint/jshint/master/jshint.js")
+
 #define WM_DOWNLOAD_FINISHED WM_USER + 1
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +58,8 @@ string JSLintVersion::GetContent()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+Linter DownloadJSLint::m_linter;
+
 DownloadJSLint::DownloadJSLint()
 {
 }
@@ -67,6 +72,12 @@ DownloadJSLint& DownloadJSLint::GetInstance()
 
 void DownloadJSLint::LoadVersions()
 {
+    LoadVersions(TEXT("jslint.*.js"), m_jsLintVersions);
+    LoadVersions(TEXT("jshint.*.js"), m_jsHintVersions);
+}
+
+void DownloadJSLint::LoadVersions(const tstring& fileSpec, map<tstring, JSLintVersion>& versions)
+{
     TCHAR szConfigDir[MAX_PATH];
     szConfigDir[0] = 0;
     ::SendMessage(g_nppData._nppHandle, NPPM_GETPLUGINSCONFIGDIR, 
@@ -77,10 +88,10 @@ void DownloadJSLint::LoadVersions()
     } 
 
     WIN32_FIND_DATA findFileData;
-    HANDLE findFileHandle = FindFirstFile(Path::GetFullPath(TEXT("jslint.*.js"), m_versionsFolder).c_str(), &findFileData);
+    HANDLE findFileHandle = FindFirstFile(Path::GetFullPath(fileSpec.c_str(), m_versionsFolder).c_str(), &findFileData);
     if (findFileHandle != INVALID_HANDLE_VALUE) {
         do {
-            m_versions.insert(make_pair<tstring, JSLintVersion>(
+            versions.insert(make_pair<tstring, JSLintVersion>(
                     tstring(findFileData.cFileName).substr(7, _tcslen(findFileData.cFileName) - 10),
                     JSLintVersion(Path::GetFullPath(findFileData.cFileName, m_versionsFolder))
                 ));
@@ -89,9 +100,30 @@ void DownloadJSLint::LoadVersions()
     }
 }
 
-DownloadJSLint::DownloadResult DownloadJSLint::DownloadLatest(tstring& latestVersion)
+const map<tstring, JSLintVersion>& DownloadJSLint::GetVersions(Linter linter) const
+{ 
+    return linter == LINTER_JSLINT ? m_jsLintVersions : m_jsHintVersions;
+}
+
+bool DownloadJSLint::HasVersion(Linter linter, const tstring& version)
 {
-    if (pluginDialogBox(IDD_JSLINT_DOWNLOAD_PROGRESS, JSLintDownloadProgressDlgProc) == IDOK) {
+    if (linter == LINTER_JSLINT) {
+        return m_jsLintVersions.find(version) != m_jsLintVersions.end();
+    } else {
+        return m_jsHintVersions.find(version) != m_jsHintVersions.end();
+    }
+}
+
+JSLintVersion& DownloadJSLint::GetVersion(Linter linter, const tstring& version)
+{
+    return linter == LINTER_JSLINT ? m_jsLintVersions[version] : m_jsHintVersions[version];
+}
+
+DownloadJSLint::DownloadResult DownloadJSLint::DownloadLatest(Linter linter, tstring& latestVersion)
+{
+    m_linter = linter;    
+
+    if (pluginDialogBox(IDD_DOWNLOAD_PROGRESS, JSLintDownloadProgressDlgProc) == IDOK) {
         latestVersion = m_version;
         if (latestVersion.empty()) {
             SYSTEMTIME time;
@@ -105,7 +137,7 @@ DownloadJSLint::DownloadResult DownloadJSLint::DownloadLatest(tstring& latestVer
             latestVersion = szTime;
         }
 
-        tstring fileName = Path::GetFullPath(TEXT("jslint.") + latestVersion + TEXT(".js"), m_versionsFolder);
+        tstring fileName = Path::GetFullPath((linter == LINTER_JSLINT ? TEXT("jslint.") : TEXT("jshint.")) + latestVersion + TEXT(".js"), m_versionsFolder);
 
         size_t nWritten = 0;
 
@@ -118,8 +150,11 @@ DownloadJSLint::DownloadResult DownloadJSLint::DownloadLatest(tstring& latestVer
         string content(m_lpBuffer, m_dwTotalSize);
 
         if (nWritten == m_dwTotalSize) {
-            m_versions.insert(std::make_pair(latestVersion, 
-                JSLintVersion(fileName, content)));
+            if (linter == LINTER_JSLINT) {
+                m_jsLintVersions.insert(std::make_pair(latestVersion, JSLintVersion(fileName, content)));
+            } else {
+                m_jsHintVersions.insert(std::make_pair(latestVersion, JSLintVersion(fileName, content)));
+            }
             m_result = DOWNLOAD_OK;
         } else {
             m_result = DOWNLOAD_FAILED;
@@ -175,21 +210,26 @@ void DownloadJSLint::DownloadFailed()
 bool DownloadJSLint::CheckVersion()
 {
     if (m_version.empty()) {
-        char *j = NULL;
-        for (char* i = m_lpBuffer; i < m_lpBuffer + m_dwTotalSize; ++i) {
-            if (*i == '\n') {
-                if (j) {
-                    j += 3; // skip '// '
-                    m_version = TextConversion::A_To_T(string(j, i - j));
-                    m_version = TrimSpaces(m_version);
-                    if (HasVersion(m_version)) {
-                        return false;
+        if (m_linter == LINTER_JSLINT) {
+            char *j = NULL;
+            for (char* i = m_lpBuffer; i < m_lpBuffer + m_dwTotalSize; ++i) {
+                if (*i == '\n') {
+                    if (j) {
+                        j += 3; // skip '// '
+                        m_version = TextConversion::A_To_T(string(j, i - j));
+                        m_version = TrimSpaces(m_version);
+                        if (HasVersion(m_linter, m_version)) {
+                            return false;
+                        }
+                        return true;
+                    } else {
+                        j = i;
                     }
-                    return true;
-                } else {
-                    j = i;
                 }
             }
+        } else {
+            // don't know how to extract version from jshint source file,
+            // will use current datetime
         }
     }
     return true;
@@ -315,7 +355,7 @@ void DownloadJSLint::StartDownload(HWND hDlg, int nStatusID)
     urlComp.dwHostNameLength = sizeof(szHost) / sizeof(szHost[0]);
     urlComp.dwUrlPathLength = (DWORD)-1;
     urlComp.dwSchemeLength = (DWORD)-1;
-    WinHttpCrackUrl(JSLINT_GITHUB_URL_W, 0, 0, &urlComp);
+    WinHttpCrackUrl(m_linter == LINTER_JSLINT ? JSLINT_GITHUB_URL_W : JSHINT_GITHUB_URL_W, 0, 0, &urlComp);
 
     m_hConnect = WinHttpConnect(m_hSession, szHost, urlComp.nPort, 0);
 
@@ -351,7 +391,14 @@ INT_PTR CALLBACK DownloadJSLint::JSLintDownloadProgressDlgProc(
     HWND hDlg, UINT uMessage, WPARAM wParam, LPARAM lParam)
 {
 	if (uMessage == WM_INITDIALOG) {
-        SetWindowText(GetDlgItem(hDlg, IDC_URL), JSLINT_GITHUB_URL_T);
+		TCHAR szTitleFormat[100];
+		GetWindowText(hDlg, szTitleFormat, _countof(szTitleFormat));
+        
+		TCHAR szTitle[100];
+		_stprintf(szTitle, szTitleFormat, m_linter == LINTER_JSLINT ? TEXT("JSLint") : TEXT("JSHint"));
+        SetWindowText(hDlg, szTitle);
+
+        SetWindowText(GetDlgItem(hDlg, IDC_URL), m_linter == LINTER_JSLINT ? JSLINT_GITHUB_URL_T : JSHINT_GITHUB_URL_T);
         SetWindowText(GetDlgItem(hDlg, IDC_PROGRESS), TEXT("Starting ..."));
         GetInstance().StartDownload(hDlg, IDC_PROGRESS);
 

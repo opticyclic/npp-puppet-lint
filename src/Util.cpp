@@ -68,20 +68,20 @@ void FindReplace(tstring& str, const tstring& strOld, const tstring& strNew)
 
 BOOL CenterWindow(HWND hWnd, HWND hParentWnd, BOOL bRepaint)
 {
-  RECT rectParent;
-  RECT rect;
-  INT  height, width;
-  INT  x, y;
+    RECT rectParent;
+    RECT rect;
+    INT  height, width;
+    INT  x, y;
 
-  ::GetWindowRect(hParentWnd, &rectParent);
-  ::GetWindowRect(hWnd, &rect);
-  width = rect.right - rect.left;
-  height = rect.bottom - rect.top;
-  x = ((rectParent.right - rectParent.left) - width) / 2;
-  x += rectParent.left;
-  y = ((rectParent.bottom - rectParent.top) - height) / 2;
-  y += rectParent.top;
-  return ::MoveWindow(hWnd, x, y, width, height, bRepaint);
+    ::GetWindowRect(hParentWnd, &rectParent);
+    ::GetWindowRect(hWnd, &rect);
+    width = rect.right - rect.left;
+    height = rect.bottom - rect.top;
+    x = ((rectParent.right - rectParent.left) - width) / 2;
+    x += rectParent.left;
+    y = ((rectParent.bottom - rectParent.top) - height) / 2;
+    y += rectParent.top;
+    return ::MoveWindow(hWnd, x, y, width, height, bRepaint);
 }
 
 tstring GetWindowText(HWND hWnd)

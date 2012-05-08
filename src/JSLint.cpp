@@ -38,9 +38,10 @@ tstring JSLintReportItem::GetUndefVar() const
     tstring var;
 
     if (m_type == LINT_TYPE_ERROR) {
-        tstring errMsg = Settings::GetInstance().GetJSLintScriptSource() == Settings::JSLINT_SCRIPT_SOURCE_DOWNLOADED &&
-            Settings::GetInstance().GetSpecUndefVarErrMsg() ? 
-            Settings::GetInstance().GetUndefVarErrMsg() : DEFAULT_UNDEF_VAR_ERR_MSG;
+        ScriptSourceDef& scriptSource = Settings::GetInstance().GetScriptSource(JSLintOptions::GetInstance().GetSelectedLinter());
+
+        tstring errMsg = scriptSource.m_scriptSource == SCRIPT_SOURCE_DOWNLOADED && scriptSource.m_bSpecUndefVarErrMsg
+            ? scriptSource.m_undefVarErrMsg : scriptSource.GetDefaultUndefVarErrMsg();
 
         tstring::size_type i = errMsg.find(TEXT("%s"));
         if (i != tstring::npos) {
@@ -94,12 +95,13 @@ void JSLint::CheckScript(const string& strOptions, const string& strScript,
 
     Handle<Script> script;
 
+    ScriptSourceDef& scriptSource = Settings::GetInstance().GetScriptSource(JSLintOptions::GetInstance().GetSelectedLinter());
+
     string strJSLintScript;
-    if (Settings::GetInstance().GetJSLintScriptSource() == Settings::JSLINT_SCRIPT_SOURCE_BUILTIN) {
-        strJSLintScript = LoadCustomDataResource((HMODULE)g_hDllModule, MAKEINTRESOURCE(IDR_JSLINT), TEXT("JS"));
+    if (scriptSource.m_scriptSource == SCRIPT_SOURCE_BUILTIN) {
+        strJSLintScript = LoadCustomDataResource((HMODULE)g_hDllModule, MAKEINTRESOURCE(scriptSource.GetScriptResourceID()), TEXT("JS"));
     } else {
-        strJSLintScript = DownloadJSLint::GetInstance().GetVersion(
-            Settings::GetInstance().GetJSLintScriptVersion()).GetContent();
+        strJSLintScript = DownloadJSLint::GetInstance().GetVersion(scriptSource.m_linter, scriptSource.m_scriptVersion).GetContent();
     }
     if (strJSLintScript.empty()) {
         throw JSLintException("Invalid JSLint script!");
@@ -121,14 +123,14 @@ void JSLint::CheckScript(const string& strOptions, const string& strScript,
     script->Run();
 
     // call JSLINT
-    script = Script::Compile(String::New("JSLINT(script, options);"));
+    script = Script::Compile(String::New((std::string(scriptSource.GetNamespace()) + "(script, options);").c_str()));
     if (script.IsEmpty()) {
         throw JSLintUnexpectedException();
     }
     script->Run();
 
     // get JSLINT data
-    script = Script::Compile(String::New("JSLINT.data();"));
+    script = Script::Compile(String::New((std::string(scriptSource.GetNamespace()) + ".data();").c_str()));
     if (script.IsEmpty()) {
         throw JSLintUnexpectedException();
     }

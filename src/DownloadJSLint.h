@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "JSLintOptions.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
 class JSLintVersion {
@@ -50,15 +52,16 @@ public:
         DOWNLOAD_NO_NEW_VERSION,
         DOWNLOAD_FAILED
     };
-    DownloadResult DownloadLatest(tstring& latestVersion);
+    DownloadResult DownloadLatest(Linter linter, tstring& latestVersion);
 
-    const map<tstring, JSLintVersion>& GetVersions() const { return m_versions; }
-    bool HasVersion(const tstring& version) { return m_versions.find(version) != m_versions.end(); }
-    JSLintVersion& GetVersion(const tstring& version) { return m_versions[version]; }
+    const map<tstring, JSLintVersion>& GetVersions(Linter linter) const;
+    bool HasVersion(Linter linter, const tstring& version);
+    JSLintVersion& GetVersion(Linter linter, const tstring& version);
 
 private:
     tstring m_versionsFolder;
-    map<tstring, JSLintVersion> m_versions;
+    map<tstring, JSLintVersion> m_jsLintVersions;
+    map<tstring, JSLintVersion> m_jsHintVersions;
 
     HWND m_hDlg;
     int m_nStatusID;
@@ -70,6 +73,10 @@ private:
     LPSTR m_lpBuffer;
     tstring m_version;
     DownloadResult m_result;
+
+    static Linter m_linter;
+
+    void LoadVersions(const tstring& fileSpec, map<tstring, JSLintVersion>& versions);
 
     tstring GetVersionsFolder();
 
