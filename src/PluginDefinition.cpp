@@ -136,15 +136,27 @@ void jsLintCurrentFile()
 
 	int type;
 	::SendMessage(g_nppData._nppHandle, NPPM_GETCURRENTLANGTYPE, 0, (LPARAM)&type);
-	if (type != L_JS && type != L_HTML && type != L_CSS) {
-		::MessageBox(
-			g_nppData._nppHandle, 
-			TEXT("JSLint can operate only on JavaScript, HTML or CSS files."),
-			TEXT("JSLint"),
-			MB_OK | MB_ICONINFORMATION
-		);
-		return;
-	}
+    if (JSLintOptions::GetInstance().GetSelectedLinter() == LINTER_JSLINT) {
+	    if (type != L_JS && type != L_HTML && type != L_CSS) {
+		    ::MessageBox(
+			    g_nppData._nppHandle, 
+			    TEXT("JSLint can operate only on JavaScript, HTML or CSS files."),
+			    TEXT("JSLint"),
+			    MB_OK | MB_ICONINFORMATION
+		    );
+		    return;
+	    }
+    } else {
+	    if (type != L_JS) {
+		    ::MessageBox(
+			    g_nppData._nppHandle, 
+			    TEXT("JSHint can operate only on JavaScript files."),
+			    TEXT("JSLint"),
+			    MB_OK | MB_ICONINFORMATION
+		    );
+		    return;
+	    }
+    }
 
 	// set hourglass cursor
 	SetCursor(LoadCursor(NULL, IDC_WAIT));
@@ -182,7 +194,7 @@ void jsLintAllFiles()
 
 			int type;
 			::SendMessage(g_nppData._nppHandle, NPPM_GETCURRENTLANGTYPE, 0, (LPARAM)&type);
-			if (type == L_JS || type == L_HTML || type == L_CSS) {
+			if (type == L_JS || (JSLintOptions::GetInstance().GetSelectedLinter() == LINTER_JSLINT && (type == L_HTML || type == L_CSS))) {
 				++numJSFiles;
 				doJSLint();
 			}
@@ -198,12 +210,21 @@ void jsLintAllFiles()
 	SetCursorPos(pt.x, pt.y);
 
 	if (numJSFiles == 0) {
-		::MessageBox(
-			g_nppData._nppHandle, 
-			TEXT("There is no JavaScript, HTML or CSS file opened in Notepad++!"),
-			TEXT("JSLint"),
-			MB_OK | MB_ICONINFORMATION
-		);
+        if (JSLintOptions::GetInstance().GetSelectedLinter() == LINTER_JSLINT) {
+		    ::MessageBox(
+			    g_nppData._nppHandle, 
+			    TEXT("There is no JavaScript, HTML or CSS file opened in Notepad++!"),
+			    TEXT("JSLint"),
+			    MB_OK | MB_ICONINFORMATION
+		    );
+        } else {
+		    ::MessageBox(
+			    g_nppData._nppHandle, 
+			    TEXT("There is no JavaScript file opened in Notepad++!"),
+			    TEXT("JSLint"),
+			    MB_OK | MB_ICONINFORMATION
+		    );
+        }
 		return;
 	}
 }
