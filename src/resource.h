@@ -57,7 +57,6 @@
 #define IDC_CHECK_WHITE                 2002
 #define IDC_CHECK_BROWSER               2003
 #define IDC_CHECK_DEVEL                 2004
-#define IDC_CHECK_WIDGET                2005
 #define IDC_CHECK_WINDOWS               2006
 #define IDC_CHECK_RHINO                 2007
 #define IDC_CHECK_SAFE                  2008
@@ -68,7 +67,7 @@
 #define IDC_CHECK_FORIN                 2013
 #define IDC_CHECK_SUB                   2014
 #define IDC_CHECK_CSS                   2015
-#define IDC_CHECK_CAP                   2016
+#define IDC_CHECK_TODO                  2016
 #define IDC_CHECK_ON                    2017
 #define IDC_CHECK_FRAGMENT              2018
 #define IDC_CHECK_ES5                   2019

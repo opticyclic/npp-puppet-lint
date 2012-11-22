@@ -27,8 +27,8 @@
 #define JSLINT_GITHUB_URL_W L"https://raw.github.com/douglascrockford/JSLint/master/jslint.js"
 #define JSLINT_GITHUB_URL_T TEXT("https://raw.github.com/douglascrockford/JSLint/master/jslint.js")
 
-#define JSHINT_GITHUB_URL_W L"https://raw.github.com/jshint/jshint/master/jshint.js"
-#define JSHINT_GITHUB_URL_T TEXT("https://raw.github.com/jshint/jshint/master/jshint.js")
+#define JSHINT_GITHUB_URL_W L"http://www.jshint.com/src/js/jshint.js"
+#define JSHINT_GITHUB_URL_T TEXT("http://www.jshint.com/src/js/jshint.js")
 
 #define WM_DOWNLOAD_FINISHED WM_USER + 1
 

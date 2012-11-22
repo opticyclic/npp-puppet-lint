@@ -41,6 +41,13 @@ JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
+0.8.1
+    - JSLint script updated to version from 2012-11-17
+    - JSHint script updated to version downloaded from www.jshint.com on 2012-11-22
+    - Bugs fixed:
+      - "Cannot update to latest jshint (download link returns 404)"
+      - "Invalid jshint url in about dialog"
+
 0.8.0
     - JSHint is now supported (choose between original JSLint and JSHint
       in JSLint Options dialog).

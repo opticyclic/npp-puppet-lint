@@ -1,0 +1,3 @@
+- Download from http://www.jshint.com/src/js/jshint.js
+- Save jshint.js as jshint.debug.js
+- Use jsMin to minimize jshint.debug.js and save as jshint.js

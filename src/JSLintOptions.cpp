@@ -288,7 +288,6 @@ JSLintLinterOptions::JSLintLinterOptions()
 	m_options[IDC_CHECK_WHITE]     = Option(TEXT("white"));
 	m_options[IDC_CHECK_BROWSER]   = Option(TEXT("browser"));
 	m_options[IDC_CHECK_DEVEL]     = Option(TEXT("devel"));
-	m_options[IDC_CHECK_WIDGET]    = Option(TEXT("widget"));
 	m_options[IDC_CHECK_WINDOWS]   = Option(TEXT("windows"));
 	m_options[IDC_CHECK_RHINO]     = Option(TEXT("rhino"));
 	m_options[IDC_CHECK_SAFE]      = Option(TEXT("safe"));
@@ -299,7 +298,7 @@ JSLintLinterOptions::JSLintLinterOptions()
 	m_options[IDC_CHECK_FORIN]     = Option(TEXT("forin"));
 	m_options[IDC_CHECK_SUB]       = Option(TEXT("sub"));
 	m_options[IDC_CHECK_CSS]       = Option(TEXT("css"));
-	m_options[IDC_CHECK_CAP]       = Option(TEXT("cap"));
+    m_options[IDC_CHECK_TODO]      = Option(TEXT("todo"));
 	m_options[IDC_CHECK_ON]        = Option(TEXT("on"));
 	m_options[IDC_CHECK_FRAGMENT]  = Option(TEXT("fragment"));
 	m_options[IDC_CHECK_ES5]       = Option(TEXT("es5"));
