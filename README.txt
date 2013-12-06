@@ -41,6 +41,15 @@ JSLintNppA.dll - ANSI version of plugin
 
 = History =
 
+0.8.2
+    - JSHint download URL changed to
+      https://raw.github.com/jshint/jshint/master/dist/jshint.js
+      (let's hope this doesn't change in the future).
+    - Detection of JSHint version number added. It is read from the first line
+      of source file (let's hope this doesn't change in the future, too).
+    - JSLint script updated to version from 2013-11-23
+    - JSHint script updated to version 2.3.0
+
 0.8.1
     - JSLint script updated to version from 2012-11-17
     - JSHint script updated to version downloaded from www.jshint.com on 2012-11-22

@@ -27,8 +27,8 @@
 #define JSLINT_GITHUB_URL_W L"https://raw.github.com/douglascrockford/JSLint/master/jslint.js"
 #define JSLINT_GITHUB_URL_T TEXT("https://raw.github.com/douglascrockford/JSLint/master/jslint.js")
 
-#define JSHINT_GITHUB_URL_W L"http://www.jshint.com/src/js/jshint.js"
-#define JSHINT_GITHUB_URL_T TEXT("http://www.jshint.com/src/js/jshint.js")
+#define JSHINT_GITHUB_URL_W L"https://raw.github.com/jshint/jshint/master/dist/jshint.js"
+#define JSHINT_GITHUB_URL_T TEXT("https://raw.github.com/jshint/jshint/master/dist/jshint.js")
 
 #define WM_DOWNLOAD_FINISHED WM_USER + 1
 
@@ -211,7 +211,8 @@ bool DownloadJSLint::CheckVersion()
 {
     if (m_version.empty()) {
         if (m_linter == LINTER_JSLINT) {
-            char *j = NULL;
+            // JSLint has version identification, in the form of date (for example: 2013-11-23), on the second line of source file
+            char *j = NULL; // skipt first line
             for (char* i = m_lpBuffer; i < m_lpBuffer + m_dwTotalSize; ++i) {
                 if (*i == '\n') {
                     if (j) {
@@ -227,9 +228,19 @@ bool DownloadJSLint::CheckVersion()
                     }
                 }
             }
-        } else {
-            // don't know how to extract version from jshint source file,
-            // will use current datetime
+        } else if (m_linter == LINTER_JSHINT) {
+            // JSLint has version identification, in the form of version number (for example 2.3.0), on the second line of source file
+            for (char* i = m_lpBuffer; i < m_lpBuffer + m_dwTotalSize; ++i) {
+                if (*i == '\n') {
+                    char *j = m_lpBuffer + 3; // skip '// '
+                    m_version = TextConversion::A_To_T(string(j, i - j));
+                    m_version = TrimSpaces(m_version);
+                    if (HasVersion(m_linter, m_version)) {
+                        return false;
+                    }
+                    return true;
+                }
+            }
         }
     }
     return true;
