@@ -19,10 +19,10 @@
 
 INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPARAM lParam);
 
-class JSLintOptions
+class PuppetLintOptions
 {
 public:
-	JSLintOptions();
+	PuppetLintOptions();
 
 	void ReadOptions();
 	void SaveOptions();
@@ -83,4 +83,4 @@ private:
     bool IsOptionIncluded(const Option& option) const;
 };
 
-extern JSLintOptions g_jsLintOptions;
+extern PuppetLintOptions g_puppetLintOptions;

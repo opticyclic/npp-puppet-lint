@@ -57,12 +57,12 @@ void pluginInit(HANDLE hModule)
 
 void loadConfig()
 {
-	g_jsLintOptions.ReadOptions();
+	g_puppetLintOptions.ReadOptions();
 }
 
 void pluginCleanUp()
 {
-	g_jsLintOptions.SaveOptions();
+	g_puppetLintOptions.SaveOptions();
 }
 
 void commandMenuInit()
@@ -329,11 +329,11 @@ void doJSLint()
 		PuppetLint puppetLint;
 
 		string strOptions = TextConversion::T_To_UTF8(
-			g_jsLintOptions.GetOptionsJSONString());
+			g_puppetLintOptions.GetOptionsJSONString());
 		list<JSLintReportItem> lints;
 
 		int nppTabWidth = (int) ::SendMessage(hWndScintilla, SCI_GETTABWIDTH, 0, 0);
-		int jsLintTabWidth = g_jsLintOptions.GetTabWidth();
+		int jsLintTabWidth = g_puppetLintOptions.GetTabWidth();
 
 		puppetLint.CheckScript(strOptions, strScript, nppTabWidth, jsLintTabWidth, lints);
 

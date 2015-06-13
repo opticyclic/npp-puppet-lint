@@ -77,8 +77,8 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 							const FileLint& fileLint = m_fileLints[iFocused];
 							tstring var = fileLint.lint.GetUndefinedVar();
 							if (!var.empty()) {
-								extern JSLintOptions g_jsLintOptions;
-								g_jsLintOptions.AppendOption(IDC_PREDEFINED, var);
+								extern PuppetLintOptions g_puppetLintOptions;
+								g_puppetLintOptions.AppendOption(IDC_PREDEFINED, var);
 							}
 						}
 						return TRUE;

@@ -23,11 +23,11 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-JSLintOptions g_jsLintOptions;
+PuppetLintOptions g_puppetLintOptions;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-static JSLintOptions jsLintOptions;
+static PuppetLintOptions puppetLintOptions;
 
 BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 {
@@ -36,9 +36,9 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 			if (GetDlgItem(hDlg, id) == NULL)
 				continue;
 			if (Button_GetCheck(GetDlgItem(hDlg, id))) {
-				jsLintOptions.CheckOption(id);
+				puppetLintOptions.CheckOption(id);
 			} else {
-				jsLintOptions.UncheckOption(id);
+				puppetLintOptions.UncheckOption(id);
 			}
 		}
 
@@ -49,13 +49,13 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 		tstring strPredefined = TrimSpaces(szPredefined);
 		delete [] szPredefined;
 		if (!strPredefined.empty()) {
-			jsLintOptions.SetOption(IDC_PREDEFINED, strPredefined);
+			puppetLintOptions.SetOption(IDC_PREDEFINED, strPredefined);
 		} else {
-			jsLintOptions.ResetOption(IDC_PREDEFINED);
+			puppetLintOptions.ResetOption(IDC_PREDEFINED);
 		}
 
 		// indent
-		if (jsLintOptions.IsOptionChecked(TEXT("white"))) {
+		if (puppetLintOptions.IsOptionChecked(TEXT("white"))) {
 			TCHAR szIdent[32];
 			GetWindowText(GetDlgItem(hDlg, IDC_IDENT), szIdent, _countof(szIdent));
 			tstring strIdent = TrimSpaces(szIdent);
@@ -69,7 +69,7 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 					return FALSE;
 				}
 			}
-			jsLintOptions.SetOption(IDC_IDENT, strIdent);
+			puppetLintOptions.SetOption(IDC_IDENT, strIdent);
 		}
 
 		// maxlen
@@ -86,10 +86,10 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 				return FALSE;
 			}
 		}
-		jsLintOptions.SetOption(IDC_MAXLEN, strMaxlen);
+		puppetLintOptions.SetOption(IDC_MAXLEN, strMaxlen);
 
 		// maxerr
-		if (!jsLintOptions.IsOptionChecked(TEXT("passfail"))) {
+		if (!puppetLintOptions.IsOptionChecked(TEXT("passfail"))) {
 			TCHAR szMaxerr[32];
 			GetWindowText(GetDlgItem(hDlg, IDC_MAXERR), szMaxerr, _countof(szMaxerr));
 			tstring strMaxerr = TrimSpaces(szMaxerr);
@@ -103,20 +103,20 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 					return FALSE;
 				}
 			}
-            jsLintOptions.SetOption(IDC_MAXERR, strMaxerr);
+            puppetLintOptions.SetOption(IDC_MAXERR, strMaxerr);
         }
 	} else {
-		jsLintOptions.UpdateDialog(hDlg);
+		puppetLintOptions.UpdateDialog(hDlg);
 	}
 
 	SetWindowText(GetDlgItem(hDlg, IDC_PREVIEW), 
-		jsLintOptions.GetOptionsCommentString().c_str());
+		puppetLintOptions.GetOptionsCommentString().c_str());
 
 	EnableWindow(GetDlgItem(hDlg, IDC_IDENT), 
-		jsLintOptions.IsOptionChecked(TEXT("white")));
+		puppetLintOptions.IsOptionChecked(TEXT("white")));
 
 	EnableWindow(GetDlgItem(hDlg, IDC_MAXERR), 
-		!jsLintOptions.IsOptionChecked(TEXT("passfail")));
+		!puppetLintOptions.IsOptionChecked(TEXT("passfail")));
 
 	return TRUE;
 }
@@ -153,7 +153,7 @@ INT_PTR CALLBACK PredefinedControlWndProc(HWND hWnd, UINT uMessage, WPARAM wPara
 INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPARAM lParam)
 {
 	if (uMessage == WM_INITDIALOG) {
-		jsLintOptions = g_jsLintOptions;
+		puppetLintOptions = g_puppetLintOptions;
 		UpdateOptions(hDlg, false, false);
         CenterWindow(hDlg, g_nppData._nppHandle);
 
@@ -169,19 +169,19 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPARAM 
 				switch (LOWORD(wParam)) {
 					case IDC_GOOD_PARTS: {
 						UpdateOptions(hDlg, true, false);
-						jsLintOptions.SetGoodParts();
+						puppetLintOptions.SetGoodParts();
 						UpdateOptions(hDlg, false, false);
 						break;
 					}
 					case IDC_CLEAR_ALL: {
 						UpdateOptions(hDlg, true, false);
-						jsLintOptions.ClearAllOptions();
+						puppetLintOptions.ClearAllOptions();
 						UpdateOptions(hDlg, false, false);
 						break;
 					}
 					case IDOK: {
 						if (UpdateOptions(hDlg, true, true)) {
-							g_jsLintOptions = jsLintOptions;
+							g_puppetLintOptions = puppetLintOptions;
 							EndDialog(hDlg, 1);
 						}
 						return 1;
@@ -210,7 +210,7 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hDlg, UINT uMessage, WPARAM wParam, LPARAM 
 
 ////////////////////////////////////////////////////////////////////////////////
 
-JSLintOptions::JSLintOptions()
+PuppetLintOptions::PuppetLintOptions()
 {
 	m_options[IDC_CHECK1] = Option(TEXT("passfail"));
 	m_options[IDC_CHECK2] = Option(TEXT("white"));
@@ -250,7 +250,7 @@ JSLintOptions::JSLintOptions()
 	SetGoodParts();
 }
 
-void JSLintOptions::ReadOptions()
+void PuppetLintOptions::ReadOptions()
 {
 	tstring strConfigFileName = GetConfigFileName();
 	if (Path::IsFileExists(strConfigFileName)) {
@@ -277,7 +277,7 @@ void JSLintOptions::ReadOptions()
 	}
 }
 
-void JSLintOptions::SaveOptions()
+void PuppetLintOptions::SaveOptions()
 {
 	tstring strConfigFileName = GetConfigFileName();
 	if (Path::IsFileExists(Path::GetDirectoryName(strConfigFileName))) {
@@ -288,7 +288,7 @@ void JSLintOptions::SaveOptions()
 	}
 }
 
-UINT JSLintOptions::GetOptionID(const tstring& optionName) const
+UINT PuppetLintOptions::GetOptionID(const tstring& optionName) const
 {
 	map<UINT, Option>::const_iterator it;
 	for (it = m_options.begin(); it != m_options.end(); ++it) {
@@ -299,7 +299,7 @@ UINT JSLintOptions::GetOptionID(const tstring& optionName) const
 	return it->first;
 }
 
-bool JSLintOptions::IsOptionIncluded(const Option& option) const
+bool PuppetLintOptions::IsOptionIncluded(const Option& option) const
 {
     if (option.name == TEXT("indent") && IsOptionChecked(TEXT("white")))
         return !option.value.empty();
@@ -310,7 +310,7 @@ bool JSLintOptions::IsOptionIncluded(const Option& option) const
     return option.value != option.defaultValue;
 }
 
-tstring JSLintOptions::GetOptionsCommentString() const
+tstring PuppetLintOptions::GetOptionsCommentString() const
 {
 	tstring strOptions;
 
@@ -328,7 +328,7 @@ tstring JSLintOptions::GetOptionsCommentString() const
 	return TEXT("/*jslint ") + strOptions + TEXT(" */");
 }
 
-tstring JSLintOptions::GetOptionsJSONString() const
+tstring PuppetLintOptions::GetOptionsJSONString() const
 {
 	tstring strOptions;
 
@@ -370,27 +370,27 @@ tstring JSLintOptions::GetOptionsJSONString() const
 	return TEXT("{ ") + strOptions + TEXT(" }");
 }
 
-void JSLintOptions::CheckOption(UINT id)
+void PuppetLintOptions::CheckOption(UINT id)
 {
 	m_options[id].value = TEXT("true");
 }
 
-void JSLintOptions::UncheckOption(UINT id)
+void PuppetLintOptions::UncheckOption(UINT id)
 {
 	m_options[id].value = TEXT("false");
 }
 
-bool JSLintOptions::IsOptionChecked(const tstring& name) const
+bool PuppetLintOptions::IsOptionChecked(const tstring& name) const
 {
 	return m_options.find(GetOptionID(name))->second.value == _T("true");
 }
 
-void JSLintOptions::SetOption(UINT id, const tstring& value)
+void PuppetLintOptions::SetOption(UINT id, const tstring& value)
 {
 	m_options[id].value = value;
 }
 
-void JSLintOptions::AppendOption(UINT id, const tstring& value)
+void PuppetLintOptions::AppendOption(UINT id, const tstring& value)
 {
 	Option& option = m_options[id];
 	if (option.value.empty())
@@ -399,12 +399,12 @@ void JSLintOptions::AppendOption(UINT id, const tstring& value)
 		option.value += _T(", ") + value;
 }
 
-void JSLintOptions::ResetOption(UINT id)
+void PuppetLintOptions::ResetOption(UINT id)
 {
 	m_options[id].value = m_options[id].defaultValue;
 }
 
-void JSLintOptions::ClearAllOptions()
+void PuppetLintOptions::ClearAllOptions()
 {
 	std::map<UINT, Option>::iterator it;
 	for (it = m_options.begin(); it != m_options.end(); ++it) {
@@ -413,7 +413,7 @@ void JSLintOptions::ClearAllOptions()
 	}
 }
 
-void JSLintOptions::SetGoodParts()
+void PuppetLintOptions::SetGoodParts()
 {
 	m_options[GetOptionID(TEXT("white"))].value = TEXT("true");
 	m_options[GetOptionID(TEXT("onevar"))].value = TEXT("true");
@@ -425,7 +425,7 @@ void JSLintOptions::SetGoodParts()
 	m_options[GetOptionID(TEXT("bitwise"))].value = TEXT("true");
 }
 
-void JSLintOptions::UpdateDialog(HWND hDlg)
+void PuppetLintOptions::UpdateDialog(HWND hDlg)
 {
 	std::map<UINT, Option>::iterator it;
 	for (it = m_options.begin(); it != m_options.end(); ++it) {
@@ -437,7 +437,7 @@ void JSLintOptions::UpdateDialog(HWND hDlg)
 	}
 }
 
-int JSLintOptions::GetTabWidth()
+int PuppetLintOptions::GetTabWidth()
 {
 	int indent;
 	if(_stscanf(m_options[IDC_IDENT].value.c_str(), TEXT("%d"), &indent) == EOF || indent < 1)
