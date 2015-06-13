@@ -27,7 +27,7 @@
     <ClCompile Include="PuppetLint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="JSLintNpp.cpp">
+    <ClCompile Include="PuppetLintNpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OptionsDlg.cpp">

@@ -241,7 +241,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'">StdHeaders.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="JSLintNpp.cpp">
+    <ClCompile Include="PuppetLintNpp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">StdHeaders.h</PrecompiledHeaderFile>
     </ClCompile>

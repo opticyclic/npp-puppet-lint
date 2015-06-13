@@ -390,7 +390,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\JSLintNpp.cpp"
+				RelativePath=".\PuppetLintNpp.cpp"
 				>
 				<FileConfiguration
 					Name="Unicode Debug|Win32"
