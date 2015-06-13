@@ -49,7 +49,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class JSLint
+class PuppetLint
 {
 public:
 	void CheckScript(const string& strOptions, const string& strScript, 

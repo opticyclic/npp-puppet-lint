@@ -50,7 +50,7 @@ tstring JSLintReportItem::GetUndefinedVar() const
 // JSLint script is executed by using cscript.exe program. 
 // Input script is sent to the JSLint by using standard input.
 // Result from JSLint is read from the standard output.
-void JSLint::CheckScript(const string& strOptions, const string& strScript, 
+void PuppetLint::CheckScript(const string& strOptions, const string& strScript, 
 	int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items)
 {
 	if (!m_jsLintScriptFileName)
@@ -130,7 +130,7 @@ void JSLint::CheckScript(const string& strOptions, const string& strScript,
 	GetExitCodeProcess(hProcess, &exitCode);
 }
 
-void JSLint::LoadCustomDataResource(HMODULE hModule,
+void PuppetLint::LoadCustomDataResource(HMODULE hModule,
 	LPCTSTR lpName, LPCTSTR lpType, LPVOID* ppData, LPDWORD pdwSize)
 {
 	*pdwSize = 0;
@@ -157,7 +157,7 @@ void JSLint::LoadCustomDataResource(HMODULE hModule,
 	}
 }
 
-void JSLint::CreateJSLintFile()
+void PuppetLint::CreateJSLintFile()
 {
 	// JSLint JavaScript source file is created by augmenting 
 	// jslint_output.js upon original jslint.js (WSH edition).
@@ -187,7 +187,7 @@ void JSLint::CreateJSLintFile()
 	}
 }
 
-void JSLint::WriteString(HANDLE hFile, const string& str)
+void PuppetLint::WriteString(HANDLE hFile, const string& str)
 {
 	string strEncoded = base64_encode((unsigned char const*)str.c_str(), str.length());
 	DWORD dwSize = (DWORD)strlen(strEncoded.c_str()) * sizeof(char);
@@ -197,7 +197,7 @@ void JSLint::WriteString(HANDLE hFile, const string& str)
 	}
 }
 
-void JSLint::ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
+void PuppetLint::ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
 	int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items)
 {
 	// read JSLint output
@@ -253,7 +253,7 @@ void JSLint::ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
 	}
 }
 
-int JSLint::GetNumTabs(const string& strScript, int line, int character, int tabWidth)
+int PuppetLint::GetNumTabs(const string& strScript, int line, int character, int tabWidth)
 {
 	int numTabs = 0;
 
@@ -276,7 +276,7 @@ int JSLint::GetNumTabs(const string& strScript, int line, int character, int tab
 	return numTabs;
 }
 
-void JSLint::ReadError(HANDLE hProcess, HANDLE hPipe, string& strError)
+void PuppetLint::ReadError(HANDLE hProcess, HANDLE hPipe, string& strError)
 {
 	strError = "";
 	while (true) {
@@ -290,7 +290,7 @@ void JSLint::ReadError(HANDLE hProcess, HANDLE hPipe, string& strError)
 	}
 }
 
-bool JSLint::ReadFromPipe(HANDLE hProcess, HANDLE hPipe, char *buffer, 
+bool PuppetLint::ReadFromPipe(HANDLE hProcess, HANDLE hPipe, char *buffer, 
 	DWORD dwBufferSize, DWORD& dwRead)
 {
 	// first check if there is data in pipe

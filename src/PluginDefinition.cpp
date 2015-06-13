@@ -326,7 +326,7 @@ void doJSLint()
 	}
 
 	try {
-		JSLint jsLint;
+		PuppetLint puppetLint;
 
 		string strOptions = TextConversion::T_To_UTF8(
 			g_jsLintOptions.GetOptionsJSONString());
@@ -335,7 +335,7 @@ void doJSLint()
 		int nppTabWidth = (int) ::SendMessage(hWndScintilla, SCI_GETTABWIDTH, 0, 0);
 		int jsLintTabWidth = g_jsLintOptions.GetTabWidth();
 
-		jsLint.CheckScript(strOptions, strScript, nppTabWidth, jsLintTabWidth, lints);
+		puppetLint.CheckScript(strOptions, strScript, nppTabWidth, jsLintTabWidth, lints);
 
 		g_outputDlg.AddLints(filePath, lints);
 
