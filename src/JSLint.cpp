@@ -108,7 +108,7 @@ void JSLint::CheckScript(const string& strOptions, const string& strScript,
 	BOOL bSuccess = CreateProcess(NULL, (LPTSTR)strCmdLine.c_str(),
 		NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &siStartInfo, &piProcInfo);
 	if (!bSuccess) {
-		throw JSLintUnexpectedException();
+		throw PuppetLintUnexpectedException();
 	}
 	Win32Handle hThread = piProcInfo.hThread;
 	Win32Handle hProcess = piProcInfo.hProcess;
@@ -138,22 +138,22 @@ void JSLint::LoadCustomDataResource(HMODULE hModule,
 
 	HRSRC hRes = FindResource(hModule, lpName, lpType);
 	if (hRes == NULL) {
-		throw JSLintResourceException();
+		throw PuppetLintResourceException();
 	}
 
 	*pdwSize = SizeofResource(hModule, hRes);
 	if (*pdwSize == 0) {
-		throw JSLintResourceException();
+		throw PuppetLintResourceException();
 	}
 
 	HGLOBAL hResLoad = LoadResource(hModule, hRes);
 	if (hResLoad == NULL) {
-		throw JSLintResourceException();
+		throw PuppetLintResourceException();
 	}
 
 	*ppData = LockResource(hResLoad);
 	if (*ppData == NULL) {
-		throw JSLintResourceException();
+		throw PuppetLintResourceException();
 	}
 }
 

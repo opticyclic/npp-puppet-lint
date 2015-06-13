@@ -78,15 +78,15 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class JSLintException : public exception 
+class PuppetLintException : public exception 
 {
 };
 
 
-class JSLintResourceException : public JSLintException 
+class PuppetLintResourceException : public PuppetLintException 
 {
 };
 
-class JSLintUnexpectedException : public JSLintException 
+class PuppetLintUnexpectedException : public PuppetLintException 
 {
 };
