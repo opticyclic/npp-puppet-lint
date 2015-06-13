@@ -350,7 +350,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\JSLint.cpp"
+				RelativePath=".\PuppetLint.cpp"
 				>
 				<FileConfiguration
 					Name="ANSI Debug|Win32"
@@ -545,7 +545,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\JSLint.h"
+				RelativePath=".\PuppetLint.h"
 				>
 			</File>
 			<File
