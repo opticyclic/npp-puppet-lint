@@ -17,7 +17,7 @@
 
 #include "StdHeaders.h"
 #include "AboutDlg.h"
-#include "JSLint.h"
+#include "PuppetLint.h"
 #include "menuCmdID.h"
 #include "OptionsDlg.h"
 #include "OutputDlg.h"

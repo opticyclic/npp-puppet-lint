@@ -21,7 +21,7 @@
 #include "DockingFeature/DockingDlgInterface.h"
 #include "DockingFeature/Toolbar.h"
 #include "resource.h"
-#include "JSLint.h"
+#include "PuppetLint.h"
 
 class OutputDlg : public DockingDlgInterface
 {

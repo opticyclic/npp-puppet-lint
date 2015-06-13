@@ -16,7 +16,7 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "StdHeaders.h"
-#include "JSLint.h"
+#include "PuppetLint.h"
 #include "resource.h"
 #include "base64.h"
 
