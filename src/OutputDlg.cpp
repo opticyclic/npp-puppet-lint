@@ -206,10 +206,10 @@ void OutputDlg::OnToolbarCmd(UINT message)
 {
 	switch (message) {
 		case IDM_TB_JSLINT_CURRENT_FILE:
-			jsLintCurrentFile();
+			puppetLintCurrentFile();
 			break;
 		case IDM_TB_JSLINT_ALL_FILES:
-			jsLintAllFiles();
+			puppetLintAllFiles();
 			break;
 		case IDM_TB_NEXT_LINT:
 			gotoNextLint();

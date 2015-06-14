@@ -74,16 +74,16 @@ void commandMenuInit()
 	shKey->_isCtrl = true;
 	shKey->_isShift = true;
 	shKey->_key = VK_F5;
-	setCommand(FUNC_INDEX_JSLINT_CURRENT_FILE, TEXT("JSLint Current File"),
-		jsLintCurrentFile, shKey, false);
+	setCommand(FUNC_INDEX_JSLINT_CURRENT_FILE, TEXT("Puppet-Lint Current File"),
+		puppetLintCurrentFile, shKey, false);
 
 	shKey = new ShortcutKey; // Ctrl+Shift+F6
 	shKey->_isAlt = false;
 	shKey->_isCtrl = true;
 	shKey->_isShift = true;
 	shKey->_key = VK_F6;
-	setCommand(FUNC_INDEX_JSLINT_ALL_FILES, TEXT("JSLint All Files"),
-		jsLintAllFiles, shKey, false);
+	setCommand(FUNC_INDEX_JSLINT_ALL_FILES, TEXT("Puppet-Lint All Files"),
+		puppetLintAllFiles, shKey, false);
 
 	setCommand(2, TEXT("---"), NULL, NULL, false);
 	
@@ -121,7 +121,7 @@ void commandMenuCleanUp()
 // Plugin command functions
 //
 
-void jsLintCurrentFile()
+void puppetLintCurrentFile()
 {
 	createOutputWindow();
 
@@ -155,7 +155,7 @@ void jsLintCurrentFile()
 	SetCursorPos(pt.x, pt.y);
 }
 
-void jsLintAllFiles()
+void puppetLintAllFiles()
 {
 	// set hourglass cursor
 	SetCursor(LoadCursor(NULL, IDC_WAIT));

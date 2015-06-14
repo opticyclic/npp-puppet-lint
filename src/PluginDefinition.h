@@ -75,8 +75,8 @@ tstring GetConfigFileName();
 //
 // Plugin command functions
 //
-void jsLintCurrentFile();
-void jsLintAllFiles();
+void puppetLintCurrentFile();
+void puppetLintAllFiles();
 void gotoNextLint();
 void gotoPrevLint();
 void showLints();
