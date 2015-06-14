@@ -24,7 +24,7 @@ extern HANDLE g_hDllModule;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-bool JSLintReportItem::IsReasonVarIsNotDefined() const
+bool PuppetLintReportItem::IsReasonVarIsNotDefined() const
 {
 	// check if reason matches: /'.+' is not defined/
 	const TCHAR *pattern = _T("' is not defined.");
@@ -34,7 +34,7 @@ bool JSLintReportItem::IsReasonVarIsNotDefined() const
 		&& m_strReason.substr(m_strReason.size() - len) == pattern;
 }
 
-tstring JSLintReportItem::GetUndefinedVar() const
+tstring PuppetLintReportItem::GetUndefinedVar() const
 {
 	if (!IsReasonVarIsNotDefined())
 		return tstring();
@@ -51,7 +51,7 @@ tstring JSLintReportItem::GetUndefinedVar() const
 // Input script is sent to the JSLint by using standard input.
 // Result from JSLint is read from the standard output.
 void PuppetLint::CheckScript(const string& strOptions, const string& strScript, 
-	int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items)
+	int nppTabWidth, int jsLintTabWidth, list<PuppetLintReportItem>& items)
 {
 	if (!m_jsLintScriptFileName)
 		CreateJSLintFile();
@@ -198,7 +198,7 @@ void PuppetLint::WriteString(HANDLE hFile, const string& str)
 }
 
 void PuppetLint::ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
-	int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items)
+	int nppTabWidth, int jsLintTabWidth, list<PuppetLintReportItem>& items)
 {
 	// read JSLint output
 	string strOutput;
@@ -246,7 +246,7 @@ void PuppetLint::ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScr
 			// read evidence
 			string strEvidence = base64_decode(strLint);
 
-			items.push_back(JSLintReportItem(line - 1, character - 1, 
+			items.push_back(PuppetLintReportItem(line - 1, character - 1, 
 				TextConversion::UTF8_To_T(strReason), 
 				TextConversion::UTF8_To_T(strEvidence)));
 		}
