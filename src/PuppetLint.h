@@ -21,10 +21,10 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class JSLintReportItem
+class PuppetLintReportItem
 {
 public:
-	JSLintReportItem(int line, int character, const tstring& strReason, const tstring& strEvidence)
+	PuppetLintReportItem(int line, int character, const tstring& strReason, const tstring& strEvidence)
 		: m_line(line)
 		, m_character(character)
 		, m_strReason(strReason)
@@ -53,7 +53,7 @@ class PuppetLint
 {
 public:
 	void CheckScript(const string& strOptions, const string& strScript, 
-		int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items);
+		int nppTabWidth, int jsLintTabWidth, list<PuppetLintReportItem>& items);
 
 private:
 	TempFile m_jsLintScriptFileName;
@@ -66,7 +66,7 @@ private:
 	static void WriteString(HANDLE hFile, const string& str);
 	
 	void ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
-		int nppTabWidth, int jsLintTabWidth, list<JSLintReportItem>& items);
+		int nppTabWidth, int jsLintTabWidth, list<PuppetLintReportItem>& items);
 
 	int GetNumTabs(const string& strScript, int line, int character, int tabWidth);
 	

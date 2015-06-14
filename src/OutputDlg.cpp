@@ -330,15 +330,15 @@ void OutputDlg::ClearAllLints()
 	ListView_DeleteAllItems(m_hWndListView);
 }
 
-void OutputDlg::AddLints(const tstring& strFilePath, const list<JSLintReportItem>& lints)
+void OutputDlg::AddLints(const tstring& strFilePath, const list<PuppetLintReportItem>& lints)
 {
 	basic_stringstream<TCHAR> stream;
 
 	LVITEM lvI;
 	lvI.mask = LVIF_TEXT | LVIF_STATE;
 
-	for (list<JSLintReportItem>::const_iterator it = lints.begin(); it != lints.end(); ++it) {
-		const JSLintReportItem& lint = *it;
+	for (list<PuppetLintReportItem>::const_iterator it = lints.begin(); it != lints.end(); ++it) {
+		const PuppetLintReportItem& lint = *it;
 
 		lvI.iSubItem = 0;
 		lvI.iItem = ListView_GetItemCount(m_hWndListView);

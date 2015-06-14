@@ -330,7 +330,7 @@ void doJSLint()
 
 		string strOptions = TextConversion::T_To_UTF8(
 			g_puppetLintOptions.GetOptionsJSONString());
-		list<JSLintReportItem> lints;
+		list<PuppetLintReportItem> lints;
 
 		int nppTabWidth = (int) ::SendMessage(hWndScintilla, SCI_GETTABWIDTH, 0, 0);
 		int jsLintTabWidth = g_puppetLintOptions.GetTabWidth();

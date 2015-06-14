@@ -46,7 +46,7 @@ public :
 	HICON GetTabIcon();
 
 	void ClearAllLints();
-	void AddLints(const tstring& strFilePath, const list<JSLintReportItem>& lints);
+	void AddLints(const tstring& strFilePath, const list<PuppetLintReportItem>& lints);
 	void SelectNextLint();
 	void SelectPrevLint();
 
@@ -64,10 +64,10 @@ private:
 	HICON m_hTabIcon;
 
 	struct FileLint {
-		FileLint(const tstring& strFilePath, const JSLintReportItem& lint)
+		FileLint(const tstring& strFilePath, const PuppetLintReportItem& lint)
 			: strFilePath(strFilePath), lint(lint) {}
 		tstring strFilePath;
-		JSLintReportItem lint;
+		PuppetLintReportItem lint;
 	};
 
 	vector<FileLint> m_fileLints;
