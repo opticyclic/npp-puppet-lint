@@ -307,7 +307,7 @@
     <None Include="res\jslint_output.js" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="JSLintNpp.rc" />
+    <ResourceCompile Include="PuppetLintNpp.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\JSLintTab.ico" />
