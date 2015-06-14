@@ -15,6 +15,10 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
+/src/ANSI Debug
+/src/ANSI Release
+/src/Unicode Debug
+/src/Unicode Release
 
 # Roslyn cache directories
 *.ide/
