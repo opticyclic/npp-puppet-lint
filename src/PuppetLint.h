@@ -58,12 +58,14 @@ public:
 private:
 	TempFile m_jsLintScriptFileName;
 
-	void CreateJSLintFile();
+    void CreateJSLintFile(const tstring& content);
 	
 	void LoadCustomDataResource(HMODULE hModule, 
 		LPCTSTR lpName, LPCTSTR lpType, LPVOID* ppData, LPDWORD pdwSize);
 	
 	static void WriteString(HANDLE hFile, const string& str);
+
+    static void WriteStringToFile(HANDLE hFile, const tstring& str);
 	
 	void ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
 		int nppTabWidth, int jsLintTabWidth, list<PuppetLintReportItem>& items);

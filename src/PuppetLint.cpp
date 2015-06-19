@@ -53,8 +53,11 @@ tstring PuppetLintReportItem::GetUndefinedVar() const
 void PuppetLint::CheckScript(const string& strOptions, const string& strScript, 
 	int nppTabWidth, int jsLintTabWidth, list<PuppetLintReportItem>& items)
 {
-	if (!m_jsLintScriptFileName)
-		CreateJSLintFile();
+    tstring strScriptW(TextConversion::A_To_T(strScript));
+
+    if (!m_jsLintScriptFileName) {
+        CreateJSLintFile(strScriptW);
+    }
 
 	// initialize process info structure
 	PROCESS_INFORMATION piProcInfo;
@@ -164,34 +167,26 @@ void PuppetLint::LoadCustomDataResource(HMODULE hModule,
 	}
 }
 
-void PuppetLint::CreateJSLintFile()
+void PuppetLint::CreateJSLintFile(const tstring& content)
 {
-	// JSLint JavaScript source file is created by augmenting 
-	// jslint_output.js upon original jslint.js (WSH edition).
-
-	// create output file
+	// create temp file
 	m_jsLintScriptFileName.Create();
-	Win32Handle hJSLintFile = CreateFile(m_jsLintScriptFileName, GENERIC_WRITE, 0, NULL, 
-		CREATE_ALWAYS, FILE_ATTRIBUTE_TEMPORARY, NULL);
+	Win32Handle hJSLintFile = CreateFile(m_jsLintScriptFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_TEMPORARY, NULL);
 	if ((HANDLE)hJSLintFile == INVALID_HANDLE_VALUE) {
 		throw IOException();
 	}
 
-	LPVOID pData;
-	DWORD dwSize;
-	DWORD dwWritten;
+	// Write text to the temp file
+	WriteStringToFile(hJSLintFile, content);
+}
 
-	// load jslint.js from resource and write it to the output file
-	LoadCustomDataResource((HMODULE)g_hDllModule, MAKEINTRESOURCE(IDR_JSLINT), TEXT("JS"), &pData, &dwSize);
-	if (WriteFile(hJSLintFile, pData, dwSize, &dwWritten, NULL) != TRUE || dwWritten != dwSize) {
-		throw IOException();
-	}
-
-	// load jslint_ouput.js from resource and write it to the output file
-	LoadCustomDataResource((HMODULE)g_hDllModule, MAKEINTRESOURCE(IDR_JSLINT_OUTPUT), TEXT("JS"), &pData, &dwSize);
-	if (WriteFile(hJSLintFile, pData, dwSize, &dwWritten, NULL) != TRUE || dwWritten != dwSize) {
-		throw IOException();
-	}
+void PuppetLint::WriteStringToFile(HANDLE hFile, const tstring& str)
+{
+    DWORD dwSize = (DWORD)wcslen(str.c_str()) * sizeof(char);
+    DWORD dwWritten;
+    if (WriteFile(hFile, (LPVOID)str.c_str(), dwSize, &dwWritten, NULL) == FALSE || dwWritten != dwSize) {
+        throw IOException();
+    }
 }
 
 void PuppetLint::WriteString(HANDLE hFile, const string& str)
