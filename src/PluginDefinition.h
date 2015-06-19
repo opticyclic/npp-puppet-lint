@@ -24,7 +24,7 @@
 //
 // All definitions of plugin interface
 //
-const TCHAR NPP_PLUGIN_NAME[] = TEXT("JSLint");
+const TCHAR NPP_PLUGIN_NAME[] = TEXT("PuppetLint");
 const int NB_FUNC = 9;
 
 extern NppData g_nppData;

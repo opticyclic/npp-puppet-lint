@@ -31,7 +31,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 IDD_OUTPUT DIALOGEX 0, 0, 316, 182
 STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 EXSTYLE WS_EX_TOOLWINDOW
-CAPTION "JSLint"
+CAPTION "PuppetLint"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OUTPUT,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,8,302,167
@@ -39,7 +39,7 @@ END
 
 IDD_OPTIONS DIALOGEX 0, 0, 398, 272
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "JSLint Options"
+CAPTION "PuppetLint Options"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "Strict white space",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,7,73,10
@@ -92,18 +92,19 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "About"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CTEXT           "JSLint Plugin for Notepad++",IDC_STATIC,7,7,187,8
+    CTEXT           "PuppetLint Plugin for Notepad++",IDC_STATIC,7,7,187,8
     CTEXT           "Version: %s %s",IDC_VERSION_STATIC,7,17,187,8
-    CTEXT           "Copyright 2010 Martin Vladic",IDC_STATIC,7,27,187,8
+    CTEXT           "Open Source",IDC_STATIC,7,27,187,8
     CONTROL         "<a href=""http://jslintnpp.sourceforge.net"">http://jslintnpp.sourceforge.net</a>",IDC_SYSLINK1,
                     "SysLink",WS_TABSTOP,49,37,104,14
-    CTEXT           "JSLint",IDC_STATIC,7,57,187,8
-    CTEXT           "Copyright 2002 Douglas Crockford",IDC_STATIC,7,67,187,8
-    CONTROL         "<a href=""http://www.jslint.com"">http://www.jslint.com</a>",IDC_SYSLINK2,
-                    "SysLink",WS_TABSTOP,65,76,71,14
-    CTEXT           "Special thanks to:",IDC_STATIC,7,97,187,8
-    CTEXT           "Douglas Crockford for JSLint",IDC_STATIC,7,107,187,8
+    CTEXT           "Based On JSLintNPP Plugin",IDC_STATIC,7,57,187,8
+    CTEXT           "Copyright 2010 Martin Vladic",IDC_STATIC,7,67,187,8
+    CONTROL         "<a href=""https://github.com/rodjek/puppet-lint"">https://github.com/rodjek/puppet-lint</a>",IDC_SYSLINK2,
+                    "SysLink",WS_TABSTOP,41,107,126,14
+    CTEXT           "Puppet Lint",IDC_STATIC,7,97,187,8
     DEFPUSHBUTTON   "OK",IDOK,76,127,50,14
+    CONTROL         "<a href=""http://sourceforge.net/projects/jslintnpp"">http://sourceforge.net/projects/jslintnpp</a>",IDC_SYSLINK3,
+                    "SysLink",WS_TABSTOP,37,78,141,14
 END
 
 
@@ -113,7 +114,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_OUTPUT, DIALOG
     BEGIN

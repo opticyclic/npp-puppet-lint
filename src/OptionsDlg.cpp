@@ -257,7 +257,7 @@ void PuppetLintOptions::ReadOptions()
 		std::map<UINT, Option>::iterator it;
 		for (it = m_options.begin(); it != m_options.end(); ++it) {
 			TCHAR szValue[256];
-			GetPrivateProfileString(TEXT("JSLint Options"), it->second.name.c_str(), NULL, szValue, _countof(szValue), strConfigFileName.c_str());
+			GetPrivateProfileString(TEXT("PuppetLint Options"), it->second.name.c_str(), NULL, szValue, _countof(szValue), strConfigFileName.c_str());
 			if (_tcscmp(szValue, TEXT("")) != 0) {
 				tstring strValue = TrimSpaces(szValue);
 				if (it->second.type == OPTION_TYPE_BOOL) {
@@ -283,7 +283,7 @@ void PuppetLintOptions::SaveOptions()
 	if (Path::IsFileExists(Path::GetDirectoryName(strConfigFileName))) {
 		std::map<UINT, Option>::iterator it;
 		for (it = m_options.begin(); it != m_options.end(); ++it) {
-			WritePrivateProfileString(TEXT("JSLint Options"), it->second.name.c_str(), it->second.value.c_str(), strConfigFileName.c_str());
+			WritePrivateProfileString(TEXT("PuppetLint Options"), it->second.name.c_str(), it->second.value.c_str(), strConfigFileName.c_str());
 		}
 	}
 }

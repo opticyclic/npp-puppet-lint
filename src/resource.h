@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by JSLintNpp.rc
+// Used by PuppetLintNpp.rc
 //
 #define IDR_JSLINT                      101
 #define IDR_JSLINT_OUTPUT               102
@@ -54,6 +54,7 @@
 #define IDC_SYSLINK1                    1038
 #define IDC_SYSLINK2                    1039
 #define IDC_TOOLBAR                     1040
+#define IDC_SYSLINK3                    1040
 #define IDC_PREDEFINED                  1041
 
 // Next default values for new objects

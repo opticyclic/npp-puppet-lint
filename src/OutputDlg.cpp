@@ -314,11 +314,11 @@ void OutputDlg::GetNameStrFromCmd(UINT resID, LPTSTR tip, UINT count)
 {
 	// NOTE: On change, keep sure to change order of IDM_EX_... in toolBarIcons also
 	static LPTSTR szToolTip[] = {
-		_T("JSLint Current File"),
-		_T("JSLint All Files"),
+		_T("PuppetLint Current File"),
+		_T("PuppetLint All Files"),
 		_T("Go To Previous Lint"),
 		_T("Go To Next Lint"),
-		_T("JSLint Options"),
+		_T("PuppetLint Options"),
 	};
 
 	_tcscpy(tip, szToolTip[resID - IDM_TB_JSLINT_CURRENT_FILE]);
