@@ -19,7 +19,6 @@
 #include "AboutDlg.h"
 #include "PuppetLint.h"
 #include "menuCmdID.h"
-#include "OptionsDlg.h"
 #include "OutputDlg.h"
 #include "PluginDefinition.h"
 
@@ -57,12 +56,12 @@ void pluginInit(HANDLE hModule)
 
 void loadConfig()
 {
-	g_puppetLintOptions.ReadOptions();
+	//No config
 }
 
 void pluginCleanUp()
 {
-	g_puppetLintOptions.SaveOptions();
+	//No cleanup
 }
 
 void commandMenuInit()
@@ -105,8 +104,6 @@ void commandMenuInit()
 	
 	setCommand(FUNC_INDEX_SHOW_LINTS, TEXT("Show Lints"), showLints, NULL, false);
 
-	setCommand(6, TEXT("---"), NULL, NULL, false);
-	setCommand(FUNC_INDEX_OPTIONS, TEXT("Options"), options, NULL, false);
 	setCommand(FUNC_INDEX_ABOUT, TEXT("About"), about, NULL, false);
 }
 
@@ -222,7 +219,7 @@ void showLints()
 
 void options()
 {
-	pluginDialogBox(IDD_OPTIONS, OptionsDlgProc);
+	//No options dialog
 }
 
 void about()
@@ -331,12 +328,11 @@ void doJSLint()
 	try {
 		PuppetLint puppetLint;
 
-		string strOptions = TextConversion::T_To_UTF8(
-			g_puppetLintOptions.GetOptionsJSONString());
+		string strOptions = NULL; //TODO: Refactor usage
 		list<PuppetLintReportItem> lints;
 
 		int nppTabWidth = (int) ::SendMessage(hWndScintilla, SCI_GETTABWIDTH, 0, 0);
-		int jsLintTabWidth = g_puppetLintOptions.GetTabWidth();
+        int jsLintTabWidth = NULL; //TODO: Refactor usage
 
 		puppetLint.CheckScript(strOptions, strScript, nppTabWidth, jsLintTabWidth, lints);
 

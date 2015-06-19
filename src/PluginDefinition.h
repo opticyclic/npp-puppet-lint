@@ -36,8 +36,8 @@ extern FuncItem g_funcItem[NB_FUNC];
 #define FUNC_INDEX_GOTO_PREV_LINT      3
 #define FUNC_INDEX_GOTO_NEXT_LINT      4
 #define FUNC_INDEX_SHOW_LINTS          5
-#define FUNC_INDEX_OPTIONS             7
-#define FUNC_INDEX_ABOUT               8
+//TODO: Sort out the extra lines appearing in the GUI Menu
+#define FUNC_INDEX_ABOUT               7
 
 //
 // Initialization of your plugin data

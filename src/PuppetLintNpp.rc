@@ -37,56 +37,6 @@ BEGIN
     CONTROL         "",IDC_OUTPUT,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,8,302,167
 END
 
-IDD_OPTIONS DIALOGEX 0, 0, 398, 272
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "PuppetLint Options"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    CONTROL         "Strict white space",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,7,73,10
-    CONTROL         "Allow one var statement per function",IDC_CHECK20,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,20,135,10
-    CONTROL         "Disallow undefined variables",IDC_CHECK21,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,33,106,10
-    CONTROL         "Disallow dangling _ in identifiers",IDC_CHECK22,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,46,117,10
-    CONTROL         "Disallow . and [^...] in /RegExp/",IDC_CHECK26,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,120,10
-    CONTROL         "Disallow ++ and --",IDC_CHECK24,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,75,10
-    CONTROL         "Disallow bitwise operators",IDC_CHECK25,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,99,10
-    CONTROL         "Require Initial Caps for constructors",IDC_CHECK27,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,111,131,10
-    CONTROL         "Require ""use strict"";",IDC_CHECK29,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,124,80,10
-    CONTROL         "Assume console, alert, ...",IDC_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,7,99,10
-    CONTROL         "Assume a browser",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,20,75,10
-    CONTROL         "Assume Node.js",IDC_CHECK23,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,33,67,10
-    CONTROL         "Assume Rhino",IDC_CHECK7,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,46,61,10
-    CONTROL         "Assume a Yahoo Widget",IDC_CHECK5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,59,93,10
-    CONTROL         "Assume Windows",IDC_CHECK6,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,72,71,10
-    CONTROL         "Stop on first error",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,85,73,10
-    CONTROL         "Safe Subset",IDC_CHECK8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,111,55,10
-    CONTROL         "Verify ADsafe",IDC_CHECK9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,154,124,60,10
-    CONTROL         "Tolerate debugger statements",IDC_CHECK10,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,7,113,10
-    CONTROL         "Tolerate eval",IDC_CHECK11,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,20,58,10
-    CONTROL         "Tolerate unfiltered forin",IDC_CHECK13,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,33,92,10
-    CONTROL         "Tolerate inefficient subscripting",IDC_CHECK14,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,46,116,10
-    CONTROL         "Tolerate continue",IDC_CHECK12,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,59,72,10
-    CONTROL         "Tolerate ES5 syntax",IDC_CHECK19,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,72,81,10
-    CONTROL         "Tolerate CSS workarounds",IDC_CHECK15,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,85,101,10
-    CONTROL         "Tolerate HTML case",IDC_CHECK16,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,98,79,10
-    CONTROL         "Tolerate HTML event handlers",IDC_CHECK17,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,111,112,10
-    CONTROL         "Tolerate HTML fragments",IDC_CHECK18,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,275,124,97,10
-    LTEXT           "Predefined (, separated):",IDC_STATIC,7,141,83,8
-    EDITTEXT        IDC_PREDEFINED,110,138,281,14,ES_AUTOHSCROLL
-    LTEXT           "Strict &white space indentation:",IDC_STATIC,7,159,98,8
-    EDITTEXT        IDC_IDENT,110,156,40,14,ES_AUTOHSCROLL
-    LTEXT           "Maximum line &length:",IDC_STATIC,7,177,68,8
-    EDITTEXT        IDC_MAXLEN,110,174,40,14,ES_AUTOHSCROLL
-    LTEXT           "Maximum number of &errors:",IDC_STATIC,7,195,89,8
-    EDITTEXT        IDC_MAXERR,110,192,40,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "The &Good Parts",IDC_GOOD_PARTS,275,174,68,14
-    PUSHBUTTON      "&Clear All Options",IDC_CLEAR_ALL,275,192,68,14
-    EDITTEXT        IDC_PREVIEW,7,214,384,30,ES_MULTILINE | ES_READONLY | WS_VSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,287,251,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,341,251,50,14
-END
-
 IDD_ABOUT DIALOGEX 0, 0, 201, 148
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About"
@@ -124,14 +74,6 @@ BEGIN
         BOTTOMMARGIN, 175
     END
 
-    IDD_OPTIONS, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 391
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 265
-    END
-
     IDD_ABOUT, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -149,8 +91,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,5,0,109
- PRODUCTVERSION 0,5,0,109
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -163,20 +105,20 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "041a04b0"
+        BLOCK "000004b0"
         BEGIN
             VALUE "FileDescription", "PuppetLint Plugin for Notepad++"
-            VALUE "FileVersion", "0, 5, 0, 109"
+            VALUE "FileVersion", "1.0.0.0"
             VALUE "InternalName", "PuppetLintNpp"
-            VALUE "LegalCopyright", "Copyright (C) 2010 Martin Vladic, JSLint Copyright (C) 2002 Douglas Crockford"
+            VALUE "LegalCopyright", "JSLintNPP Copyright (C) 2010 Martin Vladic"
             VALUE "OriginalFilename", "PuppetLintNpp.dll"
             VALUE "ProductName", "PuppetLint Plugin for Notepad++"
-            VALUE "ProductVersion", "0, 5, 0, 109"
+            VALUE "ProductVersion", "1.0.0.0"
         END
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x41a, 1200
+        VALUE "Translation", 0x0, 1200
     END
 END
 
@@ -210,18 +152,18 @@ LANGUAGE LANG_CROATIAN, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"

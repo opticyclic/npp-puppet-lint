@@ -18,7 +18,6 @@
 #include "StdHeaders.h"
 #include "OutputDlg.h"
 #include "PluginDefinition.h"
-#include "OptionsDlg.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -77,8 +76,7 @@ BOOL CALLBACK OutputDlg::run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam)
 							const FileLint& fileLint = m_fileLints[iFocused];
 							tstring var = fileLint.lint.GetUndefinedVar();
 							if (!var.empty()) {
-								extern PuppetLintOptions g_puppetLintOptions;
-								g_puppetLintOptions.AppendOption(IDC_PREDEFINED, var);
+								//TODO: This used to set an option but we removed the options.......
 							}
 						}
 						return TRUE;
@@ -318,7 +316,6 @@ void OutputDlg::GetNameStrFromCmd(UINT resID, LPTSTR tip, UINT count)
 		_T("PuppetLint All Files"),
 		_T("Go To Previous Lint"),
 		_T("Go To Next Lint"),
-		_T("PuppetLint Options"),
 	};
 
 	_tcscpy(tip, szToolTip[resID - IDM_TB_JSLINT_CURRENT_FILE]);

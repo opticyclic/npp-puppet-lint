@@ -30,9 +30,6 @@
     <ClCompile Include="PuppetLintNpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OptionsDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="OutputDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -66,12 +63,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PuppetLint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OptionsDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PluginDefinition.h">
@@ -121,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="DockingFeature\ToolBar.h">
       <Filter>Notepad++</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputDlg.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

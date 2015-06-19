@@ -22,6 +22,3 @@ Re-start Notepad++.
    automatically scrolled at the position of the first found error.
 4. Double-click on errors in the list to view them inside document; or you can
    press Ctrl+Shift+F8 repeatedly to view errors.
-
-You can play with different PuppetLint options by choosing 
-menu option "Plugins - PuppetLint - PuppetLint Options".
