@@ -124,14 +124,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\jslint.js">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\jslint_output.js">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="PuppetLintNpp.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>

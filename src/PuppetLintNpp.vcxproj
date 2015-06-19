@@ -191,10 +191,6 @@
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\jslint.js" />
-    <None Include="res\jslint_output.js" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="PuppetLintNpp.rc" />
   </ItemGroup>
   <ItemGroup>
