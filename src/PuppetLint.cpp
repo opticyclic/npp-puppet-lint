@@ -242,12 +242,7 @@ void PuppetLint::ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScr
 			string strReason = base64_decode(strLint.substr(0, i));
 			strLint = strLint.substr(i+2);
 			
-			// read evidence
-			string strEvidence = base64_decode(strLint);
-
-			items.push_back(PuppetLintReportItem(line - 1, character - 1, 
-				TextConversion::UTF8_To_T(strReason), 
-				TextConversion::UTF8_To_T(strEvidence)));
+			items.push_back(PuppetLintReportItem(line - 1, character - 1, TextConversion::UTF8_To_T(strReason)));
 		}
 	}
 }

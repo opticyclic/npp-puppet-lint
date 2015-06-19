@@ -24,18 +24,16 @@
 class PuppetLintReportItem
 {
 public:
-	PuppetLintReportItem(int line, int character, const tstring& strReason, const tstring& strEvidence)
+	PuppetLintReportItem(int line, int character, const tstring& strReason)
 		: m_line(line)
 		, m_character(character)
 		, m_strReason(strReason)
-		, m_strEvidence(strEvidence)
 	{
 	}
 
 	int GetLine() const { return m_line; }
 	int GetCharacter() const { return m_character; }
 	tstring GetReason() const { return m_strReason; }
-	tstring GetEvidence() const { return m_strEvidence; }
 
 	bool IsReasonVarIsNotDefined() const;
 	tstring GetUndefinedVar() const;
@@ -44,7 +42,6 @@ private:
 	int m_line;
 	int m_character;
 	tstring m_strReason;
-	tstring m_strEvidence;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

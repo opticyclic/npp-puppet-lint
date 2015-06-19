@@ -474,7 +474,7 @@ void OutputDlg::CopyToClipboard()
 		stream << _T("Line ") << fileLint.lint.GetLine() 
 			<< _T(", column ") << fileLint.lint.GetCharacter()
 			<< _T(": ") << fileLint.lint.GetReason().c_str() 
-			<< _T("\r\n\t") << fileLint.lint.GetEvidence().c_str() << _T("\r\n");
+			 << _T("\r\n");
 
 		i = ListView_GetNextItem(m_hWndListView, i, LVNI_SELECTED);
 	}
