@@ -102,11 +102,18 @@ void PuppetLint::CheckScript(const string& strOptions, const string& strScript,
 	siStartInfo.hStdInput = hChildStdInputRead;
 	siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
 
-	// create cscript process
-	tstring strCmdLine = TEXT("cscript.exe /Nologo /E:JScript \"") 
-		+ m_jsLintScriptFileName.GetFileName() + TEXT("\"");
+    //Get the full path to puppet-lint
+    TCHAR path[MAX_PATH];
+    LPWSTR* ptr = NULL;
+    DWORD dwRet = SearchPath(NULL, TEXT("puppet-lint.bat"), NULL, MAX_PATH, path, ptr);
+
+    //Run puppet-lint
+    tstring commandArgs = TEXT(" --with-context ") + m_jsLintScriptFileName.GetFileName();
+    tstring strCmdLine = path + commandArgs;
+
 	BOOL bSuccess = CreateProcess(NULL, (LPTSTR)strCmdLine.c_str(),
 		NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &siStartInfo, &piProcInfo);
+
 	if (!bSuccess) {
 		throw PuppetLintUnexpectedException();
 	}
