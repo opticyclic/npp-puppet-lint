@@ -197,7 +197,12 @@ void PuppetLint::WriteString(HANDLE hFile, const string& str)
 void PuppetLint::ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScript,
 	int nppTabWidth, int jsLintTabWidth, list<PuppetLintReportItem>& items)
 {
-	// read JSLint output
+    //Split the original script into lines so we can match up with the lints later
+    tstring strScriptW(TextConversion::A_To_T(strScript));
+    vector<tstring> results;
+    StringSplit(strScriptW, _T("\r"), results);
+
+	// read Puppet-Lint output
 	string strOutput;
 	while (true) {
 		// read data from pipe
@@ -208,39 +213,47 @@ void PuppetLint::ParseOutput(HANDLE hProcess, HANDLE hPipe, const string& strScr
 
 		strOutput += string(buffer, dwRead);
 
-		// parse JSLint output, each lint is delimited with empty line (see jslint_output.js)
+		// parse puppet-lint output, each lint is delimited with empty line e.g.
+        //WARNING: double quoted string containing no variables on line 10
+        //
+        //  groups => "dba",
+        //            ^
+        //
 		while (true) {
 			size_t i = strOutput.find("\r\n\r\n");
-			if (i == string::npos) {
+			//Break if we can't find double line feed
+            if (i == string::npos) {
 				break;
 			}
 
+            //Save reason
 			string strLint = strOutput.substr(0, i);
-			strOutput = strOutput.substr(i + 4);
+            string strReason = strLint;
 
-			// read line
-			i = strLint.find("\r\n");
-			int line = atoi(base64_decode(strLint.substr(0, i)).c_str());
-			strLint = strLint.substr(i+2);
+            //Find line number
+            size_t onLine = strLint.find_last_of("on line ");
+            string lineNum = strLint.substr(onLine);
+            int line = atoi(lineNum.c_str());
 
-			// read character
-			i = strLint.find("\r\n");
-			int character = atoi(base64_decode(strLint.substr(0, i)).c_str());
-			
-			// adjust character position if there is a difference 
-			// in tab width between Notepad++ and JSLint
-			if (nppTabWidth != jsLintTabWidth) {
-				character += GetNumTabs(strScript, line, character, jsLintTabWidth) * (nppTabWidth - jsLintTabWidth);
-			}
-			
-			strLint = strLint.substr(i+2);
+            //Find the original indents
+            strOutput = strOutput.substr(i + 4);
+            tstring origLine = results.at(line - 1).substr(1);
+            size_t spaces = origLine.find_first_not_of(' ');
 
-			// read reason
-			i = strLint.find("\r\n");
-			string strReason = base64_decode(strLint.substr(0, i));
-			strLint = strLint.substr(i+2);
-			
+            //Find column number (^ symbol on next line of output)
+            i = strOutput.find("\r\n");
+            strOutput = strOutput.substr(i + 2);
+            size_t carat = strOutput.find("^");
+            //puppet-lint context is always indented by 2
+            //not the number of indents in the original file
+            int character = carat + 1 + spaces - 2;
+
+            //Push output to panel
 			items.push_back(PuppetLintReportItem(line - 1, character - 1, TextConversion::UTF8_To_T(strReason)));
+
+            //Skip to next lint
+            i = strOutput.find("\r\n\r\n");
+            strOutput = strOutput.substr(i + 4);
 		}
 	}
 }
