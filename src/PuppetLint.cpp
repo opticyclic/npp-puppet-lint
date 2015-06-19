@@ -125,13 +125,8 @@ void PuppetLint::CheckScript(const string& strOptions, const string& strScript,
 	Win32Handle hThread = piProcInfo.hThread;
 	Win32Handle hProcess = piProcInfo.hProcess;
 
-	// send input script to the standard input
-	WriteString(hChildStdInputWrite, strOptions + "\n" + strScript);
-	hChildStdInputWrite = NULL; // close std input pipe, so that JSLint can start
-
 	// read result from the standard output
-	ParseOutput(hProcess, hChildStdOutputRead, strScript, 
-		nppTabWidth, jsLintTabWidth, items);
+	ParseOutput(hProcess, hChildStdOutputRead, strScript, nppTabWidth, jsLintTabWidth, items);
 
 	// read data from the standard error stream
 	string strError;
