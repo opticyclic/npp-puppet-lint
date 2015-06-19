@@ -52,10 +52,8 @@ tstring PuppetLintReportItem::GetUndefinedVar() const
 void PuppetLint::CheckScript(const string& strOptions, const string& strScript, 
 	int nppTabWidth, int jsLintTabWidth, list<PuppetLintReportItem>& items)
 {
-    tstring strScriptW(TextConversion::A_To_T(strScript));
-
     if (!m_jsLintScriptFileName) {
-        CreateJSLintFile(strScriptW);
+        CreateJSLintFile(strScript);
     }
 
 	// initialize process info structure
@@ -164,7 +162,7 @@ void PuppetLint::LoadCustomDataResource(HMODULE hModule,
 	}
 }
 
-void PuppetLint::CreateJSLintFile(const tstring& content)
+void PuppetLint::CreateJSLintFile(const string& content)
 {
 	// create temp file
 	m_jsLintScriptFileName.Create();
@@ -177,9 +175,9 @@ void PuppetLint::CreateJSLintFile(const tstring& content)
 	WriteStringToFile(hJSLintFile, content);
 }
 
-void PuppetLint::WriteStringToFile(HANDLE hFile, const tstring& str)
+void PuppetLint::WriteStringToFile(HANDLE hFile, const string& str)
 {
-    DWORD dwSize = (DWORD)wcslen(str.c_str()) * sizeof(char);
+    DWORD dwSize = (DWORD)strlen(str.c_str()) * sizeof(char);
     DWORD dwWritten;
     if (WriteFile(hFile, (LPVOID)str.c_str(), dwSize, &dwWritten, NULL) == FALSE || dwWritten != dwSize) {
         throw IOException();
