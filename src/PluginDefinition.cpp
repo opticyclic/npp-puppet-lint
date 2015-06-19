@@ -127,13 +127,16 @@ void puppetLintCurrentFile()
 
 	DoEvents();
 
-	int type;
-	::SendMessage(g_nppData._nppHandle, NPPM_GETCURRENTLANGTYPE, 0, (LPARAM)&type);
-	if (type != L_JS) {
+    TCHAR ext[MAX_PATH];
+    ::SendMessage(g_nppData._nppHandle, NPPM_GETEXTPART, 0, (LPARAM)ext);
+
+     int result = _tcscmp(ext, _T(".pp"));
+
+	if (result != 0) {
 		::MessageBox(
 			g_nppData._nppHandle, 
-			TEXT("Current file is not JavaScript file!\nJSLint works only for the JavaScript files."),
-			TEXT("JSLint"),
+			TEXT("Current file is not a puppet file (*.pp)\nPuppet-Lint works only puppet files."),
+			TEXT("PuppetLint"),
 			MB_OK | MB_ICONINFORMATION
 		);
 		return;
