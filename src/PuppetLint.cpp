@@ -19,8 +19,7 @@
 #include "PuppetLint.h"
 #include "resource.h"
 #include "base64.h"
-
-extern HANDLE g_hDllModule;
+#include "SysMsg.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -118,6 +117,9 @@ void PuppetLint::CheckScript(const string& strOptions, const string& strScript,
 		NULL, NULL, TRUE, CREATE_NO_WINDOW, NULL, NULL, &siStartInfo, &piProcInfo);
 
 	if (!bSuccess) {
+        // CreateProcess() failed
+        // Get the error from the system
+        systemMessage(TEXT("Puppet-Lint Failed"));
 		throw PuppetLintUnexpectedException();
 	}
 	Win32Handle hThread = piProcInfo.hThread;
