@@ -63,7 +63,7 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 				int indent;
 				if(_stscanf(strIdent.c_str(), TEXT("%d"), &indent) == EOF || indent < 1) {
 					if (bShowErrorMessage) {
-						MessageBox(hDlg, TEXT("Identation must be an integer greater than zero"), _T("JSLint"), MB_OK | MB_ICONERROR);
+						MessageBox(hDlg, TEXT("Identation must be an integer greater than zero"), _T("PuppetLint"), MB_OK | MB_ICONERROR);
 						SetFocus(GetDlgItem(hDlg, IDC_IDENT));
 					}
 					return FALSE;
@@ -80,7 +80,7 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 			int maxlen;
 			if(_stscanf(strMaxlen.c_str(), TEXT("%d"), &maxlen) == EOF || maxlen < 1) {
 				if (bShowErrorMessage) {
-					MessageBox(hDlg, TEXT("Maximum line length must be an integer greater than zero"), _T("JSLint"), MB_OK | MB_ICONERROR);
+					MessageBox(hDlg, TEXT("Maximum line length must be an integer greater than zero"), _T("PuppetLint"), MB_OK | MB_ICONERROR);
 					SetFocus(GetDlgItem(hDlg, IDC_MAXLEN));
 				}
 				return FALSE;
@@ -97,7 +97,7 @@ BOOL UpdateOptions(HWND hDlg, bool bSaveOrValidate, bool bShowErrorMessage)
 				int maxerr;
 				if(_stscanf(strMaxerr.c_str(), TEXT("%d"), &maxerr) == EOF || maxerr < 1) {
 					if (bShowErrorMessage) {
-						MessageBox(hDlg, TEXT("Maximum numer of errors must be an integer greater than zero"), _T("JSLint"), MB_OK | MB_ICONERROR);
+						MessageBox(hDlg, TEXT("Maximum numer of errors must be an integer greater than zero"), _T("PuppetLint"), MB_OK | MB_ICONERROR);
 						SetFocus(GetDlgItem(hDlg, IDC_MAXERR));
 					}
 					return FALSE;

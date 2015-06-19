@@ -497,13 +497,13 @@ void OutputDlg::CopyToClipboard()
 			if (SetClipboardData(CF_UNICODETEXT, hResult) == NULL) {
 			#endif
 				GlobalFree(hResult);
-				MessageBox(_hSelf, TEXT("Unable to set Clipboard data"), _T("JSLint"), MB_OK | MB_ICONERROR);
+				MessageBox(_hSelf, TEXT("Unable to set Clipboard data"), _T("PuppetLint"), MB_OK | MB_ICONERROR);
 			}
 		} else {
-			MessageBox(_hSelf, TEXT("Cannot empty the Clipboard"), _T("JSLint"), MB_OK | MB_ICONERROR);
+			MessageBox(_hSelf, TEXT("Cannot empty the Clipboard"), _T("PuppetLint"), MB_OK | MB_ICONERROR);
 		}
 		CloseClipboard();
 	} else {
-		MessageBox(_hSelf, TEXT("Cannot open the Clipboard"), _T("JSLint"), MB_OK | MB_ICONERROR);
+		MessageBox(_hSelf, TEXT("Cannot open the Clipboard"), _T("PuppetLint"), MB_OK | MB_ICONERROR);
 	}
 }

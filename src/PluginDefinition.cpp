@@ -197,7 +197,7 @@ void puppetLintAllFiles()
 		::MessageBox(
 			g_nppData._nppHandle, 
 			TEXT("There is no JavaScript file opened in Notepad++!"),
-			TEXT("JSLint"),
+			TEXT("PuppetLint"),
 			MB_OK | MB_ICONINFORMATION
 		);
 		return;
@@ -348,7 +348,7 @@ void doJSLint()
 		::MessageBox(
 			g_nppData._nppHandle, 
 			TEXT("Failed!"),
-			TEXT("JSLint"),
+			TEXT("PuppetLint"),
 			MB_OK | MB_ICONERROR
 		);
 	}
