@@ -192,3 +192,7 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 /src/ANSI Debug
+
+#Netbeans project files
+nbproject
+
